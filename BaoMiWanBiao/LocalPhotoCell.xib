@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="CHT-Ym-veW" customClass="LocalPhotoCell">
+            <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RcE-8o-7Zx">
+                    <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                </imageView>
+                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="select.png" translatesAutoresizingMaskIntoConstraints="NO" id="rkG-IV-dxK">
+                    <rect key="frame" x="46" y="0.0" width="24" height="24"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="24" id="AQB-Fp-h4E"/>
+                        <constraint firstAttribute="width" constant="24" id="sId-JF-xc5"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="RcE-8o-7Zx" firstAttribute="top" secondItem="CHT-Ym-veW" secondAttribute="top" id="9or-G5-iLB"/>
+                <constraint firstAttribute="bottom" secondItem="RcE-8o-7Zx" secondAttribute="bottom" id="9sv-SD-CJb"/>
+                <constraint firstAttribute="trailing" secondItem="RcE-8o-7Zx" secondAttribute="trailing" id="BIM-HJ-773"/>
+                <constraint firstAttribute="trailing" secondItem="rkG-IV-dxK" secondAttribute="trailing" id="awA-ug-Iah"/>
+                <constraint firstItem="rkG-IV-dxK" firstAttribute="top" secondItem="CHT-Ym-veW" secondAttribute="top" id="cXv-iF-EqN"/>
+                <constraint firstItem="RcE-8o-7Zx" firstAttribute="leading" secondItem="CHT-Ym-veW" secondAttribute="leading" id="fh4-Rw-8Tx"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="btnSelect" destination="rkG-IV-dxK" id="hww-qu-xy8"/>
+                <outlet property="img" destination="RcE-8o-7Zx" id="b1W-MM-89y"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="select.png" width="17" height="17"/>
+    </resources>
+</document>

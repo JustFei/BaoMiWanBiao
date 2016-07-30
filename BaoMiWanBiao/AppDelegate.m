@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "RegistAndLoginViewController.h"
+#import "MiBaoXiangViewController.h"
+#import "MiMaBenViewController.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +20,20 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    
+    //注册界面作为根视图控制器
+    //self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:[NSBundle mainBundle]];
+    
+    //密保箱作为根视图控制器
+    //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiBaoXiangViewController alloc] init]];
+    
+    //密码本作为根视图控制器
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiMaBenViewController alloc] init]];
+    
     return YES;
 }
 
