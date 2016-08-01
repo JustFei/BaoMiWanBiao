@@ -9,6 +9,8 @@
 #import "AddMiMaViewContentView.h"
 #import "AddMiMaCell.h"
 #import "FMDB.h"
+#import "PasswordNoteModel.h"
+#import "XxfFmdbTool.h"
 
 @interface AddMiMaViewContentView ()<UITableViewDelegate, UITableViewDataSource>
 {
@@ -29,6 +31,12 @@
 
 //底部View
 @property (nonatomic ,weak)UIView *tabbarView;
+
+//用户密码本数据模型
+@property (nonatomic ,strong)PasswordNoteModel *accountModel;
+
+//数据库工具
+@property (nonatomic ,strong)XxfFmdbTool *tool;
 
 @end
 
@@ -51,20 +59,149 @@
 - (void)selectJiami
 {
     if (!self.jiamiButton.selected) {
+        
+        //选中状态，隐藏所有文字
         [self.jiamiButton setSelected:YES];
+        
+        NSArray * cellArr = [self.textTableView visibleCells];
+        
+        //遍历当前表可视的cell，
+        for (int index = 0; index < cellArr.count; index ++) {
+            
+            AddMiMaCell *cell = cellArr[index];
+            
+            switch (index) {
+                case 0:
+                    cell.infoTextField.secureTextEntry = YES;
+                    break;
+                case 1:
+                    cell.infoTextField.secureTextEntry = YES;
+                    break;
+                case 2:
+                    cell.infoTextField.secureTextEntry = YES;
+                    break;
+                case 3:
+                    cell.infoTextField.secureTextEntry = YES;
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
     }else {
+        
+        //非选中状态，显示所有文字
         [self.jiamiButton setSelected:NO];
+        
+        NSArray * cellArr = [self.textTableView visibleCells];
+        
+        //遍历当前表可视的cell，
+        for (int index = 0; index < cellArr.count; index ++) {
+            
+            AddMiMaCell *cell = cellArr[index];
+            
+            switch (index) {
+                case 0:
+                    cell.infoTextField.secureTextEntry = NO;
+                    break;
+                case 1:
+                    cell.infoTextField.secureTextEntry = NO;
+                    break;
+                case 2:
+                    cell.infoTextField.secureTextEntry = NO;
+                    break;
+                case 3:
+                    cell.infoTextField.secureTextEntry = NO;
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
     }
 }
 
+//确定按钮
 - (void)sureAction
 {
     NSLog(@"确定按钮");
+
+    NSArray * cellArr = [self.textTableView visibleCells];
+    
+    //遍历当前表可视的cell，
+    for (int index = 0; index < cellArr.count; index ++) {
+        
+        AddMiMaCell *cell = cellArr[index];
+        
+        switch (index) {
+            case 0:
+                self.accountModel.name = cell.infoTextField.text;
+                break;
+            case 1:
+                self.accountModel.account = cell.infoTextField.text;
+                break;
+            case 2:
+                self.accountModel.password = cell.infoTextField.text;
+                break;
+            case 3:
+                self.accountModel.memorandum = cell.infoTextField.text;
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    _accountModel.isEncrypt = self.jiamiButton.isSelected;
+    
+    BOOL result = [self.tool insertModel:self.accountModel];
+    
+    NSLog(@"写入数据库状态：%d",result);
+    
+    UIViewController *vc = [self findViewController:self];
+    
+    /**
+     *  还没有实现跳转回去
+     */
+    [vc.navigationController popViewControllerAnimated:YES];
+    
 }
 
+//删除按钮
 - (void)deleteAction
 {
-    NSLog(@"取消按钮");
+    NSArray * cellArr = [self.textTableView visibleCells];
+    
+    PasswordNoteModel *model = [[PasswordNoteModel alloc] init];
+    
+    //遍历当前表可视的cell，
+    for (int index = 0; index < cellArr.count; index ++) {
+        
+        AddMiMaCell *cell = cellArr[index];
+        
+        switch (index) {
+            case 0:
+                model.name = cell.infoTextField.text;
+                break;
+//            case 1:
+//                model.account = cell.infoTextField.text;
+//                break;
+//            case 2:
+//                model.password = cell.infoTextField.text;
+//                break;
+//            case 3:
+//                model.memorandum = cell.infoTextField.text;
+//                break;
+                
+            default:
+                break;
+        }
+    }
+#warning SQL删除语句只能对列表中的某一项下面的某个值进行删除，如果该值存在同名的情况，会导致数据库误删除的操作
+    NSString *SQLdelete = [NSString stringWithFormat:@"DELETE FROM PasswordNoteTable WHERE name = '%@'",model.name ];
+    
+    [self.tool deleteData:SQLdelete];
+    
 }
 
 //点击键盘其他区域收起键盘，退出编辑模式
@@ -176,6 +313,7 @@
     return _deleteButton;
 }
 
+//底部tabbar视图
 - (UIView *)tabbarView
 {
     if (!_tabbarView) {
@@ -186,6 +324,40 @@
     }
     
     return _tabbarView;
+}
+
+//用户账户数据模型
+- (PasswordNoteModel *)accountModel
+{
+    if (!_accountModel) {
+        _accountModel = [[PasswordNoteModel alloc] init];
+    }
+    
+    return _accountModel;
+}
+
+//
+- (XxfFmdbTool *)tool
+{
+    if (!_tool) {
+        XxfFmdbTool *tool = [[XxfFmdbTool alloc] initWithPath:@"accountInfo.sqlite"];
+        
+        _tool = tool;
+    }
+    return _tool;
+}
+
+#pragma mark - 获取当前View的控制器的方法
+- (UIViewController *)findViewController:(UIView *)sourceView
+{
+    id target=sourceView;
+    while (target) {
+        target = ((UIResponder *)target).nextResponder;
+        if ([target isKindOfClass:[UIViewController class]]) {
+            break;
+        }
+    }
+    return target;
 }
 
 /*

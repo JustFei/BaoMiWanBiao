@@ -10,16 +10,9 @@
 #import "MiMaTableViewCell.h"
 #import "AddMiMaViewController.h"
 #import "AppDelegate.h"
+#import "PasswordNoteMainModel.h"
 
 @interface MiMaBenContentView ()<UITableViewDelegate, UITableViewDataSource >
-{
-    NSMutableArray *_mimaArr;
-}
-
-/**
- *  密码本的TableView
- */
-@property (nonatomic ,weak)UITableView *mimabenTableView;
 
 /**
  *  底部tabbarView
@@ -43,7 +36,7 @@
 #pragma mark - UITableViewDetegate && UITableViewDataSource
 - (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return  _mimaArr.count;
+    return  self.mimaArr.count;
 }
 
 - (NSInteger )numberOfSectionsInTableView:(UITableView *)tableView
@@ -55,7 +48,17 @@
 {
     MiMaTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"mimacell"];
     
+    PasswordNoteMainModel *model = self.mimaArr[indexPath.row];
+    
+    cell.appName.text = model.name;
+    cell.isJiami.hidden = !model.isEncrypt;
+    
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 50;
 }
 
 #pragma mark - 点击事件
@@ -107,6 +110,27 @@
     }
     
     return _tabbarView;
+}
+
+//显示密码项数据
+- (NSMutableArray *)mimaArr
+{
+    if (!_mimaArr) {
+        _mimaArr = [NSMutableArray array];
+    }
+    
+    return _mimaArr;
+}
+
+- (XxfFmdbTool *)sqlTool
+{
+    if (!_sqlTool) {
+        XxfFmdbTool *tool = [[XxfFmdbTool alloc] initWithPath:@"accountInfo.sqlite"];
+        
+        _sqlTool = tool;
+    }
+    
+    return _sqlTool;
 }
 
 #pragma mark - 获取当前View的控制器的方法

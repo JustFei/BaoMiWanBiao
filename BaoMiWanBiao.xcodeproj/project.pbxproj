@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */; };
 		3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF91D49E46900EC568B /* PhotoShowContentView.m */; };
+		3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */; };
 		3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */; };
 		3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF1491D4B3A3C001BAE66 /* MiMaBenViewController.m */; };
 		3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF14C1D4B3A69001BAE66 /* MiMaBenContentView.m */; };
@@ -131,6 +132,8 @@
 		3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowViewController.m; sourceTree = "<group>"; };
 		3B659DF81D49E46900EC568B /* PhotoShowContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoShowContentView.h; sourceTree = "<group>"; };
 		3B659DF91D49E46900EC568B /* PhotoShowContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowContentView.m; sourceTree = "<group>"; };
+		3B8C1B301D4F00E500D061C8 /* PasswordNoteMainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordNoteMainModel.h; sourceTree = "<group>"; };
+		3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteMainModel.m; sourceTree = "<group>"; };
 		3BA27A311D4C374100B4C32F /* SM4-OCMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SM4-OCMethod.h"; sourceTree = "<group>"; };
 		3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SM4-OCMethod.m"; sourceTree = "<group>"; };
 		3BBEF1481D4B3A3C001BAE66 /* MiMaBenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiMaBenViewController.h; sourceTree = "<group>"; };
@@ -330,6 +333,8 @@
 				3BBEF14E1D4B3B52001BAE66 /* MiMaTableViewCell.h */,
 				3BBEF14F1D4B3B52001BAE66 /* MiMaTableViewCell.m */,
 				3BBEF1501D4B3B52001BAE66 /* MiMaTableViewCell.xib */,
+				3B8C1B301D4F00E500D061C8 /* PasswordNoteMainModel.h */,
+				3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -852,6 +857,7 @@
 				3BEFB4761D4994C5003DABF7 /* sms4.c in Sources */,
 				3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */,
 				3BC0B48C1D48520E00616A27 /* LocalAlbumCell.m in Sources */,
+				3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

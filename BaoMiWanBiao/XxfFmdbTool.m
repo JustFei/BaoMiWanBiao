@@ -8,6 +8,7 @@
 
 #import "XxfFmdbTool.h"
 #import "PasswordNoteModel.h"
+#import "PasswordNoteMainModel.h"
 
 @implementation XxfFmdbTool
 
@@ -17,7 +18,7 @@ static FMDatabase *_fmdb;
 {
     self = [super init];
     if (self) {
-        NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"/DB/%@",path]];
+        NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@",path]];
         _fmdb = [FMDatabase databaseWithPath:filePath];
         
         NSLog(@"filePath == %@",filePath);
@@ -44,15 +45,59 @@ static FMDatabase *_fmdb;
     return self;
 }
 
-+ (BOOL)insertModal:(PasswordNoteModel *)model {
-    NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO t_modals(name, account, password, memorandum) VALUES ('%@', '%@', '%@', '%@');", model.name, model.account, model.password, model.memorandum];
+/**
+ *  插入数据
+ *
+ *  @param model 插入的model
+ *
+ *  @return 是否插入成功
+ */
+- (BOOL)insertModel:(PasswordNoteModel *)model {
+    NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO PasswordNoteTable(name, account, password, memorandum, isEncrypt) VALUES ('%@', '%@', '%@', '%@', '%d');", model.name, model.account, model.password, model.memorandum, model.isEncrypt];
     return [_fmdb executeUpdate:insertSql];
 }
 
-+ (BOOL)deleteData:(NSString *)deleteSql {
+/**
+ *  查找数据
+ *
+ *  @param querySql 查找的关键字
+ *
+ *  @return 返回所有查找的结果
+ */
+- (NSArray *)queryData:(NSString *)querySql {
     
+    if (querySql == nil) {
+        querySql = @"SELECT * FROM PasswordNoteTable;";
+    }
+    
+    NSMutableArray *arrM = [NSMutableArray array];
+    FMResultSet *set = [_fmdb executeQuery:querySql];
+    
+    while ([set next]) {
+        
+        NSString *name = [set stringForColumn:@"name"];
+        NSString *isEncrypt = [set stringForColumn:@"isEncrypt"];
+        
+        PasswordNoteMainModel *model = [[PasswordNoteMainModel alloc] init];
+        
+        model.name = name;
+        model.isEncrypt = isEncrypt.integerValue;
+        
+        NSLog(@"%@---%d",name ,model.isEncrypt);
+        
+        [arrM addObject:model];
+    }
+    
+    NSLog(@"查询成功");
+    return arrM;
+}
+
+- (BOOL)deleteData:(NSString *)deleteSql {
+    
+    //如果传入nil，就直接return掉
     if (deleteSql == nil) {
-        deleteSql = @"DELETE FROM t_modals";
+//        deleteSql = @"DELETE FROM PasswordNoteTable";
+        return 0;
     }
     
     return [_fmdb executeUpdate:deleteSql];

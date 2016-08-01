@@ -25,6 +25,18 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
+    [self.miMaBenView.mimaArr removeAllObjects];
+    
+    NSArray *arr = [self.miMaBenView.sqlTool queryData:nil];
+    [self.miMaBenView.mimaArr addObjectsFromArray:arr];
+    
+    [self.miMaBenView.mimabenTableView reloadData];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
