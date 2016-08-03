@@ -10,6 +10,11 @@
 		3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */; };
 		3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF91D49E46900EC568B /* PhotoShowContentView.m */; };
 		3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */; };
+		3B8C1B361D4F37A600D061C8 /* MotionStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B351D4F37A600D061C8 /* MotionStatusViewController.m */; };
+		3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B381D4F39B000D061C8 /* MotionLineViewController.m */; };
+		3B8C1B7F1D51887000D061C8 /* MotionStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B8C1B7E1D51887000D061C8 /* MotionStatusViewController.xib */; };
+		3B8C1B861D51F9DD00D061C8 /* MotionHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B841D51F9DD00D061C8 /* MotionHistoryViewController.m */; };
+		3B8C1B871D51F9DD00D061C8 /* MotionHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */; };
 		3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */; };
 		3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF1491D4B3A3C001BAE66 /* MiMaBenViewController.m */; };
 		3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF14C1D4B3A69001BAE66 /* MiMaBenContentView.m */; };
@@ -134,6 +139,14 @@
 		3B659DF91D49E46900EC568B /* PhotoShowContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowContentView.m; sourceTree = "<group>"; };
 		3B8C1B301D4F00E500D061C8 /* PasswordNoteMainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordNoteMainModel.h; sourceTree = "<group>"; };
 		3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteMainModel.m; sourceTree = "<group>"; };
+		3B8C1B341D4F37A600D061C8 /* MotionStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionStatusViewController.h; sourceTree = "<group>"; };
+		3B8C1B351D4F37A600D061C8 /* MotionStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MotionStatusViewController.m; sourceTree = "<group>"; };
+		3B8C1B371D4F39B000D061C8 /* MotionLineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionLineViewController.h; sourceTree = "<group>"; };
+		3B8C1B381D4F39B000D061C8 /* MotionLineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MotionLineViewController.m; sourceTree = "<group>"; };
+		3B8C1B7E1D51887000D061C8 /* MotionStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MotionStatusViewController.xib; sourceTree = "<group>"; };
+		3B8C1B831D51F9DD00D061C8 /* MotionHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionHistoryViewController.h; sourceTree = "<group>"; };
+		3B8C1B841D51F9DD00D061C8 /* MotionHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MotionHistoryViewController.m; sourceTree = "<group>"; };
+		3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MotionHistoryViewController.xib; sourceTree = "<group>"; };
 		3BA27A311D4C374100B4C32F /* SM4-OCMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SM4-OCMethod.h"; sourceTree = "<group>"; };
 		3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SM4-OCMethod.m"; sourceTree = "<group>"; };
 		3BBEF1481D4B3A3C001BAE66 /* MiMaBenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiMaBenViewController.h; sourceTree = "<group>"; };
@@ -298,6 +311,45 @@
 			name = "手动加密密保箱";
 			sourceTree = "<group>";
 		};
+		3B8C1B331D4F374F00D061C8 /* 运动状态 */ = {
+			isa = PBXGroup;
+			children = (
+				3B8C1B7A1D517B5C00D061C8 /* 运动状态视图 */,
+				3B8C1B821D51F9A600D061C8 /* 运动历史记录 */,
+				3B8C1B791D517B5100D061C8 /* 运动路线视图 */,
+			);
+			name = "运动状态";
+			sourceTree = "<group>";
+		};
+		3B8C1B791D517B5100D061C8 /* 运动路线视图 */ = {
+			isa = PBXGroup;
+			children = (
+				3B8C1B371D4F39B000D061C8 /* MotionLineViewController.h */,
+				3B8C1B381D4F39B000D061C8 /* MotionLineViewController.m */,
+			);
+			name = "运动路线视图";
+			sourceTree = "<group>";
+		};
+		3B8C1B7A1D517B5C00D061C8 /* 运动状态视图 */ = {
+			isa = PBXGroup;
+			children = (
+				3B8C1B341D4F37A600D061C8 /* MotionStatusViewController.h */,
+				3B8C1B351D4F37A600D061C8 /* MotionStatusViewController.m */,
+				3B8C1B7E1D51887000D061C8 /* MotionStatusViewController.xib */,
+			);
+			name = "运动状态视图";
+			sourceTree = "<group>";
+		};
+		3B8C1B821D51F9A600D061C8 /* 运动历史记录 */ = {
+			isa = PBXGroup;
+			children = (
+				3B8C1B831D51F9DD00D061C8 /* MotionHistoryViewController.h */,
+				3B8C1B841D51F9DD00D061C8 /* MotionHistoryViewController.m */,
+				3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */,
+			);
+			name = "运动历史记录";
+			sourceTree = "<group>";
+		};
 		3BA27A341D4C51BF00B4C32F /* 密码本主页面 */ = {
 			isa = PBXGroup;
 			children = (
@@ -422,6 +474,7 @@
 				3BDD65141D45DE73009EA15F /* AppDelegate.m */,
 				3BF1731C1D46F16E008DF4DC /* 获取相册文件并加密保存 */,
 				3BBEF1471D4B3A05001BAE66 /* 密码本 */,
+				3B8C1B331D4F374F00D061C8 /* 运动状态 */,
 				3BF1731B1D46F161008DF4DC /* 注册登录界面 */,
 				3BEFB46D1D499487003DABF7 /* SM4加密算法 */,
 				3BDD651C1D45DE73009EA15F /* Assets.xcassets */,
@@ -705,6 +758,7 @@
 				3BDD65861D45E4CA009EA15F /* aclock@3x.png in Resources */,
 				3BDD65A81D45E4CA009EA15F /* notepad@3x.png in Resources */,
 				3BDD65891D45E4CA009EA15F /* back@2x.png in Resources */,
+				3B8C1B871D51F9DD00D061C8 /* MotionHistoryViewController.xib in Resources */,
 				3BC0B48D1D48520E00616A27 /* LocalAlbumCell.xib in Resources */,
 				3BDD659D1D45E4CA009EA15F /* key@2x.png in Resources */,
 				3BDD65B11D45E4CA009EA15F /* secret_box@2x.png in Resources */,
@@ -737,6 +791,7 @@
 				3BDD65471D45DF65009EA15F /* RegistAndLoginViewController.xib in Resources */,
 				3BDD65A61D45E4CA009EA15F /* no_select@3x.png in Resources */,
 				3BDD651D1D45DE73009EA15F /* Assets.xcassets in Resources */,
+				3B8C1B7F1D51887000D061C8 /* MotionStatusViewController.xib in Resources */,
 				3BBEF15F1D4B4E97001BAE66 /* AddMiMaCell.xib in Resources */,
 				3BDD65AE1D45E4CA009EA15F /* phone@3x.png in Resources */,
 				3BC0B47C1D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.xib in Resources */,
@@ -835,8 +890,10 @@
 				3BBEF1511D4B3B52001BAE66 /* MiMaTableViewCell.m in Sources */,
 				3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */,
 				3BDD65151D45DE73009EA15F /* AppDelegate.m in Sources */,
+				3B8C1B361D4F37A600D061C8 /* MotionStatusViewController.m in Sources */,
 				3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */,
 				3BDD65461D45DF65009EA15F /* RegistAndLoginViewController.m in Sources */,
+				3B8C1B861D51F9DD00D061C8 /* MotionHistoryViewController.m in Sources */,
 				3BBEF15A1D4B495E001BAE66 /* AddMiMaViewContentView.m in Sources */,
 				3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */,
 				3BC0B4921D48520E00616A27 /* AssetHelper.m in Sources */,
@@ -845,6 +902,7 @@
 				3BDD65121D45DE73009EA15F /* main.m in Sources */,
 				3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */,
 				3BEFB4751D4994C5003DABF7 /* sm4test.c in Sources */,
+				3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */,
 				3BEFB4741D4994C5003DABF7 /* sm4.c in Sources */,
 				3BC0B47B1D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.m in Sources */,
 				3BBEF15E1D4B4E97001BAE66 /* AddMiMaCell.m in Sources */,

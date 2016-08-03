@@ -10,6 +10,8 @@
 #import "RegistAndLoginViewController.h"
 #import "MiBaoXiangViewController.h"
 #import "MiMaBenViewController.h"
+#import "MotionStatusViewController.h"
+#import "MotionLineViewController.h"
 
 @interface AppDelegate ()
 
@@ -32,9 +34,35 @@
     //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiBaoXiangViewController alloc] init]];
     
     //密码本作为根视图控制器
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiMaBenViewController alloc] init]];
+//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiMaBenViewController alloc] init]];
+    
+    //运动状态作为根视图控制器
+    //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionStatusViewController alloc] initWithNibName:@"MotionStatusViewController" bundle:nil]];
+    
+    //运动轨迹作为根视图控制器
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionLineViewController alloc] init]];
+    
+    
     
     return YES;
+}
+
+- (void)onGetNetworkState:(int)iError
+{
+    if (0 == iError) {
+        NSLog(@"联网成功");
+    }else {
+        NSLog(@"onGetNetworkState %d",iError);
+    }
+}
+
+- (void)onGetPermissionState:(int)iError
+{
+    if (0 == iError) {
+        NSLog(@"授权成功");
+    }else {
+        NSLog(@"onGetPermissionState %d",iError);
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
