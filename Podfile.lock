@@ -2,11 +2,14 @@ PODS:
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
+  - JBChartView (3.0.12)
 
 DEPENDENCIES:
   - FMDB
+  - JBChartView
 
 SPEC CHECKSUMS:
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  JBChartView: 08877554448ccf99c12625ad0ebce70588ff8318
 
 COCOAPODS: 0.39.0

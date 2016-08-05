@@ -7,8 +7,44 @@
 //
 
 #import "MotionHistoryViewController.h"
+#import "JBBarChartView.h"
 
 @interface MotionHistoryViewController ()
+
+/**
+ *  日期文本
+ */
+@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+
+/**
+ *  每日平均步数
+ */
+@property (weak, nonatomic) IBOutlet UILabel *averageStep;
+
+/**
+ *  柱状图
+ */
+@property (weak, nonatomic) IBOutlet UIView *barChart;
+
+/**
+ *  里程文本
+ */
+@property (weak, nonatomic) IBOutlet UILabel *mileageNum;
+
+/**
+ *  步数文本
+ */
+@property (weak, nonatomic) IBOutlet UILabel *stepsNum;
+
+/**
+ *  卡路里文本
+ */
+@property (weak, nonatomic) IBOutlet UILabel *kcalNum;
+
+/**
+ *  柱状图
+ */
+@property (weak, nonatomic) JBBarChartView *jbBarView;
 
 @end
 
@@ -17,6 +53,29 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    
+    
+}
+
+- (JBBarChartView *)jbBarView
+{
+    if (!_jbBarView) {
+        JBBarChartView *view = [[JBBarChartView alloc] initWithFrame:self.barChart.bounds];
+        
+        view.delegate = self;
+        view.dataSource = self;
+        
+        view.headerPadding = 20.f;
+        view.minimumValue = 0.0f;
+        view.inverted = NO;
+        view.backgroundColor = [UIColor blueColor];
+        
+        [self.barChart addSubview:view];
+        _jbBarView = view;
+    }
+    
+    return _jbBarView;
 }
 
 - (void)didReceiveMemoryWarning {
