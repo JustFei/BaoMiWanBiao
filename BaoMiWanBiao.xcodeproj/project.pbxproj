@@ -34,6 +34,7 @@
 		3BC0B4901D48520E00616A27 /* LocalPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC0B4871D48520E00616A27 /* LocalPhotoCell.m */; };
 		3BC0B4911D48520E00616A27 /* LocalPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC0B4881D48520E00616A27 /* LocalPhotoCell.xib */; };
 		3BC0B4921D48520E00616A27 /* AssetHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC0B48A1D48520E00616A27 /* AssetHelper.m */; };
+		3BD797001D55D34B00DB6821 /* JBBarChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD796FF1D55D34B00DB6821 /* JBBarChartFooterView.m */; };
 		3BDD65121D45DE73009EA15F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDD65111D45DE73009EA15F /* main.m */; };
 		3BDD65151D45DE73009EA15F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDD65141D45DE73009EA15F /* AppDelegate.m */; };
 		3BDD651D1D45DE73009EA15F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BDD651C1D45DE73009EA15F /* Assets.xcassets */; };
@@ -179,6 +180,12 @@
 		3BC0B4881D48520E00616A27 /* LocalPhotoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocalPhotoCell.xib; sourceTree = "<group>"; };
 		3BC0B4891D48520E00616A27 /* AssetHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssetHelper.h; sourceTree = "<group>"; };
 		3BC0B48A1D48520E00616A27 /* AssetHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssetHelper.m; sourceTree = "<group>"; };
+		3BD796FE1D55D34B00DB6821 /* JBBarChartFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBarChartFooterView.h; sourceTree = "<group>"; };
+		3BD796FF1D55D34B00DB6821 /* JBBarChartFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBarChartFooterView.m; sourceTree = "<group>"; };
+		3BD797021D55D50000DB6821 /* XXFFontConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXFFontConstants.h; sourceTree = "<group>"; };
+		3BD797031D55D55C00DB6821 /* XXFConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXFConstants.h; sourceTree = "<group>"; };
+		3BD797051D55D62900DB6821 /* BaoMiWanBiao-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BaoMiWanBiao-Prefix.pch"; sourceTree = "<group>"; };
+		3BD797061D55D68600DB6821 /* XXFColorConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXFColorConstants.h; sourceTree = "<group>"; };
 		3BDD650D1D45DE73009EA15F /* BaoMiWanBiao.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BaoMiWanBiao.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BDD65111D45DE73009EA15F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3BDD65131D45DE73009EA15F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -445,9 +452,38 @@
 			name = "系统相册图片选择";
 			sourceTree = "<group>";
 		};
+		3BD796FC1D55D2E200DB6821 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				3BD796FD1D55D33400DB6821 /* jbChartView */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		3BD796FD1D55D33400DB6821 /* jbChartView */ = {
+			isa = PBXGroup;
+			children = (
+				3BD796FE1D55D34B00DB6821 /* JBBarChartFooterView.h */,
+				3BD796FF1D55D34B00DB6821 /* JBBarChartFooterView.m */,
+			);
+			name = jbChartView;
+			sourceTree = "<group>";
+		};
+		3BD797011D55D4D500DB6821 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				3BD797031D55D55C00DB6821 /* XXFConstants.h */,
+				3BD797021D55D50000DB6821 /* XXFFontConstants.h */,
+				3BD797061D55D68600DB6821 /* XXFColorConstants.h */,
+			);
+			name = Constants;
+			sourceTree = "<group>";
+		};
 		3BDD65041D45DE73009EA15F = {
 			isa = PBXGroup;
 			children = (
+				3BD797011D55D4D500DB6821 /* Constants */,
+				3BD796FC1D55D2E200DB6821 /* Libraries */,
 				3BDD650F1D45DE73009EA15F /* BaoMiWanBiao */,
 				3BDD65291D45DE74009EA15F /* BaoMiWanBiaoTests */,
 				3BDD65341D45DE74009EA15F /* BaoMiWanBiaoUITests */,
@@ -480,7 +516,6 @@
 				3BDD651C1D45DE73009EA15F /* Assets.xcassets */,
 				3BDD65481D45E4CA009EA15F /* iOS */,
 				3BDD651E1D45DE73009EA15F /* LaunchScreen.storyboard */,
-				3BDD65211D45DE73009EA15F /* Info.plist */,
 				3BDD65101D45DE73009EA15F /* Supporting Files */,
 			);
 			path = BaoMiWanBiao;
@@ -489,7 +524,9 @@
 		3BDD65101D45DE73009EA15F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3BDD65211D45DE73009EA15F /* Info.plist */,
 				3BDD65111D45DE73009EA15F /* main.m */,
+				3BD797051D55D62900DB6821 /* BaoMiWanBiao-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -887,6 +924,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BD797001D55D34B00DB6821 /* JBBarChartFooterView.m in Sources */,
 				3BBEF1511D4B3B52001BAE66 /* MiMaTableViewCell.m in Sources */,
 				3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */,
 				3BDD65151D45DE73009EA15F /* AppDelegate.m in Sources */,
@@ -1049,6 +1087,7 @@
 			baseConfigurationReference = 6B119F38D43226B2F978BEAE /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/BaoMiWanBiao/BaoMiWanBiao-Prefix.pch";
 				INFOPLIST_FILE = BaoMiWanBiao/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Bobo.BaoMiWanBiao;
@@ -1061,6 +1100,7 @@
 			baseConfigurationReference = 056ED79766F2FAB2827EFB78 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/BaoMiWanBiao/BaoMiWanBiao-Prefix.pch";
 				INFOPLIST_FILE = BaoMiWanBiao/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Bobo.BaoMiWanBiao;

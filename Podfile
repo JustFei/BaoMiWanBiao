@@ -5,4 +5,4 @@ pod 'FMDB'
 # pod 'FMDB/SQLCipher'   # FMDB with SQLCipher
 
 platform :ios, '6.0'
-pod 'JBChartView'
+pod 'JBChartView', '~> 3.0.12'
