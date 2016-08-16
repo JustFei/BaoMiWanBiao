@@ -243,7 +243,7 @@
                 <constraint firstItem="NXV-RU-3UY" firstAttribute="top" secondItem="TIK-LZ-hNn" secondAttribute="bottom" constant="6" id="t2N-fQ-aqj"/>
             </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-            <point key="canvasLocation" x="394" y="353"/>
+            <point key="canvasLocation" x="388" y="437"/>
         </view>
     </objects>
     <resources>

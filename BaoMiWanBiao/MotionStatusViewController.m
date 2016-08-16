@@ -7,6 +7,8 @@
 //
 
 #import "MotionStatusViewController.h"
+#import "MotionHistoryViewController.h"
+#import "MotionLineViewController.h"
 
 @interface MotionStatusViewController ()
 
@@ -54,12 +56,25 @@
 @implementation MotionStatusViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.navigationItem.title = @"运动状态";
+    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:78.0 / 255.0 green:140.0 / 255.0 blue:243.0 / 255.0 alpha:1];
+    
+    //右侧运动轨迹按键设置
+    UIBarButtonItem *rightLineItem = [[UIBarButtonItem alloc] initWithTitle:@"运动轨迹" style:UIBarButtonItemStylePlain target:self action:@selector(pushToLineVC)];
+    self.navigationItem.rightBarButtonItem = rightLineItem;
+    
+    //左侧返回按键设置
+    UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationItem.leftBarButtonItem = leftBackItem;
     
     NSString *date = [self setDateLabelText];
     self.dateLabel.text = date;
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
 }
 
 /**
@@ -119,6 +134,23 @@
  *  历史步数按钮事件
  */
 - (IBAction)historyAction:(UIButton *)sender {
+    
+    MotionHistoryViewController *historyVC = [[MotionHistoryViewController alloc] initWithNibName:@"MotionHistoryViewController" bundle:nil];
+    [self.navigationController pushViewController:historyVC animated:YES];
+    
+}
+
+//推送到路线图界面
+- (void)pushToLineVC
+{
+    MotionLineViewController *lineVC = [[MotionLineViewController alloc] init];
+    [self.navigationController pushViewController:lineVC animated:YES];
+}
+
+//推出当前界面
+- (void)backAction
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (NSDate *)senddate

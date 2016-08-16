@@ -241,7 +241,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 				verticalSelectionViewHeight += self.footerPadding;
 			}
 		}
-		
+#warning selectColorForItem1
+        //设置选中时的item的状态以及颜色
 		self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], verticalSelectionViewHeight)];
 		self.verticalSelectionView.alpha = 0.0;
 		self.verticalSelectionView.hidden = !self.showsVerticalSelection;
@@ -250,6 +251,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 			UIColor *selectionViewBackgroundColor = [self.delegate barSelectionColorForBarChartView:self];
 			NSAssert(selectionViewBackgroundColor != nil, @"JBBarChartView // delegate function - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView must return a non-nil UIColor");
 			self.verticalSelectionView.bgColor = selectionViewBackgroundColor;
+            
 		}
 		
 		// Add new selection bar
@@ -898,8 +900,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	{
 		return;
 	}
-	
-	[self setVerticalSelectionViewVisible:NO animated:YES];
+    
+	//选中离开后就隐藏背景
+//	[self setVerticalSelectionViewVisible:NO animated:YES];
 	
 	if ([self.delegate respondsToSelector:@selector(didDeselectBarChartView:)])
 	{

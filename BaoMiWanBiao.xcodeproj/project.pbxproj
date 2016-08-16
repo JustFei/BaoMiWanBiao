@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B2791F11D6308F200B99320 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791EF1D6308F200B99320 /* MainViewController.m */; };
+		3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F01D6308F200B99320 /* MainViewController.xib */; };
+		3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791F71D631AC400B99320 /* SleepStatusViewController.m */; };
+		3B2791FA1D631AC400B99320 /* SleepStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */; };
 		3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */; };
 		3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF91D49E46900EC568B /* PhotoShowContentView.m */; };
 		3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */; };
@@ -134,6 +138,12 @@
 /* Begin PBXFileReference section */
 		056ED79766F2FAB2827EFB78 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		1B7C1E8C81FC86181499D788 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B2791EE1D6308F200B99320 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		3B2791EF1D6308F200B99320 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		3B2791F01D6308F200B99320 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		3B2791F61D631AC400B99320 /* SleepStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepStatusViewController.h; sourceTree = "<group>"; };
+		3B2791F71D631AC400B99320 /* SleepStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepStatusViewController.m; sourceTree = "<group>"; };
+		3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SleepStatusViewController.xib; sourceTree = "<group>"; };
 		3B659DF21D49E3ED00EC568B /* PhotoShowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoShowViewController.h; sourceTree = "<group>"; };
 		3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowViewController.m; sourceTree = "<group>"; };
 		3B659DF81D49E46900EC568B /* PhotoShowContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoShowContentView.h; sourceTree = "<group>"; };
@@ -306,6 +316,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B2791ED1D6308CB00B99320 /* 首页 */ = {
+			isa = PBXGroup;
+			children = (
+				3B2791EE1D6308F200B99320 /* MainViewController.h */,
+				3B2791EF1D6308F200B99320 /* MainViewController.m */,
+				3B2791F01D6308F200B99320 /* MainViewController.xib */,
+			);
+			name = "首页";
+			sourceTree = "<group>";
+		};
+		3B2791F31D631A5300B99320 /* 睡眠状态 */ = {
+			isa = PBXGroup;
+			children = (
+				3B2791F41D631A7000B99320 /* 睡眠状态视图 */,
+				3B2791F51D631A7F00B99320 /* 睡眠历史记录 */,
+			);
+			name = "睡眠状态";
+			sourceTree = "<group>";
+		};
+		3B2791F41D631A7000B99320 /* 睡眠状态视图 */ = {
+			isa = PBXGroup;
+			children = (
+				3B2791F61D631AC400B99320 /* SleepStatusViewController.h */,
+				3B2791F71D631AC400B99320 /* SleepStatusViewController.m */,
+				3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */,
+			);
+			name = "睡眠状态视图";
+			sourceTree = "<group>";
+		};
+		3B2791F51D631A7F00B99320 /* 睡眠历史记录 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "睡眠历史记录";
+			sourceTree = "<group>";
+		};
 		3B659DF11D49E1D000EC568B /* 手动加密密保箱 */ = {
 			isa = PBXGroup;
 			children = (
@@ -508,9 +554,11 @@
 			children = (
 				3BDD65131D45DE73009EA15F /* AppDelegate.h */,
 				3BDD65141D45DE73009EA15F /* AppDelegate.m */,
+				3B2791ED1D6308CB00B99320 /* 首页 */,
 				3BF1731C1D46F16E008DF4DC /* 获取相册文件并加密保存 */,
 				3BBEF1471D4B3A05001BAE66 /* 密码本 */,
 				3B8C1B331D4F374F00D061C8 /* 运动状态 */,
+				3B2791F31D631A5300B99320 /* 睡眠状态 */,
 				3BF1731B1D46F161008DF4DC /* 注册登录界面 */,
 				3BEFB46D1D499487003DABF7 /* SM4加密算法 */,
 				3BDD651C1D45DE73009EA15F /* Assets.xcassets */,
@@ -819,6 +867,7 @@
 				3BDD65BF1D45E4CA009EA15F /* user@2x.png in Resources */,
 				3BDD65951D45E4CA009EA15F /* file@2x.png in Resources */,
 				3BDD65941D45E4CA009EA15F /* connect@3x.png in Resources */,
+				3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */,
 				3BDD65AA1D45E4CA009EA15F /* open@3x.png in Resources */,
 				3BDD65B51D45E4CA009EA15F /* select@2x.png in Resources */,
 				3BDD65871D45E4CA009EA15F /* app@2x.png in Resources */,
@@ -839,6 +888,7 @@
 				3BDD65851D45E4CA009EA15F /* aclock@2x.png in Resources */,
 				3BDD65BA1D45E4CA009EA15F /* sport@3x.png in Resources */,
 				3BDD658A1D45E4CA009EA15F /* back@3x.png in Resources */,
+				3B2791FA1D631AC400B99320 /* SleepStatusViewController.xib in Resources */,
 				3BDD65AC1D45E4CA009EA15F /* pencil-with-paper@3x.png in Resources */,
 				3BDD65A41D45E4CA009EA15F /* locked@3x.png in Resources */,
 				3BDD659B1D45E4CA009EA15F /* forward@2x.png in Resources */,
@@ -942,11 +992,13 @@
 				3BEFB4751D4994C5003DABF7 /* sm4test.c in Sources */,
 				3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */,
 				3BEFB4741D4994C5003DABF7 /* sm4.c in Sources */,
+				3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */,
 				3BC0B47B1D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.m in Sources */,
 				3BBEF15E1D4B4E97001BAE66 /* AddMiMaCell.m in Sources */,
 				3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */,
 				3BC0B4901D48520E00616A27 /* LocalPhotoCell.m in Sources */,
 				3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */,
+				3B2791F11D6308F200B99320 /* MainViewController.m in Sources */,
 				3BBEF1561D4B4691001BAE66 /* AddMiMaViewController.m in Sources */,
 				3BC0B48E1D48520E00616A27 /* LocalPhotoViewController.m in Sources */,
 				3BC0B48B1D48520E00616A27 /* LocalAlbumTableViewController.m in Sources */,
@@ -1037,7 +1089,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1075,7 +1127,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1089,6 +1141,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BaoMiWanBiao/BaoMiWanBiao-Prefix.pch";
 				INFOPLIST_FILE = BaoMiWanBiao/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Bobo.BaoMiWanBiao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1102,6 +1155,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BaoMiWanBiao/BaoMiWanBiao-Prefix.pch";
 				INFOPLIST_FILE = BaoMiWanBiao/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Bobo.BaoMiWanBiao;
 				PRODUCT_NAME = "$(TARGET_NAME)";

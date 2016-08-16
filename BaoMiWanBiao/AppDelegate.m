@@ -14,6 +14,8 @@
 #import "MotionLineViewController.h"
 #import "MotionHistoryViewController.h"
 
+#import "MainViewController.h"
+
 @interface AppDelegate ()
 
 @end
@@ -38,14 +40,14 @@
 //    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiMaBenViewController alloc] init]];
     
     //运动状态作为根视图控制器
-    //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionStatusViewController alloc] initWithNibName:@"MotionStatusViewController" bundle:nil]];
+//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionStatusViewController alloc] initWithNibName:@"MotionStatusViewController" bundle:nil]];
     
     //运动轨迹作为根视图控制器
     //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionLineViewController alloc] init]];
     
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionHistoryViewController alloc] initWithNibName:@"MotionHistoryViewController" bundle:nil]];
+//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionHistoryViewController alloc] initWithNibName:@"MotionHistoryViewController" bundle:nil]];
     
-    
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil]];
     return YES;
 }
 

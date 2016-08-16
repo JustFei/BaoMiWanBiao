@@ -55,11 +55,38 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
  *  柱状图
  */
 @property (weak, nonatomic) JBBarChartView *jbBarView;
-
 /**
- *  柱状图底部的scrollView
+ *  柱状图底部的标签
  */
-@property (weak, nonatomic) UIScrollView *barScrollView;
+@property (weak, nonatomic) IBOutlet UIView *barViewFootView;
+/**
+ *  周一
+ */
+@property (weak, nonatomic) IBOutlet UILabel *monLabel;
+/**
+ *  周二
+ */
+@property (weak, nonatomic) IBOutlet UILabel *tuesLabel;
+/**
+ *  周三
+ */
+@property (weak, nonatomic) IBOutlet UILabel *wedLabel;
+/**
+ *  周四
+ */
+@property (weak, nonatomic) IBOutlet UILabel *thurLabel;
+/**
+ *  周五
+ */
+@property (weak, nonatomic) IBOutlet UILabel *friLabel;
+/**
+ *  周六
+ */
+@property (weak, nonatomic) IBOutlet UILabel *satLabel;
+/**
+ *  周天
+ */
+@property (weak, nonatomic) IBOutlet UILabel *sunLabel;
 
 @property (nonatomic, strong) NSArray *chartData;
 @property (nonatomic, strong) NSArray *monthlySymbols;
@@ -115,7 +142,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
 {
     //柱状图item的数据内容 -- _charData
     NSMutableArray *mutableChartData = [NSMutableArray array];
-    for (int i=0; i<31; i++)
+    for (int i=0; i<7; i++)
     {
         //NSInteger delta = (kJBBarChartViewControllerNumBars - labs((kJBBarChartViewControllerNumBars - i) - i)) + 2;
         int value = (arc4random() % 20) + 1;
@@ -123,7 +150,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
         
     }
     self.chartData = [NSArray arrayWithArray:mutableChartData];
-    self.monthlySymbols = [[[NSDateFormatter alloc] init] shortMonthSymbols];
+    self.monthlySymbols = [[[NSDateFormatter alloc] init] weekdaySymbols];
 }
 
 #pragma mark - 生命周期
@@ -131,9 +158,16 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.barScrollView.contentSize = CGSizeMake(4 * self.view.frame.size.width , 0);
-    self.jbBarView.backgroundColor = [UIColor yellowColor];
-
+    self.navigationController.title = @"历史记录";
+    //设置footView的边框和颜色
+    self.barViewFootView.backgroundColor = [UIColor whiteColor];
+    self.barViewFootView.layer.borderWidth = 1.0f;
+    self.barViewFootView.layer.borderColor = [UIColor colorWithRed:213.0 / 255.0 green:215.0 / 255.0 blue:220.0 / 255.0 alpha:1].CGColor;
+    //设置barView的边框和颜色
+    self.barChart.layer.borderWidth = 1.0f;
+    self.barChart.layer.borderColor = [UIColor colorWithRed:215.0 / 255.0 green:215.0 / 255.0 blue:218.0 / 255.0 alpha:1.0].CGColor;
+    
+    self.jbBarView.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -163,20 +197,26 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
 //设置每个item的颜色
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index
 {
-    return (index % 2 == 0) ? [UIColor blueColor] : [UIColor greenColor];
+    if (index == 4) {
+//        return [UIColor colorWithRed:212.0 / 255.0 green:233.0 / 255.0 blue:255.0 / 255.0 alpha:1];
+    }
+    
+//    return [UIColor colorWithRed:78.0 / 255.0 green:140.0 / 255.0 blue:243.0 / 255.0 alpha:1];
+    return [UIColor colorWithRed:212.0 / 255.0 green:233.0 / 255.0 blue:255.0 / 255.0 alpha:1];
 }
 
 //选中的时候，被选中的item的颜色变化 -- 这里的白色，但是实际是渐变的白色
 - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView
 {
-    return [UIColor whiteColor];
+    return [UIColor colorWithRed:78.0 / 255.0 green:140.0 / 255.0 blue:243.0 / 255.0 alpha:1];
+//    return [UIColor blackColor];
 }
 
 //每个item之间的距离
 - (CGFloat)barPaddingForBarChartView:(JBBarChartView *)barChartView
 {
     //    return kJBBarChartViewControllerBarPadding;
-    return 30.0f;
+    return 31.0f;
 }
 
 #pragma mark -JBBarChartViewDataSource
@@ -200,6 +240,9 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     self.stepsNum.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
     self.mileageNum.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
     self.kcalNum.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
+    
+    
+    
     //[self.informationView setTitleText:kJBStringLabelWorldwideAverage];
     //[self.informationView setHidden:NO animated:YES];
     
@@ -214,7 +257,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
 - (JBBarChartView *)jbBarView
 {
     if (!_jbBarView) {
-        JBBarChartView *view = [[JBBarChartView alloc] initWithFrame:CGRectMake(0, 0, self.barScrollView.contentSize.width, self.barChart.frame.size.height)];
+        JBBarChartView *view = [[JBBarChartView alloc] initWithFrame:CGRectMake(10, 0, self.barChart.frame.size.width - 20, self.barChart.frame.size.height)];
         
         view.delegate = self;
         view.dataSource = self;
@@ -227,39 +270,13 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
         view.inverted = NO;
         view.backgroundColor = [UIColor blueColor];
         
-        //设置柱状图底部的标注 “1月-12月”
-        JBBarChartFooterView *footerView = [[JBBarChartFooterView alloc] initWithFrame:CGRectMake(kJBBarChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBBarChartViewControllerChartFooterHeight * 0.5), self.view.bounds.size.width - (kJBBarChartViewControllerChartPadding * 2), kJBBarChartViewControllerChartFooterHeight)];
-        footerView.padding = 5.0f;
-        footerView.leftLabel.text = [[self.monthlySymbols firstObject] uppercaseString];
-        footerView.leftLabel.textColor = [UIColor whiteColor];
-        footerView.rightLabel.text = [[self.monthlySymbols lastObject] uppercaseString];
-        footerView.rightLabel.textColor = [UIColor whiteColor];
-        view.footerView = footerView;
-        
-        [self.barScrollView addSubview:view];
+        [self.barChart addSubview:view];
         _jbBarView = view;
         
         [_jbBarView reloadData];
     }
     
     return _jbBarView;
-}
-
-- (UIScrollView *)barScrollView
-{
-    if (!_barScrollView) {
-        UIScrollView *view = [[UIScrollView alloc] initWithFrame:self.barChart.bounds];
-        
-        view.delegate = self;
-        view.pagingEnabled = NO;
-        view.bounces = NO;
-        view.backgroundColor = [UIColor redColor];
-        
-        [self.barChart addSubview:view];
-        _barScrollView = view;
-    }
-    
-    return _barScrollView;
 }
 
 - (void)didReceiveMemoryWarning {
