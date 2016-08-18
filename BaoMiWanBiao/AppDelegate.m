@@ -30,24 +30,13 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    //注册界面作为根视图控制器
-    //self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:[NSBundle mainBundle]];
-    
-    //密保箱作为根视图控制器
-    //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiBaoXiangViewController alloc] init]];
-    
-    //密码本作为根视图控制器
-//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MiMaBenViewController alloc] init]];
-    
-    //运动状态作为根视图控制器
-//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionStatusViewController alloc] initWithNibName:@"MotionStatusViewController" bundle:nil]];
-    
-    //运动轨迹作为根视图控制器
-    //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionLineViewController alloc] init]];
-    
-//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MotionHistoryViewController alloc] initWithNibName:@"MotionHistoryViewController" bundle:nil]];
-    
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil]];
+    
+    //设置navigationbar的背景颜色以及title，item的颜色
+    [[UINavigationBar appearance] setBarTintColor:UIColorFromRGBWithAlpha(0x2c91F4, 1)];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar
+      appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
     return YES;
 }
 

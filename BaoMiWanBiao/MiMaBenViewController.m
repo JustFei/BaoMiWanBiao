@@ -22,12 +22,19 @@
     // Do any additional setup after loading the view.
     
     self.miMaBenView.backgroundColor = [UIColor whiteColor];
+    //修改navigationbar的颜色
+    self.navigationItem.title = @"密码本";
+    //左侧返回按键设置
+    UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationItem.leftBarButtonItem = leftBackItem;
     
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    
     
     [self.miMaBenView.mimaArr removeAllObjects];
     
@@ -52,6 +59,11 @@
     }
     
     return _miMaBenView;
+}
+
+- (void)backAction
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 /*

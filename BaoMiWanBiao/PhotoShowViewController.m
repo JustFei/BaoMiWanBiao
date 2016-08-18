@@ -20,6 +20,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //修改navigationbar的颜色
+    self.navigationController.navigationBar.barTintColor = UIColorFromRGBWithAlpha(0x2c91F4, 1);
+    [self.navigationController.navigationBar setTranslucent:NO];
 }
 
 - (instancetype)initWithImage:(UIImage *)showImage

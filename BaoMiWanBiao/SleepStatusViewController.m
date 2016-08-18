@@ -7,6 +7,7 @@
 //
 
 #import "SleepStatusViewController.h"
+#import "SleepHistoryViewController.h"
 
 @interface SleepStatusViewController ()
 /**
@@ -50,20 +51,26 @@
 
 @implementation SleepStatusViewController
 
+#pragma mark - 生命周期
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     //navigationBar的设置
     self.navigationItem.title = @"睡眠状态";
-    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:78.0 / 255.0 green:140.0 / 255.0 blue:243.0 / 255.0 alpha:1];
     //左侧返回按键设置
     UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
     self.navigationItem.leftBarButtonItem = leftBackItem;
     
     //当天label的text设置
-//    NSString *date = [self setDateLabelText];
     self.afterDayButton.enabled = NO;
     self.dateLabel.text = @"今天";
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:YES];
+    
+    self.senddate = nil;
 }
 
 /**
@@ -87,6 +94,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - 点击事件
 /**
  *  前一天按钮事件
  */
@@ -102,14 +110,10 @@
  */
 - (IBAction)afterDayAction:(UIButton *)sender {
     
-    if (self.senddate == [NSDate date]) {
-        return;
-    }
     self.senddate = [NSDate dateWithTimeInterval:26*60*60 sinceDate:self.senddate];//后一天
     NSString *currentDayStr = [self setDateLabelText];
     
     NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
-    
     [dateformatter setDateFormat:@"YYYY-MM-dd"];
     NSDate *currentDate = [NSDate date];
     NSString *currentDateString = [dateformatter stringFromDate:currentDate];
@@ -120,7 +124,13 @@
         self.dateLabel.text = currentDayStr;
     }
 }
+
+
 - (IBAction)historyAction:(UIButton *)sender {
+    
+    SleepHistoryViewController *vc = [[SleepHistoryViewController alloc] initWithNibName:@"SleepHistoryViewController" bundle:nil];
+    
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 //推出当前界面
@@ -129,6 +139,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - 懒加载
 - (NSDate *)senddate
 {
     if (!_senddate) {

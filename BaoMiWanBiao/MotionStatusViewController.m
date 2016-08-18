@@ -49,6 +49,16 @@
  */
 @property (weak, nonatomic) IBOutlet UILabel *bpmNum;
 
+/**
+ *  前一天的按钮
+ */
+@property (weak, nonatomic) IBOutlet UIButton *beforeButton;
+
+/**
+ *  后一天的按钮
+ */
+@property (weak, nonatomic) IBOutlet UIButton *afterButton;
+
 @property (nonatomic ,strong) NSDate *  senddate;
 
 @end
@@ -57,7 +67,6 @@
 
 - (void)viewDidLoad {
     self.navigationItem.title = @"运动状态";
-    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:78.0 / 255.0 green:140.0 / 255.0 blue:243.0 / 255.0 alpha:1];
     
     //右侧运动轨迹按键设置
     UIBarButtonItem *rightLineItem = [[UIBarButtonItem alloc] initWithTitle:@"运动轨迹" style:UIBarButtonItemStylePlain target:self action:@selector(pushToLineVC)];
@@ -67,14 +76,20 @@
     UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
     self.navigationItem.leftBarButtonItem = leftBackItem;
     
-    NSString *date = [self setDateLabelText];
-    self.dateLabel.text = date;
+    self.dateLabel.text = @"今天";
+    self.afterButton.enabled = NO;
     
+    [self getDataFromDB];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+}
+
+- (void)getDataFromDB
+{
+    
 }
 
 /**
@@ -99,7 +114,6 @@
 }
 
 #pragma mark - 点击事件
-#warning 没有实现点击到今天的日期就无法再点击的效果
 /**
  *  前一天按钮事件
  */
@@ -107,6 +121,7 @@
     
     self.senddate = [NSDate dateWithTimeInterval:-24*60*60 sinceDate:self.senddate];//前一天
     self.dateLabel.text = [self setDateLabelText];
+    self.afterButton.enabled = YES;
 }
 
 /**
@@ -114,11 +129,19 @@
  */
 - (IBAction)afterDayAction:(UIButton *)sender {
     
-    if (self.senddate == [NSDate date]) {
-        return;
-    }
     self.senddate = [NSDate dateWithTimeInterval:26*60*60 sinceDate:self.senddate];//后一天
-    self.dateLabel.text = [self setDateLabelText];
+    NSString *currentDayStr = [self setDateLabelText];
+    
+    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *currentDate = [NSDate date];
+    NSString *currentDateString = [dateformatter stringFromDate:currentDate];
+    if ([currentDayStr isEqualToString:currentDateString]) {
+        self.afterButton.enabled = NO;
+        self.dateLabel.text = @"今天";
+    }else {
+        self.dateLabel.text = currentDayStr;
+    }
 }
 
 /**
@@ -164,7 +187,9 @@
     return _senddate;
 }
 
-
+/**
+ *  推送出目标输入框
+ */
 - (void)showSecureTextEntryAlert {
     NSString *title = NSLocalizedString(@"请输入目标步数", nil);
     NSString *message = NSLocalizedString(@"每天适量步数，更益健康~", nil);

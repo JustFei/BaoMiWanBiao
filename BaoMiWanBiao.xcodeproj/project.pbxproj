@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B0556CC1D654830009B994E /* SleepHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0556CA1D654830009B994E /* SleepHistoryViewController.m */; };
+		3B0556CD1D654830009B994E /* SleepHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B0556CB1D654830009B994E /* SleepHistoryViewController.xib */; };
+		3B0556CF1D6586B8009B994E /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B0556CE1D6586B8009B994E /* right.png */; };
+		3B0556D11D6586BC009B994E /* left.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B0556D01D6586BC009B994E /* left.png */; };
 		3B2791F11D6308F200B99320 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791EF1D6308F200B99320 /* MainViewController.m */; };
 		3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F01D6308F200B99320 /* MainViewController.xib */; };
 		3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791F71D631AC400B99320 /* SleepStatusViewController.m */; };
@@ -138,6 +142,11 @@
 /* Begin PBXFileReference section */
 		056ED79766F2FAB2827EFB78 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		1B7C1E8C81FC86181499D788 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B0556C91D654830009B994E /* SleepHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepHistoryViewController.h; sourceTree = "<group>"; };
+		3B0556CA1D654830009B994E /* SleepHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepHistoryViewController.m; sourceTree = "<group>"; };
+		3B0556CB1D654830009B994E /* SleepHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SleepHistoryViewController.xib; sourceTree = "<group>"; };
+		3B0556CE1D6586B8009B994E /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right.png; sourceTree = "<group>"; };
+		3B0556D01D6586BC009B994E /* left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left.png; sourceTree = "<group>"; };
 		3B2791EE1D6308F200B99320 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		3B2791EF1D6308F200B99320 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		3B2791F01D6308F200B99320 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
@@ -348,6 +357,9 @@
 		3B2791F51D631A7F00B99320 /* 睡眠历史记录 */ = {
 			isa = PBXGroup;
 			children = (
+				3B0556C91D654830009B994E /* SleepHistoryViewController.h */,
+				3B0556CA1D654830009B994E /* SleepHistoryViewController.m */,
+				3B0556CB1D654830009B994E /* SleepHistoryViewController.xib */,
 			);
 			name = "睡眠历史记录";
 			sourceTree = "<group>";
@@ -600,6 +612,8 @@
 		3BDD65481D45E4CA009EA15F /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				3B0556D01D6586BC009B994E /* left.png */,
+				3B0556CE1D6586B8009B994E /* right.png */,
 				3BDD65491D45E4CA009EA15F /* aclock@2x.png */,
 				3BDD654A1D45E4CA009EA15F /* aclock@3x.png */,
 				3BDD654B1D45E4CA009EA15F /* app@2x.png */,
@@ -844,6 +858,7 @@
 				3BDD65A81D45E4CA009EA15F /* notepad@3x.png in Resources */,
 				3BDD65891D45E4CA009EA15F /* back@2x.png in Resources */,
 				3B8C1B871D51F9DD00D061C8 /* MotionHistoryViewController.xib in Resources */,
+				3B0556CD1D654830009B994E /* SleepHistoryViewController.xib in Resources */,
 				3BC0B48D1D48520E00616A27 /* LocalAlbumCell.xib in Resources */,
 				3BDD659D1D45E4CA009EA15F /* key@2x.png in Resources */,
 				3BDD65B11D45E4CA009EA15F /* secret_box@2x.png in Resources */,
@@ -860,6 +875,7 @@
 				3BDD65AB1D45E4CA009EA15F /* pencil-with-paper@2x.png in Resources */,
 				3BDD65BB1D45E4CA009EA15F /* ture_box@2x.png in Resources */,
 				3BDD65BE1D45E4CA009EA15F /* unlock@3x.png in Resources */,
+				3B0556D11D6586BC009B994E /* left.png in Resources */,
 				3BDD65881D45E4CA009EA15F /* app@3x.png in Resources */,
 				3BDD65B81D45E4CA009EA15F /* sleep@3x.png in Resources */,
 				3BDD65A11D45E4CA009EA15F /* lock@2x.png in Resources */,
@@ -893,6 +909,7 @@
 				3BDD65A41D45E4CA009EA15F /* locked@3x.png in Resources */,
 				3BDD659B1D45E4CA009EA15F /* forward@2x.png in Resources */,
 				3BDD65C51D45F5DC009EA15F /* RegistViewController.xib in Resources */,
+				3B0556CF1D6586B8009B994E /* right.png in Resources */,
 				3BDD65C01D45E4CA009EA15F /* user@3x.png in Resources */,
 				3BDD65B91D45E4CA009EA15F /* sport@2x.png in Resources */,
 				3BDD65911D45E4CA009EA15F /* close@2x.png in Resources */,
@@ -993,6 +1010,7 @@
 				3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */,
 				3BEFB4741D4994C5003DABF7 /* sm4.c in Sources */,
 				3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */,
+				3B0556CC1D654830009B994E /* SleepHistoryViewController.m in Sources */,
 				3BC0B47B1D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.m in Sources */,
 				3BBEF15E1D4B4E97001BAE66 /* AddMiMaCell.m in Sources */,
 				3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */,

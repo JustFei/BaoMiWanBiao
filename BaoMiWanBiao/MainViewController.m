@@ -22,6 +22,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    //navigationbar左右按钮的配置
+    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"列表" style:UIBarButtonItemStylePlain target:self action:@selector(listAction)];
+    self.navigationItem.leftBarButtonItem = leftButton;
+    
+    UIBarButtonItem *rightButton1 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"search"] style:UIBarButtonItemStylePlain target:self action:nil];
+    rightButton1.enabled = NO;
+    UIBarButtonItem *rightButton2 = [[UIBarButtonItem alloc] initWithTitle:@"搜索腕表" style:UIBarButtonItemStylePlain target:self action:@selector(searchWatchAction)];
+    self.navigationItem.rightBarButtonItems = @[rightButton2,rightButton1];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -30,18 +38,20 @@
 }
 /**
  *  左划进入列表ViewController
- *  备忘：还没有做约束
+ *
  */
-- (IBAction)listAction:(UIButton *)sender {
+- (void)listAction
+{
+    
 }
 
 /**
- *  搜索腕表界面
- *
+ *  搜索腕表按钮
  */
-- (IBAction)searchWatch:(UIButton *)sender {
+- (void)searchWatchAction
+{
+    
 }
-
 
 /**
  *  密保箱
