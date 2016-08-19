@@ -194,17 +194,17 @@
     [self showPhoto:album];
 }
 
-#pragma mark - CollectionViewLazy
+#pragma mark - 懒加载
 - (UICollectionView *)collection
 {
     if (!_collection) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         layout.minimumInteritemSpacing = 2;
         layout.minimumLineSpacing = 2;
-        layout.itemSize = CGSizeMake((self.view.frame.size.width - 8) / 3, (self.view.frame.size.width - 8) / 3);
+        layout.itemSize = CGSizeMake(([UIScreen mainScreen].bounds.size.width - 8) / 3, ([UIScreen mainScreen].bounds.size.width - 8) / 3);
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         
-        UICollectionView *view = [[UICollectionView alloc] initWithFrame:CGRectMake(2, 2 + 64, self.view.frame.size.width - 4, self.view.frame.size.height - 64 - 46) collectionViewLayout:layout];
+        UICollectionView *view = [[UICollectionView alloc] initWithFrame:CGRectMake(2, 2 + 64, [UIScreen mainScreen].bounds.size.width - 4, [UIScreen mainScreen].bounds.size.height - 64 - 46) collectionViewLayout:layout];
         
         view.delegate = self;
         view.dataSource = self;
