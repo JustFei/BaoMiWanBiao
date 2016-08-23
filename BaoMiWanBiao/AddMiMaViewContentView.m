@@ -266,7 +266,7 @@
 - (UIButton *)jiamiButton
 {
     if (!_jiamiButton) {
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(15, self.frame.size.width * 0.625 + 20 + 64, 10, 10)];
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(15, self.textTableView.frame.size.height + 30, 20 , 20)];
         [btn setImage:[UIImage imageNamed:@"no_select.png"] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:@"select.png"] forState:UIControlStateSelected];
         

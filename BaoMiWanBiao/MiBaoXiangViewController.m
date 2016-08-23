@@ -49,6 +49,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    //修改navigationbar的颜色
+    self.navigationItem.title = @"密码本";
+    //左侧返回按键设置
+
+    UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationItem.leftBarButtonItem = leftBackItem;
+    
     //这里暂时注释这两个方法
     _localPhotos = [self gitImagesWithDirctory:@"Thumbnail"];
     
@@ -70,7 +77,7 @@
     
     //设置右边
     UIButton *rightButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,70,30)];
-    [rightButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [rightButton setTitle:@"编辑" forState:UIControlStateNormal];
     [rightButton addTarget:self action:@selector(edit)forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithCustomView:rightButton];
@@ -153,6 +160,11 @@
     _selectPhotos = pick.selectPhotos;
     
     [self.navigationController pushViewController:pick animated:YES];
+}
+
+- (void)backAction
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 //选中了几张图片

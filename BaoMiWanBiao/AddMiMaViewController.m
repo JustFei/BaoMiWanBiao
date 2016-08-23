@@ -24,7 +24,9 @@
     self.addMiMaView.backgroundColor = [UIColor whiteColor];
     
     self.navigationController.title = @"密码本";
-    self.navigationController.navigationBar.tintColor = [UIColor blueColor];
+    //左侧返回按键设置
+    UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationItem.leftBarButtonItem = leftBackItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -42,6 +44,11 @@
     }
     
     return _addMiMaView;
+}
+
+- (void)backAction
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 /*
