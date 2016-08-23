@@ -9,6 +9,8 @@
 #import "MotionHistoryViewController.h"
 #import "JBBarChartView.h"
 #import "JBBarChartFooterView.h"
+#import "MotionFmdbTool.h"
+#import "MotionDailyDataModel.h"
 
 // Numerics
 CGFloat const kJBBarChartViewControllerChartHeight = 250.0f;
@@ -20,7 +22,12 @@ CGFloat const kJBBarChartViewControllerChartFooterPadding = 5.0f;
 CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
 
 @interface MotionHistoryViewController () <UIScrollViewDelegate , JBBarChartViewDelegate , JBBarChartViewDataSource>
-
+{
+    NSMutableArray *_stepArr ;
+    NSMutableArray *_kCalArr ;
+    NSMutableArray *_bpmArr ;
+    NSMutableArray *_mileageArr ;
+}
 /**
  *  日期文本
  */
@@ -99,10 +106,12 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
 /**
  *  柱状图数据源
  */
-@property (nonatomic, strong) NSArray *chartData;
-@property (nonatomic, strong) NSArray *monthlySymbols;
+@property (strong, nonatomic) NSArray *chartData;
+@property (strong, nonatomic) NSArray *monthlySymbols;
 
+@property (strong, nonatomic) MotionFmdbTool *fmTool;
 
+@property (strong, nonatomic) MotionDailyDataModel *motionModel;
 
 @property (nonatomic, strong) NSDate *currentDate;
 
@@ -118,7 +127,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     self = [super init];
     if (self)
     {
-        [self initFakeData];
+//        [self initFakeData];
     }
     return self;
 }
@@ -128,7 +137,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        [self initFakeData];
+//        [self initFakeData];
     }
     return self;
 }
@@ -138,7 +147,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        [self initFakeData];
+//        [self initFakeData];
     }
     return self;
 }
@@ -239,9 +248,54 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     self.sunLabel.text = [[myDateFormatter stringFromDate:endDate] substringWithRange:NSMakeRange(5, 5)];
     
     self.dateLabel.text = [self.monLabel.text stringByAppendingString:[NSString stringWithFormat:@"-%@",self.sunLabel.text]];
-    //    NSLog(@"beginString:%@",beginString);
-    //    NSLog(@"endString:%@",endString);
     
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"YYYY-MM-dd"];
+    
+    NSArray *dateArr = @[[dateFormatter stringFromDate:beginDate],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+appendDay]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 2]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 3]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 4]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 5]],[dateFormatter stringFromDate:endDate]];
+    
+    [self getWeekDataWith:dateArr];
+    
+}
+
+#pragma mark - 数据库操作
+#pragma mark -搜索操作
+- (void)getWeekDataWith:(NSArray *)weekDateArr
+{
+    _stepArr = [NSMutableArray array];
+    _kCalArr = [NSMutableArray array];
+    _bpmArr = [NSMutableArray array];
+    _mileageArr = [NSMutableArray array];
+    
+    for (NSString *dateStr in weekDateArr) {
+        NSLog(@"%@",dateStr);//08/22(不符合我们存储的2016-08-22的日期格式，所以查询不到数据，此处做剪切)
+        
+        
+            NSArray *dateArr = [self.fmTool queryData:dateStr];
+            
+            NSLog(@"%ld",dateArr.count);
+            if (dateArr) {
+                MotionDailyDataModel *model = dateArr.firstObject;
+                
+                //如果有数据就添加到数据源里面，没有数据就填充0
+                if (model) {
+                    [_stepArr addObject:model.step];
+                    [_kCalArr addObject:model.kCal];
+                    [_bpmArr addObject:model.bpm];
+                    [_mileageArr addObject:model.mileage];
+                }else {
+                    [_stepArr addObject:@0];
+                    [_kCalArr addObject:@0];
+                    [_bpmArr addObject:@0];
+                    [_mileageArr addObject:@0];
+                }
+            }else {
+                NSLog(@"这天没有数据");
+            }
+        }
+    NSLog(@"stepCount = %ld,kcalCount = %ld,bpmCount = %ld,mileageCount = %ld",_stepArr.count,_kCalArr.count,_bpmArr.count,_mileageArr.count);
+//    self.chartData = _stepArr;
+//    [self.jbBarView reloadDataAnimated:YES];
 }
 
 #pragma mark - JBBarChartViewDelegate && JBBarChartViewDataSource
@@ -257,7 +311,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
  */
 - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
 {
-    return [[self.chartData objectAtIndex:index] floatValue];
+    return [[_stepArr objectAtIndex:index] floatValue];
 }
 
 //设置每个item的颜色
@@ -295,26 +349,19 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
  */
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
-    return self.chartData.count;
+    return _stepArr.count;
 }
 
 //选中其中一个item时走的方法
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
 {
-    NSNumber *valueNumber = [self.chartData objectAtIndex:index];
-    //[self.informationView setValueText:[NSString stringWithFormat:kJBStringLabelDegreesFahrenheit, [valueNumber intValue], kJBStringLabelDegreeSymbol] unitText:nil];
-    self.stepsNum.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
-    self.mileageNum.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
-    self.kcalNum.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
+    NSNumber *stepValue = [_stepArr objectAtIndex:index];
+    NSNumber *mileageValue = [_mileageArr objectAtIndex:index];
+    NSNumber *kcalValue = [_kCalArr objectAtIndex:index];
     
-    
-    
-    //[self.informationView setTitleText:kJBStringLabelWorldwideAverage];
-    //[self.informationView setHidden:NO animated:YES];
-    
-    //tooltipView 就是柱状图上方的提示栏，写着月份
-//    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
-//    [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:index] uppercaseString]];
+    self.stepsNum.text = [NSString stringWithFormat:@"%d",[stepValue intValue]];
+    self.mileageNum.text = [NSString stringWithFormat:@"%d",[mileageValue intValue]];
+    self.kcalNum.text = [NSString stringWithFormat:@"%d",[kcalValue intValue]];
 }
 
 //#pragma mark - UIScrollViewDelegate
@@ -345,11 +392,34 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     return _jbBarView;
 }
 
+- (MotionFmdbTool *)fmTool
+{
+    if (!_fmTool) {
+        MotionFmdbTool *tool = [[MotionFmdbTool alloc] initWithPath:@"xxf"];
+        
+        _fmTool = tool;
+    }
+    
+    return  _fmTool;
+}
+
+- (MotionDailyDataModel *)motionModel
+{
+    if (_motionModel) {
+        MotionDailyDataModel *model = [[MotionDailyDataModel alloc] init];
+        
+        _motionModel = model;
+    }
+    
+    return _motionModel;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - 点击时间
 - (IBAction)beforeButtonAction:(UIButton *)sender {
     
     self.afterWeekButton.enabled = YES;
@@ -358,7 +428,7 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     //UI改变
     [self getWeekBeginAndEnd:self.currentDate];
     //刷新数据源
-    [self initFakeData];
+//    [self initFakeData];
     [self.jbBarView setState:JBChartViewStateCollapsed animated:YES callback:^{
         [self.jbBarView reloadData];
     }];

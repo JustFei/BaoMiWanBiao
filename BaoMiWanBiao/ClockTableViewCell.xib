@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="ClockTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23:23" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0x0-rD-TPb">
+                        <rect key="frame" x="8" y="11" width="46" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.17254901959999999" green="0.4823529412" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2h0-Uw-oX7">
+                        <rect key="frame" x="277" y="8" width="35" height="27"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="35" id="CNL-Lt-3PY"/>
+                        </constraints>
+                        <state key="normal" image="close.png"/>
+                        <state key="selected" image="open.png"/>
+                        <connections>
+                            <action selector="clockButtonAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="GJ1-qG-nf2"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="0x0-rD-TPb" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="3" id="R1o-AT-MQ2"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="0x0-rD-TPb" secondAttribute="bottom" constant="3" id="ZI0-ZX-F5C"/>
+                    <constraint firstItem="2h0-Uw-oX7" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="lhH-0V-H7N"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="2h0-Uw-oX7" secondAttribute="bottom" id="uG6-HZ-i2i"/>
+                    <constraint firstItem="2h0-Uw-oX7" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="vvB-Yq-1GO"/>
+                    <constraint firstItem="0x0-rD-TPb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="yzo-wS-82E"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="clockButton" destination="2h0-Uw-oX7" id="5dt-CW-vwi"/>
+                <outlet property="clockTime" destination="0x0-rD-TPb" id="ieE-Ns-4Fo"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="close.png" width="28" height="14"/>
+        <image name="open.png" width="28" height="14"/>
+    </resources>
+</document>

@@ -11,6 +11,7 @@
 #import "MiMaBenViewController.h"
 #import "MotionStatusViewController.h"
 #import "SleepStatusViewController.h"
+#import "ClockViewController.h"
 
 @interface MainViewController ()
 
@@ -98,6 +99,9 @@
  *
  */
 - (IBAction)smartAclock:(UIButton *)sender {
+    
+    ClockViewController *vc = [[ClockViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 /**

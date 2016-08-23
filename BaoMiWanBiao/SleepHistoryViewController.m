@@ -9,18 +9,16 @@
 #import "SleepHistoryViewController.h"
 #import "JBBarChartView.h"
 #import "JBBarChartFooterView.h"
-
-// Numerics
-//CGFloat const kJBBarChartViewControllerChartHeight = 250.0f;
-//CGFloat const kJBBarChartViewControllerChartPadding = 10.0f;
-//CGFloat const kJBBarChartViewControllerChartHeaderHeight = 80.0f;
-//CGFloat const kJBBarChartViewControllerChartHeaderPadding = 20.0f;
-//CGFloat const kJBBarChartViewControllerChartFooterHeight = 25.0f;
-//CGFloat const kJBBarChartViewControllerChartFooterPadding = 5.0f;
-//CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
+#import "SleepFmdbTool.h"
+#import "SleepDailyDataModel.h"
 
 @interface SleepHistoryViewController () <JBBarChartViewDelegate , JBBarChartViewDataSource>
 
+{
+    NSMutableArray *_sumsleepArr ;
+    NSMutableArray *_deepsleepArr ;
+    NSMutableArray *_lowsleepArr ;
+}
 /**
  *  日期文本
  */
@@ -104,6 +102,10 @@
 @property (nonatomic, strong) NSArray *chartData;
 @property (nonatomic, strong) NSArray *monthlySymbols;
 
+@property (strong, nonatomic) SleepFmdbTool *fmTool;
+
+@property (strong, nonatomic) SleepDailyDataModel *sleepModel;
+
 @property (nonatomic, strong) NSDate *currentDate;
 
 @end
@@ -117,7 +119,7 @@
     self = [super init];
     if (self)
     {
-        [self initFakeData];
+//        [self initFakeData];
     }
     return self;
 }
@@ -127,7 +129,7 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        [self initFakeData];
+//        [self initFakeData];
     }
     return self;
 }
@@ -137,7 +139,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        [self initFakeData];
+//        [self initFakeData];
     }
     return self;
 }
@@ -243,8 +245,58 @@
     self.sunLabel.text = [[myDateFormatter stringFromDate:endDate] substringWithRange:NSMakeRange(5, 5)];
     
     self.dateLabel.text = [self.monLabel.text stringByAppendingString:[NSString stringWithFormat:@"-%@",self.sunLabel.text]];
-//    NSLog(@"beginString:%@",beginString);
-//    NSLog(@"endString:%@",endString);
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"YYYY-MM-dd"];
+    
+    NSArray *dateArr = @[[dateFormatter stringFromDate:beginDate],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+appendDay]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 2]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 3]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 4]],[dateFormatter stringFromDate:[beginDate dateByAddingTimeInterval:+ appendDay * 5]],[dateFormatter stringFromDate:endDate]];
+    
+    [self getWeekDataWith:dateArr];
+    
+}
+
+#pragma mark - 数据库操作
+#pragma mark -搜索操作
+- (void)getWeekDataWith:(NSArray *)weekDateArr
+{
+    _sumsleepArr = [NSMutableArray array];
+    _deepsleepArr = [NSMutableArray array];
+    _lowsleepArr = [NSMutableArray array];
+    
+    for (NSString *dateStr in weekDateArr) {
+        NSLog(@"%@",dateStr);//08/22(不符合我们存储的2016-08-22的日期格式，所以查询不到数据，此处做剪切)
+        
+        
+        NSArray *dateArr = [self.fmTool queryData:dateStr];
+        
+        NSLog(@"%ld",dateArr.count);
+        if (dateArr) {
+            SleepDailyDataModel *model = dateArr.firstObject;
+            
+            //如果有数据就添加到数据源里面，没有数据就填充0
+            if (model) {
+                [_sumsleepArr addObject:model.sumSleepTime];
+                [_deepsleepArr addObject:model.deepSleepTime];
+                [_lowsleepArr addObject:model.lowSleepTime];
+
+            }else {
+                [_sumsleepArr addObject:@"00h00min"];
+                [_deepsleepArr addObject:@"00h00min"];
+                [_lowsleepArr addObject:@"00h00min"];
+            }
+        }else {
+            NSLog(@"这天没有数据");
+        }
+    }
+}
+
+- (NSString *)timeFormatter:(NSString *)hmFormatterString
+{
+    NSString *sumhStr = [hmFormatterString substringToIndex:2];
+    NSString *summStr = [hmFormatterString substringWithRange:NSMakeRange(3, 2)];
+    //NSLog(@"h == %@,m == %@",hStr ,mStr);
+    NSString *min =[NSString stringWithFormat:@"%ld", [sumhStr integerValue] * 60 + [summStr integerValue]];
+    return min;
     
 }
 
@@ -261,7 +313,7 @@
  */
 - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
 {
-    return [[self.chartData objectAtIndex:index] floatValue];
+    return [[self timeFormatter:[_sumsleepArr objectAtIndex:index]] floatValue];
 }
 
 //设置每个item的颜色
@@ -298,17 +350,19 @@
  */
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
-    return self.chartData.count;
+    return _sumsleepArr.count;
 }
 
 //选中其中一个item时走的方法
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
 {
-    NSNumber *valueNumber = [self.chartData objectAtIndex:index];
-    //[self.informationView setValueText:[NSString stringWithFormat:kJBStringLabelDegreesFahrenheit, [valueNumber intValue], kJBStringLabelDegreeSymbol] unitText:nil];
-    self.fallSleepTimeLabel.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
-    self.shallowSleepTimeLabel.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
-    self.sumSleepTimeLabel.text = [NSString stringWithFormat:@"%d",[valueNumber intValue]];
+    NSString *sumValue = [_sumsleepArr objectAtIndex:index];
+    NSString *deepValue = [_deepsleepArr objectAtIndex:index];
+    NSString *lowValue = [_lowsleepArr objectAtIndex:index];
+    
+    self.fallSleepTimeLabel.text = sumValue;
+    self.shallowSleepTimeLabel.text = deepValue;
+    self.sumSleepTimeLabel.text = lowValue;
 }
 
 #pragma mark - 懒加载
@@ -336,6 +390,29 @@
     
     return _jbBarView;
 }
+
+- (SleepFmdbTool *)fmTool
+{
+    if (!_fmTool) {
+        SleepFmdbTool *tool = [[SleepFmdbTool alloc] initWithPath:@"xxf"];
+        
+        _fmTool = tool;
+    }
+    
+    return  _fmTool;
+}
+
+- (SleepDailyDataModel *)sleepModel
+{
+    if (_sleepModel) {
+        SleepDailyDataModel *model = [[SleepDailyDataModel alloc] init];
+        
+        _sleepModel = model;
+    }
+    
+    return _sleepModel;
+}
+
 /**
  *  上一周的按钮点击事件
  *

@@ -8,6 +8,8 @@
 
 #import "SleepStatusViewController.h"
 #import "SleepHistoryViewController.h"
+#import "SleepDailyDataModel.h"
+#import "SleepFmdbTool.h"
 
 @interface SleepStatusViewController ()
 /**
@@ -47,6 +49,10 @@
 
 @property (nonatomic ,strong) NSDate *  senddate;
 
+@property (strong, nonatomic) SleepFmdbTool *fmTool;
+
+@property (strong, nonatomic) SleepDailyDataModel *SleepModel;
+
 @end
 
 @implementation SleepStatusViewController
@@ -64,6 +70,14 @@
     //当天label的text设置
     self.afterDayButton.enabled = NO;
     self.dateLabel.text = @"今天";
+    
+    [self getDataFromDB];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -71,6 +85,22 @@
     [super viewWillDisappear:YES];
     
     self.senddate = nil;
+}
+
+/**
+ *  从数据库中获取数据，如果蓝牙处在非连接状态下，就从数据库获取数据
+ */
+- (void)getDataFromDB
+{
+    NSDate *todayDate = [NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"YYYY-MM-dd"];
+    
+    NSString *todayString = [formatter stringFromDate:todayDate];
+    
+    NSLog(@"todayString == %@",todayString);
+    
+    [self searchFromDataBaseWithDate:todayString];
 }
 
 /**
@@ -103,6 +133,19 @@
     self.senddate = [NSDate dateWithTimeInterval:-24*60*60 sinceDate:self.senddate];//前一天
     self.dateLabel.text = [self setDateLabelText];
     self.afterDayButton.enabled = YES;
+    //数据库查询
+    [self searchFromDataBaseWithDate:self.dateLabel.text];
+    
+#if 0
+    NSString *sumsleep = [NSString stringWithFormat:@"%02dh%02dmin",(arc4random() % 24) + 0 ,(arc4random() % 60) + 0];
+    NSString *deepsleep = [NSString stringWithFormat:@"%02dh%02dmin",(arc4random() % 24) + 0 ,(arc4random() % 60) + 0];
+    NSString *lowsleep = [NSString stringWithFormat:@"%02dh%02dmin",(arc4random() % 24) + 0 ,(arc4random() % 60) + 0];
+    
+    self.SleepModel = [SleepDailyDataModel modelWithDate:self.dateLabel.text sumSleepTime:sumsleep deepSleepTime:deepsleep lowSleepTime:lowsleep];
+    
+    
+    [_fmTool insertModel:self.SleepModel];
+#endif
 }
 
 /**
@@ -110,7 +153,7 @@
  */
 - (IBAction)afterDayAction:(UIButton *)sender {
     
-    self.senddate = [NSDate dateWithTimeInterval:26*60*60 sinceDate:self.senddate];//后一天
+    self.senddate = [NSDate dateWithTimeInterval:24*60*60 sinceDate:self.senddate];//后一天
     NSString *currentDayStr = [self setDateLabelText];
     
     NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
@@ -123,6 +166,9 @@
     }else {
         self.dateLabel.text = currentDayStr;
     }
+    
+    //按照当天的日期来查询数据库
+    [self searchFromDataBaseWithDate:currentDayStr];
 }
 
 
@@ -139,6 +185,27 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - 数据库操作
+#pragma mark -搜索操作
+- (void)searchFromDataBaseWithDate:(NSString *)dateStr
+{
+    NSArray *dateArr = [self.fmTool queryData:dateStr];
+    
+    NSLog(@"%ld",dateArr.count);
+    if (dateArr.count != 0 ) {
+        self.SleepModel = dateArr.firstObject;
+        
+        self.sleepTimeSumLabel.text = self.SleepModel.sumSleepTime;
+        self.fallSleepTimeLabel.text = self.SleepModel.deepSleepTime;
+        self.shallowSleepTimeLabel.text = self.SleepModel.lowSleepTime;
+    }else {
+        NSLog(@"这天没有数据");
+        self.sleepTimeSumLabel.text = @"0";
+        self.fallSleepTimeLabel.text = @"0";
+        self.shallowSleepTimeLabel.text = @"0";
+    }
+}
+
 #pragma mark - 懒加载
 - (NSDate *)senddate
 {
@@ -151,14 +218,26 @@
     return _senddate;
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+//数据库操作工具
+- (SleepFmdbTool *)fmTool
+{
+    if (!_fmTool) {
+        SleepFmdbTool *tool = [[SleepFmdbTool alloc] initWithPath:@"xxf"];
+        
+        _fmTool = tool;
+    }
+    
+    return _fmTool;
 }
-*/
+
+//运动数据模型
+- (SleepDailyDataModel *)SleepModel
+{
+    if (!_SleepModel) {
+        _SleepModel = [[SleepDailyDataModel alloc] init];
+    }
+    
+    return _SleepModel;
+}
 
 @end
