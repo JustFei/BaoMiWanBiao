@@ -27,7 +27,6 @@ static FMDatabase *_fmdb;
             NSLog(@"数据库开启失败");
         }
         
-#warning 必须先打开数据库才能创建表。。。否则提示数据库没有打开
         //[_fmdb executeUpdate:@"CREATE TABLE IF NOT EXISTS t_modals(id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER NOT NULL, ID_No INTEGER NOT NULL);"];
         /**
          *  创建数据库表单

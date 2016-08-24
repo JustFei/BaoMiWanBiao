@@ -20,17 +20,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    //左侧返回按键设置
+    UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationItem.leftBarButtonItem = leftBackItem;
     
-    //修改navigationbar的颜色
-    self.navigationController.navigationBar.barTintColor = UIColorFromRGBWithAlpha(0x2c91F4, 1);
-    [self.navigationController.navigationBar setTranslucent:NO];
+    
 }
 
-- (instancetype)initWithImage:(UIImage *)showImage
+- (instancetype)initWithImage:(UIImage *)showImage title:(NSString *)titile
 {
     self = [super init];
     if (self) {
         [self.photoView setShowImage:showImage];
+        self.navigationItem.title = titile;
     }
     return self;
 }
@@ -52,14 +56,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)backAction
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
-*/
 
 @end

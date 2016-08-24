@@ -37,7 +37,16 @@
 #pragma mark - 点击事件
 - (void)addClock
 {
-    [self.clockView presentTimePickerWithHInt:00 MInt:00];
+    NSDate *nowDate = [NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm"];
+    NSString *nowStr = [formatter stringFromDate:nowDate];
+
+    NSInteger hInt = [[nowStr substringToIndex:2] integerValue];
+    NSInteger mInt = [[nowStr substringFromIndex:3] integerValue];
+    [self.clockView.clockTableView setAllowsSelection:NO];
+    
+    [self.clockView presentAddTimePickerWithHInt:hInt MInt:mInt];
 }
 
 #pragma mark - 懒加载
@@ -45,9 +54,14 @@
 {
     if (!_clockView) {
         ClockContentView *view = [[ClockContentView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-        view.closeAddBlck = ^void()
+        view.closeAddBlock = ^void()
         {
             self.navigationItem.rightBarButtonItem.enabled = NO;
+        };
+        
+        view.openAddBlock = ^void()
+        {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
         };
         
         self.view = view;

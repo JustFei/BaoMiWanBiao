@@ -11,6 +11,6 @@
 @interface PhotoShowViewController : UIViewController
 
 
-- (instancetype)initWithImage:(UIImage *)showImage;
+- (instancetype)initWithImage:(UIImage *)showImage title:(NSString *)titile;
 
 @end

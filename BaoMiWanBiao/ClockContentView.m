@@ -18,18 +18,26 @@
     
     NSMutableArray *_clockDataSource;
     
+    NSInteger _hInt;
+    NSInteger _mInt;
+    
+    NSInteger indexrow;
+    
 }
 
 @property (weak, nonatomic) UIImageView *headImageView;
 
-@property (weak, nonatomic) UITableView *clockTableView;
 
-@property (weak, nonatomic) UIView *timePickView;
-@property (weak, nonatomic) UIPickerView *timePicker;
+
+@property (weak, nonatomic) UIView *addTimePickView;
+@property (weak, nonatomic) UIPickerView *addTimePicker;
 
 @property (strong, nonatomic) ClockFmdbTool *fmTool;
 
 @property (strong, nonatomic) ClockModel *clockModel;
+
+@property (weak, nonatomic) UIView *editTimePickView;
+@property (weak, nonatomic) UIPickerView *editTimePicker;
 
 @end
 
@@ -55,12 +63,15 @@
     self.clockTableView.frame = CGRectMake(0, 294, self.frame.size.width, self.frame.size.height - 230);
     self.clockTableView.backgroundColor = [UIColor whiteColor];
     
-    self.timePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
-    self.timePicker.frame = CGRectMake(0, 30, self.frame.size.width, self.timePickView.frame.size.height - 30);
+    self.addTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
+    self.addTimePicker.frame = CGRectMake(0, 30, self.frame.size.width, self.addTimePickView.frame.size.height - 30);
+    
+    self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
+    self.editTimePicker.frame = CGRectMake(0, 30, self.frame.size.width, self.editTimePickView.frame.size.height - 30);
     
      _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
     if (_clockDataSource.count >=3) {
-        self.closeAddBlck();
+        self.closeAddBlock();
     }
 }
 
@@ -82,18 +93,28 @@
     cell.clockTime.text = model.time;
     [cell.clockButton setSelected:model.isOpen];
     
+    cell.modifyOpenButtonBlock = ^void(BOOL isOpen)
+    {
+        ClockModel *model = _clockDataSource[indexPath.row];
+
+        model.isOpen = isOpen;
+        [self.fmTool modifyData:model.ID model:model];
+    };
+    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ClockTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    ClockModel *model = _clockDataSource[indexPath.row];
+    indexrow = model.ID;
+    NSString *timeStr = model.time;
     
-    NSString *timeStr = cell.clockTime.text;
-    NSInteger hInt = [[timeStr substringToIndex:2] integerValue];
-    NSInteger mInt = [[timeStr substringFromIndex:3] integerValue];
+    _hInt = [[timeStr substringToIndex:2] integerValue];
+    _mInt = [[timeStr substringFromIndex:3] integerValue];
     
-    [self presentTimePickerWithHInt:hInt MInt:mInt];
+    [self.clockTableView setAllowsSelection:NO];
+    [self presentEditTimePickerWithHInt:_hInt MInt:_mInt];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -102,12 +123,15 @@
         
         if (indexPath.row<[_clockDataSource count]) {
             
-            
             ClockModel *model = _clockDataSource[indexPath.row];
-            [self.fmTool deleteData:model.time];
+            [self.fmTool deleteData:model.ID];
             NSLog(@"%@",model.time);
             
             [_clockDataSource removeObjectAtIndex:indexPath.row];//移除数据源的数据
+            
+            if (_clockDataSource.count <3) {
+                self.openAddBlock();
+            }
             
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];//移除tableView中的数据
         }
@@ -141,18 +165,55 @@
 //取消按钮
 - (void)cancelEditClockPicker
 {
-    [UIView animateWithDuration:0.5 animations:^{
-        self.timePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
+    [self.clockTableView setAllowsSelection:YES];
+    [UIView animateWithDuration:0.2 animations:^{
+        self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
     }];
 }
 
-//保存按钮,将闹钟的数据保存到数据库
+- (void)cancelAddClockPicker
+{
+    [self.clockTableView setAllowsSelection:YES];
+    [UIView animateWithDuration:0.2 animations:^{
+        self.addTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
+    }];
+}
+
+//编辑修改数据
 - (void)saveEditClockPicker
 {
-    NSInteger hrow = [self.timePicker selectedRowInComponent:0];
+    [self.clockTableView setAllowsSelection:YES];
+    NSInteger hrow = [self.editTimePicker selectedRowInComponent:0];
     NSString *hValue = _hArr[hrow];
     
-    NSInteger mrow = [self.timePicker selectedRowInComponent:1];
+    NSInteger mrow = [self.editTimePicker selectedRowInComponent:1];
+    NSString *mValue = _mArr[mrow];
+    
+    NSString *newTimeStr = [NSString stringWithFormat:@"%@:%@",hValue,mValue];
+    
+    self.clockModel.time = newTimeStr;
+    self.clockModel.isOpen = YES;
+    
+    //根据id修改当前的cell的数据
+    [self.fmTool modifyData:indexrow model:self.clockModel];
+    
+    _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
+        [self.clockTableView reloadData];
+    }];
+    
+}
+
+//保存按钮,将闹钟的数据保存到数据库
+- (void)saveAddClockPicker
+{
+    [self.clockTableView setAllowsSelection:YES];
+    NSInteger hrow = [self.addTimePicker selectedRowInComponent:0];
+    NSString *hValue = _hArr[hrow];
+    
+    NSInteger mrow = [self.addTimePicker selectedRowInComponent:1];
     NSString *mValue = _mArr[mrow];
     
     NSString *timeStr = [NSString stringWithFormat:@"%@:%@",hValue,mValue];
@@ -163,8 +224,12 @@
     
     _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
     
-    [UIView animateWithDuration:0.5 animations:^{
-        self.timePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
+    if (_clockDataSource.count >= 3) {
+        self.closeAddBlock();
+    }
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        self.addTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
         [self.clockTableView reloadData];
     }];
     
@@ -201,24 +266,67 @@
     return _clockTableView;
 }
 
-- (UIPickerView *)timePicker
+- (UIPickerView *)addTimePicker
 {
-    if (!_timePicker) {
+    if (!_addTimePicker) {
         UIPickerView *pView = [[UIPickerView alloc] init];
         
         pView.delegate =self;
         pView.dataSource = self;
         
-        [self.timePickView addSubview:pView];
-        _timePicker = pView;
+        [self.addTimePickView addSubview:pView];
+        _addTimePicker = pView;
     }
     
-    return _timePicker;
+    return _addTimePicker;
 }
 
-- (UIView *)timePickView
+- (UIView *)addTimePickView
 {
-    if (!_timePickView) {
+    if (!_addTimePickView) {
+        UIView *view = [[UIView alloc] init];
+        view.backgroundColor = [UIColor grayColor];
+        
+        //取消按钮配置
+        UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        cancelButton.frame = CGRectMake(10, 0, 80, 30);
+        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelButton setTitleColor:UIColorFromRGBWithAlpha(0x2c91f4, 1) forState:UIControlStateNormal];
+        [cancelButton addTarget:self action:@selector(cancelAddClockPicker) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:cancelButton];
+        
+        UIButton *saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        saveButton.frame = CGRectMake(self.frame.size.width - 90, 0, 80, 30);
+        [saveButton setTitle:@"保存" forState:UIControlStateNormal];
+        [saveButton setTitleColor:UIColorFromRGBWithAlpha(0x2c91f4, 1) forState:UIControlStateNormal];
+        [saveButton addTarget:self action:@selector(saveAddClockPicker) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:saveButton];
+        
+        [self addSubview:view];
+        _addTimePickView = view;
+    }
+    
+    return _addTimePickView;
+}
+
+- (UIPickerView *)editTimePicker
+{
+    if (!_editTimePicker) {
+        UIPickerView *pView = [[UIPickerView alloc] init];
+        
+        pView.delegate =self;
+        pView.dataSource = self;
+        
+        [self.editTimePickView addSubview:pView];
+        _editTimePicker = pView;
+    }
+    
+    return _editTimePicker;
+}
+
+- (UIView *)editTimePickView
+{
+    if (!_editTimePickView) {
         UIView *view = [[UIView alloc] init];
         view.backgroundColor = [UIColor grayColor];
         
@@ -238,10 +346,10 @@
         [view addSubview:saveButton];
         
         [self addSubview:view];
-        _timePickView = view;
+        _editTimePickView = view;
     }
     
-    return _timePickView;
+    return _editTimePickView;
 }
 
 - (ClockFmdbTool *)fmTool
@@ -266,13 +374,23 @@
 }
 
 #pragma mark - 公用方法
-- (void)presentTimePickerWithHInt:(NSInteger )hInt MInt:(NSInteger )mInt
+- (void)presentAddTimePickerWithHInt:(NSInteger )hInt MInt:(NSInteger )mInt
 {
-    [self.timePicker selectRow:hInt inComponent:0 animated:NO];
-    [self.timePicker selectRow:mInt inComponent:1 animated:NO];
+    [self.addTimePicker selectRow:hInt inComponent:0 animated:NO];
+    [self.addTimePicker selectRow:mInt inComponent:1 animated:NO];
     
-    [UIView animateWithDuration:0.5 animations:^{
-        self.timePickView.frame = CGRectMake(0, self.frame.size.height - 235, self.frame.size.width, 235);
+    [UIView animateWithDuration:0.2 animations:^{
+        self.addTimePickView.frame = CGRectMake(0, self.frame.size.height - 235, self.frame.size.width, 235);
+    }];
+}
+
+- (void)presentEditTimePickerWithHInt:(NSInteger )hInt MInt:(NSInteger )mInt
+{
+    [self.editTimePicker selectRow:hInt inComponent:0 animated:NO];
+    [self.editTimePicker selectRow:mInt inComponent:1 animated:NO];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        self.editTimePickView.frame = CGRectMake(0, self.frame.size.height - 235, self.frame.size.width, 235);
     }];
 }
 

@@ -10,6 +10,8 @@
 
 @interface ClockModel : NSObject
 
+@property (assign, nonatomic) NSInteger ID;
+
 @property (copy, nonatomic) NSString *time;
 
 @property (assign, nonatomic) BOOL isOpen;

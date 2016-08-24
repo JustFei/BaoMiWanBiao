@@ -453,6 +453,7 @@
 #pragma mark -选中cell（解密操作）
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    ShouDongJiaMiWenJianJIaTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (self.photoView.isEditing) {
         //把indexpath 以_dataArray的值作为key 插入到dataDic字典中
         [self.dataDic setObject:[_localPhotos objectAtIndex:indexPath.row] forKey:indexPath];
@@ -464,13 +465,13 @@
             _addImageButton.enabled = YES;
         }
     }else {
-        //这里跳转到图片浏览控制器（待完成）
+        //这里跳转到图片浏览控制器
         NSString *jiamiFilePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject stringByAppendingString:[NSString stringWithFormat:@"/JiaMi/%@",_jiamiPhotosArr[indexPath.row]]];
         NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
         NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
         UIImage *jiemiImage = [UIImage imageWithData:jiemiPhotoData];
         
-        PhotoShowViewController *psVC = [[PhotoShowViewController alloc] initWithImage:jiemiImage];
+        PhotoShowViewController *psVC = [[PhotoShowViewController alloc] initWithImage:jiemiImage title:cell.imageName.text];
         
         [self.navigationController pushViewController:psVC animated:YES];
     }

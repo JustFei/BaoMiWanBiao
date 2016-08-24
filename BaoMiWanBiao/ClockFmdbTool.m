@@ -86,9 +86,11 @@ static FMDatabase *_fmdb;
         ClockModel *model = [[ClockModel alloc] init];
         
         model.time = [set stringForColumn:@"time"];
-        model.isOpen = [set stringForColumn:@"isopen"];
+        model.isOpen = [set boolForColumn:@"isopen"];
+//        NSString *isopen = [set boolForColumn:@"isopen"];
+        model.ID = [set intForColumn:@"id"];
         
-        NSLog(@"闹钟时间 == %@，是否打开 == %d",model.time , model.isOpen);
+        NSLog(@"闹钟时间 == %@，是否打开 == %d, id == %ld",model.time , model.isOpen , model.ID);
         
         [arrM addObject:model];
     }
@@ -105,30 +107,25 @@ static FMDatabase *_fmdb;
  *
  *  @return 是否修改成功
  */
-- (BOOL)modifyData:(NSString *)modifySqlTime :(ClockModel *)modifySqlModel
+- (BOOL)modifyData:(NSInteger )modifySqlID model:(ClockModel *)modifySqlModel
 {
-    if (modifySqlTime == nil) {
-        NSLog(@"传入的时间为空，不能修改");
-        
-        return NO;
+    NSString *modifySqlTime = [NSString stringWithFormat:@"update %@ClockData set time = ? , isopen = ? where id = ?",_username ];
+    BOOL result = result = [_fmdb executeUpdate:modifySqlTime, modifySqlModel.time, [NSNumber numberWithBool:modifySqlModel.isOpen], [NSNumber numberWithInteger:modifySqlID]];
+    
+    if (result) {
+        NSLog(@"修改成功");
+    }else {
+        NSLog(@"修改失败");
     }
     
-    NSString *modifySql = [NSString stringWithFormat:@"update %@ClockData set time = ? isopen = ?  where time = ?",_username ];
-    
-    return [_fmdb executeUpdate:modifySql, modifySqlModel.time, modifySqlModel.time];
+    return result;
 }
 
-- (BOOL)deleteData:(NSString *)deleteSql
+- (BOOL)deleteData:(NSInteger )deleteSql
 {
-    if (deleteSql == nil) {
-        NSLog(@"传入的时间为空，不能修改");
-        
-        return NO;
-    }
+    NSString *deleteSqlStr = [NSString stringWithFormat:@"DELETE FROM %@ClockData WHERE id = ?",_username];
     
-    NSString *deleteSqlStr = [NSString stringWithFormat:@"DELETE FROM %@ClockData WHERE time=?",_username];
-    
-    BOOL result = [_fmdb executeUpdate:deleteSqlStr,deleteSql];
+    BOOL result = [_fmdb executeUpdate:deleteSqlStr,[NSNumber numberWithInteger:deleteSql]];
     
     if (result) {
         NSLog(@"删除成功");

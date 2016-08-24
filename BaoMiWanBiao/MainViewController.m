@@ -31,6 +31,9 @@
     rightButton1.enabled = NO;
     UIBarButtonItem *rightButton2 = [[UIBarButtonItem alloc] initWithTitle:@"搜索腕表" style:UIBarButtonItemStylePlain target:self action:@selector(searchWatchAction)];
     self.navigationItem.rightBarButtonItems = @[rightButton2,rightButton1];
+    
+    //使用系统自带的返回手势（需要从最左边开始滑动）
+    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
 }
 
 - (void)didReceiveMemoryWarning {

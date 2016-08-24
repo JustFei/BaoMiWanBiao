@@ -9,11 +9,15 @@
 #import <UIKit/UIKit.h>
 
 typedef void(^CloseAddButton)(void);
+typedef void(^OpenAddButton)(void);
 
 @interface ClockContentView : UIView
 
-- (void)presentTimePickerWithHInt:(NSInteger )hInt MInt:(NSInteger )mInt;
+@property (weak, nonatomic) UITableView *clockTableView;
 
-@property (strong, nonatomic) CloseAddButton closeAddBlck;
+- (void)presentAddTimePickerWithHInt:(NSInteger )hInt MInt:(NSInteger )mInt;
+
+@property (strong, nonatomic) CloseAddButton closeAddBlock;
+@property (strong, nonatomic) OpenAddButton openAddBlock;
 
 @end

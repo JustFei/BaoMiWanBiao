@@ -28,10 +28,12 @@
 - (IBAction)clockButtonAction:(UIButton *)sender {
     
     if ([self.clockButton isSelected]) {
-        [self.clockButton setSelected:NO];
+        [self.clockButton setSelected:0];
     }else {
-        [self.clockButton setSelected:YES];
+        [self.clockButton setSelected:1];
     }
+    
+    self.modifyOpenButtonBlock(self.clockButton.isSelected);
 }
 
 @end
