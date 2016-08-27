@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/ClockContentView.m"
-            timestampString = "493702823.275823"
+            timestampString = "493784380.569848"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "130"
-            endingLineNumber = "130"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
             landmarkName = "-tableView:commitEditingStyle:forRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -186,11 +186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/ClockContentView.m"
-            timestampString = "493702823.275823"
+            timestampString = "493784380.569848"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "185"
-            endingLineNumber = "185"
+            startingLineNumber = "208"
+            endingLineNumber = "208"
             landmarkName = "-saveEditClockPicker"
             landmarkType = "5">
          </BreakpointContent>
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/ClockContentView.m"
-            timestampString = "493699886.623933"
+            timestampString = "493784380.569848"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
+            startingLineNumber = "225"
+            endingLineNumber = "225"
             landmarkName = "-saveEditClockPicker"
             landmarkType = "5">
             <Locations>
@@ -218,12 +218,12 @@
                   moduleName = "BaoMiWanBiao"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mofujian/Desktop/%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8%E9%A1%B9%E7%9B%AE/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8/BaoMiWanBiao/BaoMiWanBiao/ClockContentView.m"
-                  timestampString = "493719919.278659"
+                  timestampString = "493958768.763787"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "202"
-                  endingLineNumber = "202"
-                  offsetFromSymbolStart = "968">
+                  startingLineNumber = "225"
+                  endingLineNumber = "225"
+                  offsetFromSymbolStart = "891">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -233,12 +233,12 @@
                   moduleName = "BaoMiWanBiao"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mofujian/Desktop/%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8%E9%A1%B9%E7%9B%AE/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8/BaoMiWanBiao/BaoMiWanBiao/ClockContentView.m"
-                  timestampString = "493719919.278852"
+                  timestampString = "493958768.764124"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "203"
-                  endingLineNumber = "203"
-                  offsetFromSymbolStart = "20">
+                  startingLineNumber = "225"
+                  endingLineNumber = "225"
+                  offsetFromSymbolStart = "15">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/ClockContentView.m"
-            timestampString = "493702823.275823"
+            timestampString = "493784380.569848"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
             landmarkName = "-cancelEditClockPicker"
             landmarkType = "5">
          </BreakpointContent>
@@ -298,11 +298,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/ClockContentView.m"
-            timestampString = "493710072.319449"
+            timestampString = "493784380.569848"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "-saveEditClockPicker"
             landmarkType = "5">
          </BreakpointContent>
@@ -313,13 +313,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/ClockContentView.m"
-            timestampString = "493714599.929343"
+            filePath = "BaoMiWanBiao/FolderContentView.m"
+            timestampString = "493958312.55317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "-layoutSubviews"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "-deleteImages"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -329,13 +329,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/ClockFmdbTool.m"
-            timestampString = "493714707.520687"
+            filePath = "BaoMiWanBiao/FolderContentView.m"
+            timestampString = "493958319.145317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "-queryData"
+            startingLineNumber = "192"
+            endingLineNumber = "192"
+            landmarkName = "-deleteImages"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -345,77 +345,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/PhotoShowContentView.m"
-            timestampString = "493719781.413368"
+            filePath = "BaoMiWanBiao/FolderContentView.m"
+            timestampString = "493958321.081417"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
-            landmarkName = "-hiddenNavigationBar"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/PhotoShowContentView.m"
-            timestampString = "493719811.598148"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "-hiddenNavigationBar"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/PhotoShowContentView.m"
-            timestampString = "493719842.511243"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
-            landmarkName = "-hiddenNavigationBar"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/PhotoShowContentView.m"
-            timestampString = "493721435.011208"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "-hiddenNavigationBar"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/PhotoShowContentView.m"
-            timestampString = "493721435.011208"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "-hiddenNavigationBar"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
+            landmarkName = "-deleteImages"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

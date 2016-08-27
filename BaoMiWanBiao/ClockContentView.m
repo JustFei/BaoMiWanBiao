@@ -117,6 +117,29 @@
     [self presentEditTimePickerWithHInt:_hInt MInt:_mInt];
 }
 
+#pragma mark -左划删除
+//设置编辑风格EditingStyle
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //----通过表视图是否处于编辑状态来选择是左滑删除，还是多选删除。
+    if (self.clockTableView.editing)
+    {
+        //当表视图处于没有未编辑状态时选择多选删除
+        return UITableViewCellEditingStyleDelete| UITableViewCellEditingStyleInsert;
+    }
+    else
+    {
+        //当表视图处于没有未编辑状态时选择左滑删除
+        return UITableViewCellEditingStyleDelete;
+    }
+}
+
+/*改变删除按钮的title*/
+-(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return @"删除";
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle ==UITableViewCellEditingStyleDelete) {//如果编辑样式为删除样式

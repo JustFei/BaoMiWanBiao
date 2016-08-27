@@ -12,6 +12,7 @@
 #import "MotionStatusViewController.h"
 #import "SleepStatusViewController.h"
 #import "ClockViewController.h"
+#import "FolderViewController.h"
 
 @interface MainViewController ()
 
@@ -112,6 +113,9 @@
  *
  */
 - (IBAction)file:(UIButton *)sender {
+    
+    FolderViewController *vc = [[FolderViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 /*

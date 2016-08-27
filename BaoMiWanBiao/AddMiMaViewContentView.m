@@ -197,7 +197,7 @@
                 break;
         }
     }
-#warning SQL删除语句只能对列表中的某一项下面的某个值进行删除，如果该值存在同名的情况，会导致数据库误删除的操作
+#warning SQL删除语句只能对列表中的某一项下面的某个值进行删除，如果该值存在同名的情况，会导致数据库误删除的操作，回头改成根据ID删除
     NSString *SQLdelete = [NSString stringWithFormat:@"DELETE FROM PasswordNoteTable WHERE name = '%@'",model.name ];
     
     [self.tool deleteData:SQLdelete];

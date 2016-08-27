@@ -40,7 +40,7 @@
             //NSLog(@"%@",[asset valueForProperty:ALAssetPropertyAssetURL]);
             [selectPhotoNames addObject:[asset valueForProperty:ALAssetPropertyAssetURL]];
         }
-        self.lbAlert.text=[NSString stringWithFormat:@"已经选择%d张照片",self.selectPhotos.count];
+        self.lbAlert.text=[NSString stringWithFormat:@"已经选择%ld张照片",self.selectPhotos.count];
     }
     
     //self.collection.dataSource=self;

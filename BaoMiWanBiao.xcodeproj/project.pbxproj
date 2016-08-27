@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B0278E21D6E885E0053820A /* FolderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0278E11D6E885E0053820A /* FolderViewController.m */; };
+		3B0278E61D6FD0480053820A /* FolderContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0278E51D6FD0480053820A /* FolderContentView.m */; };
+		3B0278EA1D6FD5E90053820A /* FolderPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0278E81D6FD5E90053820A /* FolderPhotoCell.m */; };
+		3B0278EB1D6FD5E90053820A /* FolderPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B0278E91D6FD5E90053820A /* FolderPhotoCell.xib */; };
 		3B0556CC1D654830009B994E /* SleepHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0556CA1D654830009B994E /* SleepHistoryViewController.m */; };
 		3B0556CD1D654830009B994E /* SleepHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B0556CB1D654830009B994E /* SleepHistoryViewController.xib */; };
 		3B0556CF1D6586B8009B994E /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B0556CE1D6586B8009B994E /* right.png */; };
@@ -167,6 +171,13 @@
 /* Begin PBXFileReference section */
 		056ED79766F2FAB2827EFB78 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		1B7C1E8C81FC86181499D788 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B0278E01D6E885E0053820A /* FolderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderViewController.h; sourceTree = "<group>"; };
+		3B0278E11D6E885E0053820A /* FolderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderViewController.m; sourceTree = "<group>"; };
+		3B0278E41D6FD0480053820A /* FolderContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderContentView.h; sourceTree = "<group>"; };
+		3B0278E51D6FD0480053820A /* FolderContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderContentView.m; sourceTree = "<group>"; };
+		3B0278E71D6FD5E90053820A /* FolderPhotoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderPhotoCell.h; sourceTree = "<group>"; };
+		3B0278E81D6FD5E90053820A /* FolderPhotoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderPhotoCell.m; sourceTree = "<group>"; };
+		3B0278E91D6FD5E90053820A /* FolderPhotoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FolderPhotoCell.xib; sourceTree = "<group>"; };
 		3B0556C91D654830009B994E /* SleepHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepHistoryViewController.h; sourceTree = "<group>"; };
 		3B0556CA1D654830009B994E /* SleepHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepHistoryViewController.m; sourceTree = "<group>"; };
 		3B0556CB1D654830009B994E /* SleepHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SleepHistoryViewController.xib; sourceTree = "<group>"; };
@@ -384,6 +395,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B0278DF1D6E87BC0053820A /* 文件夹 */ = {
+			isa = PBXGroup;
+			children = (
+				3B0278E01D6E885E0053820A /* FolderViewController.h */,
+				3B0278E11D6E885E0053820A /* FolderViewController.m */,
+				3B0278E41D6FD0480053820A /* FolderContentView.h */,
+				3B0278E51D6FD0480053820A /* FolderContentView.m */,
+				3B0278E71D6FD5E90053820A /* FolderPhotoCell.h */,
+				3B0278E81D6FD5E90053820A /* FolderPhotoCell.m */,
+				3B0278E91D6FD5E90053820A /* FolderPhotoCell.xib */,
+			);
+			name = "文件夹";
+			sourceTree = "<group>";
+		};
+		3B0278E31D6E886F0053820A /* 图片预览 */ = {
+			isa = PBXGroup;
+			children = (
+				3B659DF21D49E3ED00EC568B /* PhotoShowViewController.h */,
+				3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */,
+				3B659DF81D49E46900EC568B /* PhotoShowContentView.h */,
+				3B659DF91D49E46900EC568B /* PhotoShowContentView.m */,
+			);
+			name = "图片预览";
+			sourceTree = "<group>";
+		};
 		3B12AE301D6BE45600C469EF /* 睡眠数据操作 */ = {
 			isa = PBXGroup;
 			children = (
@@ -395,7 +431,7 @@
 			name = "睡眠数据操作";
 			sourceTree = "<group>";
 		};
-		3B12AE371D6BFC2600C469EF /* 闹钟模块 */ = {
+		3B12AE371D6BFC2600C469EF /* 闹钟 */ = {
 			isa = PBXGroup;
 			children = (
 				3B12AE701D6C3E3500C469EF /* 闹钟数据操作 */,
@@ -407,7 +443,7 @@
 				3B12AE3F1D6C025800C469EF /* ClockTableViewCell.m */,
 				3B12AE401D6C025800C469EF /* ClockTableViewCell.xib */,
 			);
-			name = "闹钟模块";
+			name = "闹钟";
 			sourceTree = "<group>";
 		};
 		3B12AE701D6C3E3500C469EF /* 闹钟数据操作 */ = {
@@ -676,11 +712,12 @@
 				3BDD65131D45DE73009EA15F /* AppDelegate.h */,
 				3BDD65141D45DE73009EA15F /* AppDelegate.m */,
 				3B2791ED1D6308CB00B99320 /* 首页 */,
-				3BF1731C1D46F16E008DF4DC /* 获取相册文件并加密保存 */,
+				3BF1731C1D46F16E008DF4DC /* 密保箱 */,
 				3BBEF1471D4B3A05001BAE66 /* 密码本 */,
 				3B8C1B331D4F374F00D061C8 /* 运动状态 */,
 				3B2791F31D631A5300B99320 /* 睡眠状态 */,
-				3B12AE371D6BFC2600C469EF /* 闹钟模块 */,
+				3B12AE371D6BFC2600C469EF /* 闹钟 */,
+				3B0278DF1D6E87BC0053820A /* 文件夹 */,
 				3BF1731B1D46F161008DF4DC /* 注册登录界面 */,
 				3BEFB46D1D499487003DABF7 /* SM4加密算法 */,
 				3BDD651C1D45DE73009EA15F /* Assets.xcassets */,
@@ -831,17 +868,14 @@
 			name = "注册登录界面";
 			sourceTree = "<group>";
 		};
-		3BF1731C1D46F16E008DF4DC /* 获取相册文件并加密保存 */ = {
+		3BF1731C1D46F16E008DF4DC /* 密保箱 */ = {
 			isa = PBXGroup;
 			children = (
 				3BC0B47D1D4851F200616A27 /* 系统相册图片选择 */,
 				3B659DF11D49E1D000EC568B /* 手动加密密保箱 */,
-				3B659DF21D49E3ED00EC568B /* PhotoShowViewController.h */,
-				3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */,
-				3B659DF81D49E46900EC568B /* PhotoShowContentView.h */,
-				3B659DF91D49E46900EC568B /* PhotoShowContentView.m */,
+				3B0278E31D6E886F0053820A /* 图片预览 */,
 			);
-			name = "获取相册文件并加密保存";
+			name = "密保箱";
 			sourceTree = "<group>";
 		};
 		54CB55DD1168B1DFE3967623 /* Pods */ = {
@@ -1028,6 +1062,7 @@
 				3BDD651D1D45DE73009EA15F /* Assets.xcassets in Resources */,
 				3B8C1B7F1D51887000D061C8 /* MotionStatusViewController.xib in Resources */,
 				3BBEF15F1D4B4E97001BAE66 /* AddMiMaCell.xib in Resources */,
+				3B0278EB1D6FD5E90053820A /* FolderPhotoCell.xib in Resources */,
 				3BDD65AE1D45E4CA009EA15F /* phone@3x.png in Resources */,
 				3BC0B47C1D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.xib in Resources */,
 				3BDD65A71D45E4CA009EA15F /* notepad@2x.png in Resources */,
@@ -1137,6 +1172,7 @@
 				3BBEF1511D4B3B52001BAE66 /* MiMaTableViewCell.m in Sources */,
 				3BCDF4101D6ACF3A00B6D7D5 /* MotionFmdbTool.m in Sources */,
 				3B12AE361D6BE49300C469EF /* SleepFmdbTool.m in Sources */,
+				3B0278E21D6E885E0053820A /* FolderViewController.m in Sources */,
 				3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */,
 				3B12AE731D6C3E6C00C469EF /* ClockFmdbTool.m in Sources */,
 				3BDD65151D45DE73009EA15F /* AppDelegate.m in Sources */,
@@ -1155,6 +1191,7 @@
 				3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */,
 				3BEFB4751D4994C5003DABF7 /* sm4test.c in Sources */,
 				3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */,
+				3B0278EA1D6FD5E90053820A /* FolderPhotoCell.m in Sources */,
 				3BEFB4741D4994C5003DABF7 /* sm4.c in Sources */,
 				3BCDF4131D6AD02500B6D7D5 /* MotionDailyDataModel.m in Sources */,
 				3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */,
@@ -1164,6 +1201,7 @@
 				3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */,
 				3BC0B4901D48520E00616A27 /* LocalPhotoCell.m in Sources */,
 				3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */,
+				3B0278E61D6FD0480053820A /* FolderContentView.m in Sources */,
 				3B12AE411D6C025800C469EF /* ClockTableViewCell.m in Sources */,
 				3B12AE331D6BE47D00C469EF /* SleepDailyDataModel.m in Sources */,
 				3B12AE6F1D6C3D1F00C469EF /* ClockModel.m in Sources */,
