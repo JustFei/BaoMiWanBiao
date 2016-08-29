@@ -40,7 +40,7 @@
             //NSLog(@"%@",[asset valueForProperty:ALAssetPropertyAssetURL]);
             [selectPhotoNames addObject:[asset valueForProperty:ALAssetPropertyAssetURL]];
         }
-        self.lbAlert.text=[NSString stringWithFormat:@"已经选择%ld张照片",self.selectPhotos.count];
+        self.lbAlert.text=[NSString stringWithFormat:@"已经选择%d张照片",self.selectPhotos.count];
     }
     
     //self.collection.dataSource=self;
@@ -157,15 +157,8 @@
 
 - (IBAction)btnConfirm:(id)sender {
     if (self.selectPhotoDelegate!=nil) {
-        
-            [self.navigationController popViewControllerAnimated:YES];
-        
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.selectPhotoDelegate getSelectedPhoto:self.selectPhotos];
-        });
-        
-        
+        [self.selectPhotoDelegate getSelectedPhoto:self.selectPhotos];
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

@@ -49,7 +49,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    //修改navigationbar
+    //修改navigationbar的颜色
     self.navigationItem.title = @"密码本";
     //左侧返回按键设置
 
@@ -57,7 +57,7 @@
     self.navigationItem.leftBarButtonItem = leftBackItem;
     
     //这里暂时注释这两个方法
-    _localPhotos = [self gitImagesWithDirctory:@"JiaMi"];
+    _localPhotos = [self gitImagesWithDirctory:@"Thumbnail"];
     
     _jiamiPhotosArr = [self gitImagesWithDirctory:@"JiaMi"];
     
@@ -95,7 +95,7 @@
     _addImageButton.tag = 101;
     
     _deleteImageButton = [[UIButton alloc] initWithFrame:CGRectMake(12, 10, WIDTH - 24, tabbarView.frame.size.height - 20)];
-    [_deleteImageButton setTitle:@"移除选中图片到文件夹" forState:UIControlStateNormal];
+    [_deleteImageButton setTitle:@"删除选中图片" forState:UIControlStateNormal];
     [_deleteImageButton setBackgroundColor:[UIColor redColor]];
     [_deleteImageButton addTarget:self action:@selector(deleteImages) forControlEvents:UIControlEventTouchUpInside];
     _deleteImageButton.tag = 102;
@@ -123,7 +123,7 @@
             
         }
     }
-//    NSLog(@"%@",mutArr);
+    NSLog(@"%@",mutArr);
     
     return mutArr;
 }
@@ -175,34 +175,25 @@
     NSLog(@"供选择%lu张照片",(unsigned long)[photos count]);
     
     for (NSInteger index = 0; index < _selectPhotos.count; index ++) {
-        @autoreleasepool {
-            //设置cell的图片和图片名字
-            ALAsset *asset=[_selectPhotos objectAtIndex:index];
-            
-            dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    //添加加密文件夹数据源里的项目
-                    _jiamiPhotosArr = [self gitImagesWithDirctory:@"JiaMi"];
-                    
-                    //        if (result) {
-                    _localPhotos = [self gitImagesWithDirctory:@"JiaMi"];
-                    //        }
-                    
-                    [self.photoView reloadData];
-                });
-            });
-            
-            //将获取到的图片保存到APP的沙盒中
-            
-            
-            
-        }
         
+        //设置cell的图片和图片名字
+        ALAsset *asset=[_selectPhotos objectAtIndex:index];
+        ALAssetRepresentation *fullImage = [asset defaultRepresentation];
+        CGImageRef posterImageRef=[fullImage fullResolutionImage];
+        UIImage *posterImage=[UIImage imageWithCGImage:posterImageRef];
+        
+        //将获取到的图片保存到APP的沙盒中
+        BOOL result = [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
+        
+        //添加加密文件夹数据源里的项目
+        _jiamiPhotosArr = [self gitImagesWithDirctory:@"JiaMi"];
+        
+        if (result) {
+            _localPhotos = [self gitImagesWithDirctory:@"Thumbnail"];
+        }
     }
     
-    
+    [self.photoView reloadData];
 }
 
 #pragma mark - UITableViewDelegate
@@ -227,7 +218,7 @@
     
     //获取本地图片路径名
     NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/Thumbnail/%@",_localPhotos[indexPath.row]]];
-//    NSLog(@"%@",loaclImagePath);
+    NSLog(@"%@",loaclImagePath);
     UIImage *localImage = [[UIImage alloc] initWithContentsOfFile:loaclImagePath];
     
     //从本地沙盒获取图片
@@ -271,7 +262,7 @@
     NSData *thumbnailData = UIImagePNGRepresentation(thumbnailImage);
     BOOL thumbnailResult = [thumbnailData writeToFile:thumbnailFilePath atomically:YES];
     
-    NSLog(@"slt是否成功：%d" ,thumbnailResult);
+    NSLog(@"缩略图已经存储到%@，是否成功：%d",thumbnailFilePath ,thumbnailResult);
     
     /**
      *  加密文件存储
@@ -289,7 +280,7 @@
     NSData *jiamiData = [self.SM4 Sm4Jiami:imageData];
     BOOL jiamiResult = [jiamiData writeToFile:jiamiFilePath atomically:YES];
     
-    NSLog(@"yt是否成功：%d"  ,jiamiResult);
+    NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiamiResult);
     
     return jiamiResult;
 }
@@ -301,83 +292,51 @@
     //以下代码是处理数据的删除的操作。
     if (self.dataDic.count != 0) {
         
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
         //先删除本地沙盒文件
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSMutableArray *dataArr = [NSMutableArray arrayWithArray:self.dataDic.allValues];
-        
-        //在此创建解密文件夹，如果存在就不创建
-        NSString *createJieMiDir = [paths.firstObject stringByAppendingString:@"/JieMi"];
-        //判断是否存在Thumbnail文件夹，如果不存在，就创建
-        if (![[NSFileManager defaultManager] fileExistsAtPath:createJieMiDir]) {
-            [fileManager createDirectoryAtPath:createJieMiDir withIntermediateDirectories:YES attributes:nil error:nil];
-            
-        }else {
-            NSLog(@"FileDir is exists");
-        }
         
         //循环删除数据
         for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
             
             //此处为删除加密文件夹里面的内容
             NSString *jiamiFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JiaMi/%@",dataArr[index]]];
-            NSString *moveToPath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JieMi/%@",dataArr[index]]];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
             //先判断有没有该路径
-            BOOL jiamiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiamiFilePath];
-            BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
+            BOOL jiamiDirHave=[[NSFileManager defaultManager] fileExistsAtPath:jiamiFilePath];
+            
             //如果有就删除，
             if (!jiamiDirHave) {
-                NSLog(@"no  havejiami");
+                NSLog(@"no  have");
                 return ;
             }else {
-                
-                if (!jiemiDirHave) {
-                    
-                    //在移除前先进行解密，再移除
-                    //SM4解密
-                    NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
-                    NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
-                    BOOL jiemiResult = [jiemiPhotoData writeToFile:jiamiFilePath atomically:YES];
-                    
-                    NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiemiResult);
-                    
-                    BOOL blMove= [fileManager moveItemAtPath:jiamiFilePath toPath:moveToPath error:nil];
-                    [_jiamiPhotosArr removeObject:dataArr[index]];
-                    if (blMove) {
-                        NSLog(@"movejiami success");
-                    }else {
-                        NSLog(@"movejiami fail");
-                    }
-                }else{
-                    BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
-                    [_jiamiPhotosArr removeObject:dataArr[index]];
-                    if (blDele) {
-                        NSLog(@"delejiami success");
-                    }else {
-                        NSLog(@"delejiami fail");
-                    }
+                NSLog(@" have");
+                BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
+                [_jiamiPhotosArr removeObject:dataArr[index]];
+                if (blDele) {
+                    NSLog(@"dele success");
+                }else {
+                    NSLog(@"dele fail");
                 }
-                
             }
             
-//            //此处为删除缩略图里面的内容
-//            NSString *thumbnailFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/Thumbnail/%@",dataArr[index]]];
-//            BOOL thumbnailDirHave=[[NSFileManager defaultManager] fileExistsAtPath:thumbnailFilePath];
-//            
-//            //如果有就删除，
-//            if (!thumbnailDirHave) {
-//                NSLog(@"no  havethumbnail");
-//                return ;
-//            }else {
-//                NSLog(@" havethumbnail");
-//                BOOL blDele= [fileManager removeItemAtPath:thumbnailFilePath error:nil];;
-//                if (blDele) {
-//                    NSLog(@"delethumbnail success");
-//                }else {
-//                    NSLog(@"delethumbnail fail");
-//                }
-//            }
+            //此处为删除缩略图里面的内容
+            NSString *thumbnailFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/Thumbnail/%@",dataArr[index]]];
+            BOOL thumbnailDirHave=[[NSFileManager defaultManager] fileExistsAtPath:thumbnailFilePath];
+            
+            //如果有就删除，
+            if (!thumbnailDirHave) {
+                NSLog(@"no  have");
+                return ;
+            }else {
+                NSLog(@" have");
+                BOOL blDele= [fileManager removeItemAtPath:thumbnailFilePath error:nil];;
+                if (blDele) {
+                    NSLog(@"dele success");
+                }else {
+                    NSLog(@"dele fail");
+                }
+            }
         }
         
         //删除数据源
@@ -415,7 +374,7 @@
 /*改变删除按钮的title*/
 -(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return @"移除";
+    return @"删除";
 }
 
 /*左划删除用到的函数*/
@@ -425,77 +384,45 @@
     {
         //先删除本地沙盒文件
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
-        //在此创建解密文件夹，如果存在就不创建
-        NSString *createJieMiDir = [paths.firstObject stringByAppendingString:@"/JieMi"];
-        //判断是否存在Thumbnail文件夹，如果不存在，就创建
-        if (![[NSFileManager defaultManager] fileExistsAtPath:createJieMiDir]) {
-            [fileManager createDirectoryAtPath:createJieMiDir withIntermediateDirectories:YES attributes:nil error:nil];
-            
-        }else {
-            NSLog(@"FileDir is exists");
-        }
         
         //删除加密文件夹里的文件
         NSString *filePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JiaMi/%@",_localPhotos[indexPath.row]]];
-        NSString *moveToPath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JieMi/%@",_localPhotos[indexPath.row]]];
         //删除加密文件夹路劲数据源
         [_jiamiPhotosArr removeObject:_localPhotos[indexPath.row]];
-        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
         //先判断有没有该路径
-        BOOL blHaveAtPath=[[NSFileManager defaultManager] fileExistsAtPath:filePath];
-        BOOL blHaveMoveToPath = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
+        BOOL blHave=[[NSFileManager defaultManager] fileExistsAtPath:filePath];
         //如果有就删除，
-        if (!blHaveAtPath) {
+        if (!blHave) {
             NSLog(@"no  have");
             return ;
         }else {
-            
-            //如果解密文件夹里有该文件命名的话，这里做出判断，将加密文件夹里的文件进行删除
-            if (blHaveMoveToPath) {
-                BOOL blDele= [fileManager removeItemAtPath:filePath error:nil];
-                if (blDele) {
-                    NSLog(@"delete success");
-                }else {
-                    NSLog(@"delete fail");
-                }
+            NSLog(@" have");
+            BOOL blDele= [fileManager removeItemAtPath:filePath error:nil];;
+            if (blDele) {
+                NSLog(@"dele success");
             }else {
-                //在移除前先进行解密，再移除
-                //SM4解密
-                NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:filePath];
-                NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
-                BOOL jiemiResult = [jiemiPhotoData writeToFile:filePath atomically:YES];
-                
-                NSLog(@"图片已经存储到%@，是否成功：%d" ,filePath ,jiemiResult);
-                BOOL blMove = [fileManager moveItemAtPath:filePath toPath:moveToPath error:nil];
-                if (blMove) {
-                    NSLog(@"move success");
-                }else {
-                    NSLog(@"move fail");
-                }
+                NSLog(@"dele fail");
             }
-            
-            
         }
         
-//        //此处为删除缩略图里面的内容
-//        NSString *thumbnailFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/Thumbnail/%@",_localPhotos[indexPath.row]]];
-//        BOOL thumbnailDirHave=[[NSFileManager defaultManager] fileExistsAtPath:thumbnailFilePath];
-//        
-//        //如果有就删除，
-//        if (!thumbnailDirHave) {
-//            NSLog(@"no  have");
-//            return ;
-//        }else {
-//            NSLog(@" have");
-//            BOOL blDele= [fileManager removeItemAtPath:thumbnailFilePath error:nil];;
-//            if (blDele) {
-//                NSLog(@"dele success");
-//            }else {
-//                NSLog(@"dele fail");
-//            }
-//        }
+        //此处为删除缩略图里面的内容
+        NSString *thumbnailFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/Thumbnail/%@",_localPhotos[indexPath.row]]];
+        BOOL thumbnailDirHave=[[NSFileManager defaultManager] fileExistsAtPath:thumbnailFilePath];
+        
+        //如果有就删除，
+        if (!thumbnailDirHave) {
+            NSLog(@"no  have");
+            return ;
+        }else {
+            NSLog(@" have");
+            BOOL blDele= [fileManager removeItemAtPath:thumbnailFilePath error:nil];;
+            if (blDele) {
+                NSLog(@"dele success");
+            }else {
+                NSLog(@"dele fail");
+            }
+        }
     
         /*此处处理自己的代码，如删除数据*/
         [_localPhotos removeObjectAtIndex:indexPath.row];
@@ -526,7 +453,6 @@
 #pragma mark -选中cell（解密操作）
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ShouDongJiaMiWenJianJIaTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (self.photoView.isEditing) {
         //把indexpath 以_dataArray的值作为key 插入到dataDic字典中
         [self.dataDic setObject:[_localPhotos objectAtIndex:indexPath.row] forKey:indexPath];
@@ -538,19 +464,19 @@
             _addImageButton.enabled = YES;
         }
     }else {
-        //这里跳转到图片浏览控制器
+        //这里跳转到图片浏览控制器（待完成）
         NSString *jiamiFilePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject stringByAppendingString:[NSString stringWithFormat:@"/JiaMi/%@",_jiamiPhotosArr[indexPath.row]]];
         NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
         NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
         UIImage *jiemiImage = [UIImage imageWithData:jiemiPhotoData];
         
-        PhotoShowViewController *psVC = [[PhotoShowViewController alloc] initWithImage:jiemiImage title:cell.imageName.text];
+        PhotoShowViewController *psVC = [[PhotoShowViewController alloc] initWithImage:jiemiImage];
         
         [self.navigationController pushViewController:psVC animated:YES];
     }
 }
 
-#pragma mark - 懒加载
+#pragma mark - lazy
 //配置photoview相关委托
 - (UITableView *)photoView
 {
