@@ -45,14 +45,6 @@
                         <constraint firstAttribute="height" constant="44.5" id="jIx-cR-hVl"/>
                     </constraints>
                 </view>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="udh-sB-CNu">
-                    <rect key="frame" x="12" y="65" width="296" height="44"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="HpG-23-4PG"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits"/>
-                </textField>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gbK-7P-YNB">
                     <rect key="frame" x="12" y="121" width="296" height="44"/>
                     <constraints>
@@ -95,6 +87,14 @@
                     <rect key="frame" x="12" y="177" width="296" height="44"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="a9t-8S-POR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="udh-sB-CNu">
+                    <rect key="frame" x="12" y="65" width="296" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="HpG-23-4PG"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>

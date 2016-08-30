@@ -13,6 +13,9 @@
 #import "MotionStatusViewController.h"
 #import "MotionLineViewController.h"
 #import "MotionHistoryViewController.h"
+#import <BmobSDK/Bmob.h>
+
+#import "RegistAndLoginViewController.h"
 
 #import "MainViewController.h"
 
@@ -26,12 +29,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    //云服务器的配置id
+    [Bmob registerWithAppKey:@"8c426dee71396d48334853c72d431074"];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil]];
-    
+//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil]];
+    self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:nil];
     //设置navigationbar的背景颜色以及title，item的颜色
     [[UINavigationBar appearance] setBarTintColor:UIColorFromRGBWithAlpha(0x2c91F4, 1)];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];

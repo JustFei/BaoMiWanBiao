@@ -55,6 +55,7 @@
 		3B8C1B7F1D51887000D061C8 /* MotionStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B8C1B7E1D51887000D061C8 /* MotionStatusViewController.xib */; };
 		3B8C1B861D51F9DD00D061C8 /* MotionHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B841D51F9DD00D061C8 /* MotionHistoryViewController.m */; };
 		3B8C1B871D51F9DD00D061C8 /* MotionHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */; };
+		3B8CBF391D758B07007DE127 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8CBF381D758B07007DE127 /* UserModel.m */; };
 		3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */; };
 		3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF1491D4B3A3C001BAE66 /* MiMaBenViewController.m */; };
 		3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF14C1D4B3A69001BAE66 /* MiMaBenContentView.m */; };
@@ -147,6 +148,7 @@
 		3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF1731E1D46F20D008DF4DC /* MiBaoXiangViewController.m */; };
 		3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */; };
 		3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */; };
+		485007A37313A95B5BA60865 /* libPods-BaoMiWanBiao.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31943B3CDCBB4C244BD1DEE6 /* libPods-BaoMiWanBiao.a */; };
 		4A2D59F29E80D72E811BFE1E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7C1E8C81FC86181499D788 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -168,8 +170,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		056ED79766F2FAB2827EFB78 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		1B7C1E8C81FC86181499D788 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.debug.xcconfig"; sourceTree = "<group>"; };
+		31943B3CDCBB4C244BD1DEE6 /* libPods-BaoMiWanBiao.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BaoMiWanBiao.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B0278E01D6E885E0053820A /* FolderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderViewController.h; sourceTree = "<group>"; };
 		3B0278E11D6E885E0053820A /* FolderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderViewController.m; sourceTree = "<group>"; };
 		3B0278E41D6FD0480053820A /* FolderContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderContentView.h; sourceTree = "<group>"; };
@@ -239,6 +242,8 @@
 		3B8C1B831D51F9DD00D061C8 /* MotionHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionHistoryViewController.h; sourceTree = "<group>"; };
 		3B8C1B841D51F9DD00D061C8 /* MotionHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MotionHistoryViewController.m; sourceTree = "<group>"; };
 		3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MotionHistoryViewController.xib; sourceTree = "<group>"; };
+		3B8CBF371D758B07007DE127 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		3B8CBF381D758B07007DE127 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		3BA27A311D4C374100B4C32F /* SM4-OCMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SM4-OCMethod.h"; sourceTree = "<group>"; };
 		3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SM4-OCMethod.m"; sourceTree = "<group>"; };
 		3BBEF1481D4B3A3C001BAE66 /* MiMaBenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiMaBenViewController.h; sourceTree = "<group>"; };
@@ -366,7 +371,7 @@
 		3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteModel.m; sourceTree = "<group>"; };
 		3BF367F21D4C7EC000637BEC /* XxfFmdbTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XxfFmdbTool.h; sourceTree = "<group>"; };
 		3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XxfFmdbTool.m; sourceTree = "<group>"; };
-		6B119F38D43226B2F978BEAE /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.release.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -375,6 +380,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A2D59F29E80D72E811BFE1E /* libPods.a in Frameworks */,
+				485007A37313A95B5BA60865 /* libPods-BaoMiWanBiao.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -873,6 +879,8 @@
 				3BDD65C11D45F5DC009EA15F /* RegistViewController.h */,
 				3BDD65C21D45F5DC009EA15F /* RegistViewController.m */,
 				3BDD65C31D45F5DC009EA15F /* RegistViewController.xib */,
+				3B8CBF371D758B07007DE127 /* UserModel.h */,
+				3B8CBF381D758B07007DE127 /* UserModel.m */,
 			);
 			name = "注册登录界面";
 			sourceTree = "<group>";
@@ -890,8 +898,8 @@
 		54CB55DD1168B1DFE3967623 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6B119F38D43226B2F978BEAE /* Pods.debug.xcconfig */,
-				056ED79766F2FAB2827EFB78 /* Pods.release.xcconfig */,
+				2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */,
+				6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -900,6 +908,7 @@
 			isa = PBXGroup;
 			children = (
 				1B7C1E8C81FC86181499D788 /* libPods.a */,
+				31943B3CDCBB4C244BD1DEE6 /* libPods-BaoMiWanBiao.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1134,7 +1143,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A691002FE39979A97C8CB001 /* Check Pods Manifest.lock */ = {
@@ -1164,7 +1173,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1212,6 +1221,7 @@
 				3B12AE411D6C025800C469EF /* ClockTableViewCell.m in Sources */,
 				3B12AE331D6BE47D00C469EF /* SleepDailyDataModel.m in Sources */,
 				3B12AE6F1D6C3D1F00C469EF /* ClockModel.m in Sources */,
+				3B8CBF391D758B07007DE127 /* UserModel.m in Sources */,
 				3B2791F11D6308F200B99320 /* MainViewController.m in Sources */,
 				3BBEF1561D4B4691001BAE66 /* AddMiMaViewController.m in Sources */,
 				3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */,
@@ -1351,7 +1361,7 @@
 		};
 		3BDD653B1D45DE74009EA15F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B119F38D43226B2F978BEAE /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1366,7 +1376,7 @@
 		};
 		3BDD653C1D45DE74009EA15F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 056ED79766F2FAB2827EFB78 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1381,6 +1391,7 @@
 		};
 		3BDD653E1D45DE74009EA15F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = BaoMiWanBiaoTests/Info.plist;
@@ -1393,6 +1404,7 @@
 		};
 		3BDD653F1D45DE74009EA15F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = BaoMiWanBiaoTests/Info.plist;
@@ -1405,6 +1417,7 @@
 		};
 		3BDD65411D45DE74009EA15F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BaoMiWanBiaoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1416,6 +1429,7 @@
 		};
 		3BDD65421D45DE74009EA15F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BaoMiWanBiaoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

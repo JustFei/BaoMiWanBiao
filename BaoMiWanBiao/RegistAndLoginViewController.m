@@ -1,4 +1,4 @@
-//
+    //
 //  RegistAndLoginViewController.m
 //  BaoMiWanBiao
 //
@@ -44,26 +44,34 @@
     self.passWordTextField.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
     
     //设置用户名输入框左侧的图片和提示文字
-    CGRect frame = CGRectMake(22, 10, 13, 16);
+    CGRect frame = CGRectMake(11, 10, 13, 16);
     UIImageView *leftview = [[UIImageView alloc] initWithFrame:frame];
     leftview.image = [UIImage imageNamed:@"user.png"];
     self.userNameTextField.leftViewMode = UITextFieldViewModeAlways;
     self.userNameTextField.leftView = leftview;
-    self.userNameTextField.placeholder = @"请输入手机号";
+    self.userNameTextField.placeholder = @"  请输入手机号";
     
     //设置密码输入框左右两侧的图片和文字
-    CGRect frame1 = CGRectMake(22, 10, 13, 16);
+    CGRect frame1 = CGRectMake(11, 10, 13, 16);
     UIImageView *leftview1 = [[UIImageView alloc] initWithFrame:frame1];
     leftview1.image = [UIImage imageNamed:@"locked.png"];
     self.passWordTextField.leftViewMode = UITextFieldViewModeAlways;
     self.passWordTextField.leftView = leftview1;
-    self.passWordTextField.placeholder = @"请输入密码";
+    self.passWordTextField.placeholder = @"  请输入密码";
     
-    UIImageView *rightView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    rightView.image = [UIImage imageNamed:@"forget.png"];
+    UIButton *rightView = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [rightView setImage:[UIImage imageNamed:@"forget.png"] forState:UIControlStateNormal];
+    [rightView addTarget:self action:@selector(forgetPassword) forControlEvents:UIControlEventTouchUpInside];
     self.passWordTextField.rightViewMode = UITextFieldViewModeAlways;
     self.passWordTextField.rightView = rightView;
     
+}
+
+#pragma mark - 点击事件
+
+- (void)forgetPassword
+{
+    NSLog(@"forget the password");
 }
 
 //点击屏幕除了键盘其他的地方
