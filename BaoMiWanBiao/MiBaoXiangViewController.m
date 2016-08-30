@@ -10,6 +10,7 @@
 #import "ShouDongJiaMiWenJianJIaTableViewCell.h"
 #import "LocalPhotoViewController.h"
 #import "PhotoShowViewController.h"
+#import "ASProgressPopUpView.h"
 
 #import "SM4-OCMethod.h"
 
@@ -20,7 +21,7 @@
 #define WIDTH self.view.frame.size.width
 #define HEIGHT self.view.frame.size.height
 
-@interface MiBaoXiangViewController ()<UITableViewDelegate,UITableViewDataSource,SelectPhotoDelegate>
+@interface MiBaoXiangViewController ()<UITableViewDelegate,UITableViewDataSource,SelectPhotoDelegate,ASProgressPopUpViewDataSource>
 {
     //选中图片数组，也是TableView的数据源
     NSMutableArray *_selectPhotos;
@@ -39,6 +40,8 @@
 //存储着多选删除的多个图片的信息，key：选中cell的indexPath，value：这张图片的路径
 @property (nonatomic ,strong) NSMutableDictionary *dataDic;
 
+@property (weak, nonatomic) ASProgressPopUpView *addProgressView;
+@property (weak, nonatomic) ASProgressPopUpView *deleteProgressView;
 @property (nonatomic ,strong) SM4_OCMethod *SM4;
 
 @end
@@ -169,7 +172,6 @@
 
 //选中了几张图片
 -(void)getSelectedPhoto:(NSMutableArray *)photos{
-    
     //选中的图片存储在_selectPhotos数组中
     _selectPhotos = [NSMutableArray arrayWithArray:photos];
     NSLog(@"供选择%lu张照片",(unsigned long)[photos count]);
@@ -179,30 +181,28 @@
             //设置cell的图片和图片名字
             ALAsset *asset=[_selectPhotos objectAtIndex:index];
             
+            
+            //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）
             dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
+                BOOL result = [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     //添加加密文件夹数据源里的项目
                     _jiamiPhotosArr = [self gitImagesWithDirctory:@"JiaMi"];
                     
-                    //        if (result) {
+                            if (result) {
                     _localPhotos = [self gitImagesWithDirctory:@"JiaMi"];
-                    //        }
+                            }
+                    [self.addProgressView setHidden:NO];
+                    //添加进度条
+                    CGFloat percent = (float)(index + 1) / _selectPhotos.count;
+                    [self.addProgressView setProgress:percent animated:YES];
                     
                     [self.photoView reloadData];
                 });
             });
-            
-            //将获取到的图片保存到APP的沙盒中
-            
-            
-            
         }
-        
     }
-    
-    
 }
 
 #pragma mark - UITableViewDelegate
@@ -263,15 +263,15 @@
         [fileManager createDirectoryAtPath:createThumbnailDir withIntermediateDirectories:YES attributes:nil error:nil];
         
     }else {
-        NSLog(@"FileDir is exists");
+        NSLog(@"1FileDir is exists");
     }
     NSString *thumbnailFilePath = [NSString stringWithFormat:@"%@/%@", createThumbnailDir, imageName];
     //只做缩略图
     UIImage *thumbnailImage = [self imageCompressForSize:image targetSize:CGSizeMake(55, 55)];
     NSData *thumbnailData = UIImagePNGRepresentation(thumbnailImage);
     BOOL thumbnailResult = [thumbnailData writeToFile:thumbnailFilePath atomically:YES];
-    
-    NSLog(@"slt是否成功：%d" ,thumbnailResult);
+    NSLog(@"缩略图的地址：%@",thumbnailFilePath);
+    NSLog(@"2slt是否成功：%d" ,thumbnailResult);
     
     /**
      *  加密文件存储
@@ -282,14 +282,14 @@
         [fileManager createDirectoryAtPath:createJiamiDir withIntermediateDirectories:YES attributes:nil error:nil];
         
     }else {
-        NSLog(@"FileDir is exists");
+        NSLog(@"3FileDir is exists");
     }
     NSString *jiamiFilePath = [NSString stringWithFormat:@"%@/%@", createJiamiDir, imageName];
     NSData *imageData = UIImagePNGRepresentation(image);
     NSData *jiamiData = [self.SM4 Sm4Jiami:imageData];
     BOOL jiamiResult = [jiamiData writeToFile:jiamiFilePath atomically:YES];
     
-    NSLog(@"yt是否成功：%d"  ,jiamiResult);
+    NSLog(@"5yt是否成功：%d"  ,jiamiResult);
     
     return jiamiResult;
 }
@@ -317,75 +317,67 @@
             NSLog(@"FileDir is exists");
         }
         
-        //循环删除数据
-        for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
-            
-            //此处为删除加密文件夹里面的内容
-            NSString *jiamiFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JiaMi/%@",dataArr[index]]];
-            NSString *moveToPath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JieMi/%@",dataArr[index]]];
-            //先判断有没有该路径
-            BOOL jiamiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiamiFilePath];
-            BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
-            //如果有就删除，
-            if (!jiamiDirHave) {
-                NSLog(@"no  havejiami");
-                return ;
-            }else {
-                
-                if (!jiemiDirHave) {
-                    
-                    //在移除前先进行解密，再移除
-                    //SM4解密
-                    NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
-                    NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
-                    BOOL jiemiResult = [jiemiPhotoData writeToFile:jiamiFilePath atomically:YES];
-                    
-                    NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiemiResult);
-                    
-                    BOOL blMove= [fileManager moveItemAtPath:jiamiFilePath toPath:moveToPath error:nil];
-                    [_jiamiPhotosArr removeObject:dataArr[index]];
-                    if (blMove) {
-                        NSLog(@"movejiami success");
-                    }else {
-                        NSLog(@"movejiami fail");
-                    }
-                }else{
-                    BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
-                    [_jiamiPhotosArr removeObject:dataArr[index]];
-                    if (blDele) {
-                        NSLog(@"delejiami success");
-                    }else {
-                        NSLog(@"delejiami fail");
-                    }
-                }
-                
-            }
-            
-//            //此处为删除缩略图里面的内容
-//            NSString *thumbnailFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/Thumbnail/%@",dataArr[index]]];
-//            BOOL thumbnailDirHave=[[NSFileManager defaultManager] fileExistsAtPath:thumbnailFilePath];
-//            
-//            //如果有就删除，
-//            if (!thumbnailDirHave) {
-//                NSLog(@"no  havethumbnail");
-//                return ;
-//            }else {
-//                NSLog(@" havethumbnail");
-//                BOOL blDele= [fileManager removeItemAtPath:thumbnailFilePath error:nil];;
-//                if (blDele) {
-//                    NSLog(@"delethumbnail success");
-//                }else {
-//                    NSLog(@"delethumbnail fail");
-//                }
-//            }
-        }
-        
         //删除数据源
         [_localPhotos removeObjectsInArray:[self.dataDic allValues]];
         
         //删除界面的cell
         [self.photoView deleteRowsAtIndexPaths:[self.dataDic allKeys] withRowAnimation:UITableViewRowAnimationFade];
-        
+
+        //循环删除数据
+        for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
+            
+            @autoreleasepool {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    
+                    //此处为删除加密文件夹里面的内容
+                    NSString *jiamiFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JiaMi/%@",dataArr[index]]];
+                    NSString *moveToPath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/JieMi/%@",dataArr[index]]];
+                    //先判断有没有该路径
+                    BOOL jiamiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiamiFilePath];
+                    BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
+                    //如果有就删除，
+                    if (!jiamiDirHave) {
+                        NSLog(@"no  havejiami");
+                        return ;
+                    }else {
+                        
+                        
+                        if (!jiemiDirHave) {
+                            
+                            //在移除前先进行解密，再移除
+                            //SM4解密
+                            NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
+                            NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
+                            BOOL jiemiResult = [jiemiPhotoData writeToFile:jiamiFilePath atomically:YES];
+                            
+                            NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiemiResult);
+                            
+                            BOOL blMove= [fileManager moveItemAtPath:jiamiFilePath toPath:moveToPath error:nil];
+                            [_jiamiPhotosArr removeObject:dataArr[index]];
+                            if (blMove) {
+                                NSLog(@"movejiami success");
+                            }else {
+                                NSLog(@"movejiami fail");
+                            }
+                        }else{
+                            BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
+                            [_jiamiPhotosArr removeObject:dataArr[index]];
+                            if (blDele) {
+                                NSLog(@"delejiami success");
+                            }else {
+                                NSLog(@"delejiami fail");
+                            }
+                        }
+                    }
+                    
+                    
+                });
+                
+                
+            }
+            
+        }
+
         //删除存储删除信息的字典dataDic
         [self.dataDic removeAllObjects];
         
@@ -479,24 +471,6 @@
             
         }
         
-//        //此处为删除缩略图里面的内容
-//        NSString *thumbnailFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/Thumbnail/%@",_localPhotos[indexPath.row]]];
-//        BOOL thumbnailDirHave=[[NSFileManager defaultManager] fileExistsAtPath:thumbnailFilePath];
-//        
-//        //如果有就删除，
-//        if (!thumbnailDirHave) {
-//            NSLog(@"no  have");
-//            return ;
-//        }else {
-//            NSLog(@" have");
-//            BOOL blDele= [fileManager removeItemAtPath:thumbnailFilePath error:nil];;
-//            if (blDele) {
-//                NSLog(@"dele success");
-//            }else {
-//                NSLog(@"dele fail");
-//            }
-//        }
-    
         /*此处处理自己的代码，如删除数据*/
         [_localPhotos removeObjectAtIndex:indexPath.row];
         /*删除tableView中的一行*/
@@ -550,6 +524,27 @@
     }
 }
 
+#pragma mark - ASProgressPopUpView dataSource
+
+// <ASProgressPopUpViewDataSource> is entirely optional
+// it allows you to supply custom NSStrings to ASProgressPopUpView
+- (NSString *)progressView:(ASProgressPopUpView *)progressView stringForProgress:(float)progress
+{
+    NSString *s;
+        int a = progress * _selectPhotos.count;
+        s = [NSString stringWithFormat:@"正在加密第%d张图片",a];
+//        s = [NSString stringWithFormat:@"哒哒哒哒哒%d",a];
+        NSLog(@"%@",s);
+        if (progress >= 1) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [progressView setHidden:YES];
+                progressView.progress = 0.0;
+            });
+        }
+
+    return s;
+}
+
 #pragma mark - 懒加载
 //配置photoview相关委托
 - (UITableView *)photoView
@@ -567,6 +562,26 @@
         _photoView = view;
     }
     return _photoView;
+}
+
+- (ASProgressPopUpView *)addProgressView
+{
+    if (!_addProgressView) {
+        ASProgressPopUpView *view = [[ASProgressPopUpView alloc] initWithFrame:CGRectMake(10, self.view.center.y - 10, WIDTH - 20, 40)];
+        
+        //字体和大小
+        view.font = [UIFont fontWithName:@"Futura-CondensedExtraBold" size:16];
+        //线条的渐变色
+        view.popUpViewAnimatedColors = @[[UIColor redColor], [UIColor orangeColor], [UIColor greenColor]];
+        view.dataSource = self;
+        [view showPopUpViewAnimated:YES];
+        
+        
+        [self.view addSubview:view];
+        _addProgressView = view;
+    }
+    
+    return _addProgressView;
 }
 
 - (SM4_OCMethod *)SM4

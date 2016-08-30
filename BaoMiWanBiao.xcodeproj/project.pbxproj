@@ -45,6 +45,8 @@
 		3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F01D6308F200B99320 /* MainViewController.xib */; };
 		3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791F71D631AC400B99320 /* SleepStatusViewController.m */; };
 		3B2791FA1D631AC400B99320 /* SleepStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */; };
+		3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EA0291D75297900E23B63 /* ASPopUpView.m */; };
+		3B4EA02D1D75297900E23B63 /* ASProgressPopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EA02B1D75297900E23B63 /* ASProgressPopUpView.m */; };
 		3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */; };
 		3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF91D49E46900EC568B /* PhotoShowContentView.m */; };
 		3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */; };
@@ -219,6 +221,10 @@
 		3B2791F61D631AC400B99320 /* SleepStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepStatusViewController.h; sourceTree = "<group>"; };
 		3B2791F71D631AC400B99320 /* SleepStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepStatusViewController.m; sourceTree = "<group>"; };
 		3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SleepStatusViewController.xib; sourceTree = "<group>"; };
+		3B4EA0281D75297900E23B63 /* ASPopUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASPopUpView.h; sourceTree = "<group>"; };
+		3B4EA0291D75297900E23B63 /* ASPopUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASPopUpView.m; sourceTree = "<group>"; };
+		3B4EA02A1D75297900E23B63 /* ASProgressPopUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASProgressPopUpView.h; sourceTree = "<group>"; };
+		3B4EA02B1D75297900E23B63 /* ASProgressPopUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASProgressPopUpView.m; sourceTree = "<group>"; };
 		3B659DF21D49E3ED00EC568B /* PhotoShowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoShowViewController.h; sourceTree = "<group>"; };
 		3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowViewController.m; sourceTree = "<group>"; };
 		3B659DF81D49E46900EC568B /* PhotoShowContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoShowContentView.h; sourceTree = "<group>"; };
@@ -491,6 +497,17 @@
 			name = "睡眠历史记录";
 			sourceTree = "<group>";
 		};
+		3B4EA0271D75297900E23B63 /* ASProgressPopUpView */ = {
+			isa = PBXGroup;
+			children = (
+				3B4EA0281D75297900E23B63 /* ASPopUpView.h */,
+				3B4EA0291D75297900E23B63 /* ASPopUpView.m */,
+				3B4EA02A1D75297900E23B63 /* ASProgressPopUpView.h */,
+				3B4EA02B1D75297900E23B63 /* ASProgressPopUpView.m */,
+			);
+			path = ASProgressPopUpView;
+			sourceTree = "<group>";
+		};
 		3B659DF11D49E1D000EC568B /* 手动加密密保箱 */ = {
 			isa = PBXGroup;
 			children = (
@@ -652,6 +669,7 @@
 		3BD796FC1D55D2E200DB6821 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				3B4EA0271D75297900E23B63 /* ASProgressPopUpView */,
 				3BD796FD1D55D33400DB6821 /* jbChartView */,
 			);
 			name = Libraries;
@@ -1175,6 +1193,7 @@
 				3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */,
 				3BDD65C41D45F5DC009EA15F /* RegistViewController.m in Sources */,
 				3B12AE3A1D6BFCF100C469EF /* ClockViewController.m in Sources */,
+				3B4EA02D1D75297900E23B63 /* ASProgressPopUpView.m in Sources */,
 				3BDD65121D45DE73009EA15F /* main.m in Sources */,
 				3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */,
 				3BEFB4751D4994C5003DABF7 /* sm4test.c in Sources */,
@@ -1195,6 +1214,7 @@
 				3B12AE6F1D6C3D1F00C469EF /* ClockModel.m in Sources */,
 				3B2791F11D6308F200B99320 /* MainViewController.m in Sources */,
 				3BBEF1561D4B4691001BAE66 /* AddMiMaViewController.m in Sources */,
+				3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */,
 				3BC0B48E1D48520E00616A27 /* LocalPhotoViewController.m in Sources */,
 				3BC0B48B1D48520E00616A27 /* LocalAlbumTableViewController.m in Sources */,
 				3BEFB4761D4994C5003DABF7 /* sms4.c in Sources */,

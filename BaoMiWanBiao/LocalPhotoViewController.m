@@ -100,23 +100,31 @@
 
 #define kImageViewTag 1 // the image view inside the collection view cell prototype is tagged with "1"
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *CellIdentifier = @"photocell";
-    LocalPhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    // load the asset for this cell
-    ALAsset *asset=self.photos[indexPath.row];
-    CGImageRef thumbnailImageRef = [asset thumbnail];
-    UIImage *thumbnail = [UIImage imageWithCGImage:thumbnailImageRef];
+    @autoreleasepool {
+        static NSString *CellIdentifier = @"photocell";
+        LocalPhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+        
+        dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // load the asset for this cell
+            ALAsset *asset=self.photos[indexPath.row];
+            CGImageRef thumbnailImageRef = [asset thumbnail];
+            UIImage *thumbnail = [UIImage imageWithCGImage:thumbnailImageRef];
+            
+            //这里可以获取到全尺寸的高清图
+//            ALAssetRepresentation *reprsentation = [asset defaultRepresentation];
+//            CGImageRef fullImage = [reprsentation fullResolutionImage];
+//            UIImage *full = [UIImage imageWithCGImage:fullImage];
+            
+            //回来测试下
+            [cell.img setImage:thumbnail];
+            NSString *url=[asset valueForProperty:ALAssetPropertyAssetURL];
+            [cell.btnSelect setHidden:[selectPhotoNames indexOfObject:url]==NSNotFound];
+        });
     
-    //这里可以获取到全尺寸的高清图
-    ALAssetRepresentation *reprsentation = [asset defaultRepresentation];
-    CGImageRef fullImage = [reprsentation fullResolutionImage];
-    UIImage *full = [UIImage imageWithCGImage:fullImage];
+        
+        return cell;
+    }
     
-    //回来测试下
-    [cell.img setImage:thumbnail];
-    NSString *url=[asset valueForProperty:ALAssetPropertyAssetURL];
-    [cell.btnSelect setHidden:[selectPhotoNames indexOfObject:url]==NSNotFound];
-    return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{

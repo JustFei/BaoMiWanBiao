@@ -70,7 +70,7 @@
         //对加密的数据输出
         NSData *miwenData =  [[NSData alloc]initWithBytes:cipherOutChar length:sizeof(cipherOutChar)];
         
-        NSLog(@"加密成功");
+        NSLog(@"4加密成功");
         
         return miwenData;
         
