@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UserInfoViewController">
+            <connections>
+                <outlet property="answerTextField" destination="GTJ-Cy-gy0" id="9PK-0q-o5K"/>
+                <outlet property="answerView" destination="tfh-gj-up6" id="Unz-CT-d4U"/>
+                <outlet property="idNumberTextField" destination="VQk-xh-qNw" id="Znb-m2-GmL"/>
+                <outlet property="idNumberView" destination="K31-eu-72j" id="8gQ-Ma-hss"/>
+                <outlet property="reservedQuestionLabel" destination="xYH-My-ifD" id="ovR-zG-1yn"/>
+                <outlet property="reservedQuestionView" destination="2ee-gP-eXi" id="xb9-XS-Y6a"/>
+                <outlet property="view" destination="iN0-l3-epB" id="fhJ-DC-9fp"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sAG-kj-Loi">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2ee-gP-eXi" userLabel="SafeCodeView">
+                            <rect key="frame" x="12" y="140" width="296" height="44"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="notepad.png" translatesAutoresizingMaskIntoConstraints="NO" id="vme-pY-bp5">
+                                    <rect key="frame" x="8" y="10" width="19" height="23"/>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="请选择预留问题" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xYH-My-ifD">
+                                    <rect key="frame" x="38" y="11" width="261" height="21"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                    <color key="textColor" red="0.76862745099999996" green="0.79607843140000001" blue="0.81960784310000001" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tfh-gj-up6" userLabel="FirstView">
+                            <rect key="frame" x="12" y="196" width="296" height="44"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="pencil-with-paper.png" translatesAutoresizingMaskIntoConstraints="NO" id="Rjf-2I-3wk">
+                                    <rect key="frame" x="8" y="10" width="19" height="23"/>
+                                </imageView>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入答案" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GTJ-Cy-gy0">
+                                    <rect key="frame" x="38" y="0.0" width="258" height="44"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                            </subviews>
+                        </view>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K31-eu-72j" userLabel="PhoneNumberView">
+                            <rect key="frame" x="12" y="84" width="296" height="44"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="user.png" translatesAutoresizingMaskIntoConstraints="NO" id="qLS-5H-jby">
+                                    <rect key="frame" x="8" y="10" width="19" height="23"/>
+                                </imageView>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入身份证号" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VQk-xh-qNw">
+                                    <rect key="frame" x="38" y="0.0" width="258" height="44"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                            </subviews>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ywc-BR-qje">
+                            <rect key="frame" x="12" y="284" width="296" height="44"/>
+                            <color key="backgroundColor" red="0.16862745100000001" green="0.46666666670000001" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <state key="normal" title="确定">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="sureButtonAction:" destination="-1" eventType="touchUpInside" id="RxH-uH-os0"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <point key="canvasLocation" x="338" y="325"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="notepad.png" width="17" height="16"/>
+        <image name="pencil-with-paper.png" width="16" height="16"/>
+        <image name="user.png" width="13" height="14"/>
+    </resources>
+</document>

@@ -8,8 +8,10 @@
 
 #import "RegistAndLoginViewController.h"
 #import "RegistViewController.h"
+#import <BmobSDK/Bmob.h>
+#import "MainViewController.h"
 
-@interface RegistAndLoginViewController ()
+@interface RegistAndLoginViewController ()<UITextFieldDelegate>
 
 @end
 
@@ -29,49 +31,75 @@
     
     //设置用户头像的圆形
     self.userHeadIamgeView.layer.cornerRadius = self.userHeadIamgeView.frame.size.height / 2;
-    self.userHeadIamgeView.backgroundColor = [UIColor blueColor];
+    self.userHeadIamgeView.backgroundColor = UIColorFromRGBWithAlpha(0x2c91F4, 1);
     
     //设置用户注册按钮边框的颜色和宽度
     self.registButton.layer.borderWidth = 1.0f;
     [self.registButton.layer setBorderColor:[UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor];
     
     //设置用户名输入框的边框颜色和宽度
-    self.userNameTextField.layer.borderWidth= 1.0f;
-    self.userNameTextField.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
+    self.userNameView.layer.borderWidth= 1.0f;
+    self.userNameView.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
     
     //设置密码输入框的边框颜色和宽度
-    self.passWordTextField.layer.borderWidth= 1.0f;
-    self.passWordTextField.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
-    
-    //设置用户名输入框左侧的图片和提示文字
-    CGRect frame = CGRectMake(11, 10, 13, 16);
-    UIImageView *leftview = [[UIImageView alloc] initWithFrame:frame];
-    leftview.image = [UIImage imageNamed:@"user.png"];
-    self.userNameTextField.leftViewMode = UITextFieldViewModeAlways;
-    self.userNameTextField.leftView = leftview;
-    self.userNameTextField.placeholder = @"  请输入手机号";
-    
-    //设置密码输入框左右两侧的图片和文字
-    CGRect frame1 = CGRectMake(11, 10, 13, 16);
-    UIImageView *leftview1 = [[UIImageView alloc] initWithFrame:frame1];
-    leftview1.image = [UIImage imageNamed:@"locked.png"];
-    self.passWordTextField.leftViewMode = UITextFieldViewModeAlways;
-    self.passWordTextField.leftView = leftview1;
-    self.passWordTextField.placeholder = @"  请输入密码";
-    
-    UIButton *rightView = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    [rightView setImage:[UIImage imageNamed:@"forget.png"] forState:UIControlStateNormal];
-    [rightView addTarget:self action:@selector(forgetPassword) forControlEvents:UIControlEventTouchUpInside];
-    self.passWordTextField.rightViewMode = UITextFieldViewModeAlways;
-    self.passWordTextField.rightView = rightView;
+    self.passWordView.layer.borderWidth= 1.0f;
+    self.passWordView.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
     
 }
 
 #pragma mark - 点击事件
-
-- (void)forgetPassword
-{
+- (IBAction)forgetPwdAction:(UIButton *)sender {
     NSLog(@"forget the password");
+}
+
+//查询账号密码是否正确
+- (IBAction)loginButtonAction:(UIButton *)sender {
+    if (self.userNameTextField.text != NULL) {
+        if (self.passWordTextField.text != NULL) {
+            //都有数据的情况下，请求查询
+            BmobQuery *bquery = [BmobQuery queryWithClassName:@"UserModel"];
+            [bquery whereKey:@"phone" equalTo:self.userNameTextField.text];
+            [bquery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+                if (number == 0) {
+                    UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"该用户不存在，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
+                    [view show];
+                }
+            }];
+            
+            [bquery findObjectsInBackgroundWithBlock:^(NSArray *array, NSError *error) {
+                if (!error) {
+                    for (BmobObject *obj in array) {
+                        //打印playerName
+                        NSLog(@"phone = %@", [obj objectForKey:@"phone"]);
+                        NSLog(@"pwd = %@", [obj objectForKey:@"pwd"]);
+                        //打印objectId,createdAt,updatedAt
+                        //                    NSLog(@"obj.objectId = %@", [obj objectId]);
+                        //                    NSLog(@"obj.createdAt = %@", [obj createdAt]);
+                        //                    NSLog(@"obj.updatedAt = %@", [obj updatedAt]);
+                        if (![self.passWordTextField.text isEqualToString:[obj objectForKey:@"pwd"]]) {
+                            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"密码不正确，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
+                            [view show];
+                        }else {
+                            MainViewController *vc = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
+                            [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated: YES completion:nil];
+                        }
+                    }
+                }else
+                {
+                    NSLog(@"%@",error);
+                }
+                
+            }];
+        }
+    }
+    
+}
+- (IBAction)registButtonAction:(UIButton *)sender {
+    
+    RegistViewController *registVC = [[RegistViewController alloc] initWithNibName:@"RegistViewController" bundle:[NSBundle mainBundle]];
+    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:registVC] animated:YES completion:^{
+        
+    }];
 }
 
 //点击屏幕除了键盘其他的地方
@@ -86,28 +114,42 @@
     }
 }
 
+#pragma mark - UITextFieldDelegate
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if (textField.tag == 101) {
+        
+    }else if (textField.tag == 102) {
+
+    }
+}
+//控制输入字符长度
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    
+    int MAX_CHARS = 30;
+    
+    NSMutableString *newtxt = [NSMutableString stringWithString:textField.text];
+    
+    [newtxt replaceCharactersInRange:range withString:string];
+    
+    //输入密码字符个数大于0时，忘记密码按钮隐藏
+    if (textField.tag == 102) {
+        if ([newtxt length] == 0) {
+            [self.forgetPwdButton setHidden:NO];
+        } else {
+            [self.forgetPwdButton setHidden:YES];
+        }
+    }
+
+    return ([newtxt length] <= MAX_CHARS);
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (IBAction)loginButtonAction:(UIButton *)sender {
-}
-- (IBAction)registButtonAction:(UIButton *)sender {
-    
-    RegistViewController *registVC = [[RegistViewController alloc] initWithNibName:@"RegistViewController" bundle:[NSBundle mainBundle]];
-    [self presentViewController:registVC animated:YES completion:^{
-        
-    }];
-}
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -45,6 +45,8 @@
 		3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F01D6308F200B99320 /* MainViewController.xib */; };
 		3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791F71D631AC400B99320 /* SleepStatusViewController.m */; };
 		3B2791FA1D631AC400B99320 /* SleepStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */; };
+		3B4335861D76661700AF2E8F /* UserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4335851D76661700AF2E8F /* UserInfoViewController.m */; };
+		3B4335881D76773D00AF2E8F /* UserInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4335871D76773D00AF2E8F /* UserInfoViewController.xib */; };
 		3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EA0291D75297900E23B63 /* ASPopUpView.m */; };
 		3B4EA02D1D75297900E23B63 /* ASProgressPopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EA02B1D75297900E23B63 /* ASProgressPopUpView.m */; };
 		3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */; };
@@ -224,6 +226,9 @@
 		3B2791F61D631AC400B99320 /* SleepStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepStatusViewController.h; sourceTree = "<group>"; };
 		3B2791F71D631AC400B99320 /* SleepStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepStatusViewController.m; sourceTree = "<group>"; };
 		3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SleepStatusViewController.xib; sourceTree = "<group>"; };
+		3B4335841D76661700AF2E8F /* UserInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoViewController.h; sourceTree = "<group>"; };
+		3B4335851D76661700AF2E8F /* UserInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoViewController.m; sourceTree = "<group>"; };
+		3B4335871D76773D00AF2E8F /* UserInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoViewController.xib; sourceTree = "<group>"; };
 		3B4EA0281D75297900E23B63 /* ASPopUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASPopUpView.h; sourceTree = "<group>"; };
 		3B4EA0291D75297900E23B63 /* ASPopUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASPopUpView.m; sourceTree = "<group>"; };
 		3B4EA02A1D75297900E23B63 /* ASProgressPopUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASProgressPopUpView.h; sourceTree = "<group>"; };
@@ -503,6 +508,36 @@
 			name = "睡眠历史记录";
 			sourceTree = "<group>";
 		};
+		3B4335801D7665A200AF2E8F /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				3BDD65431D45DF65009EA15F /* RegistAndLoginViewController.h */,
+				3BDD65441D45DF65009EA15F /* RegistAndLoginViewController.m */,
+				3BDD65451D45DF65009EA15F /* RegistAndLoginViewController.xib */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
+		3B4335811D7665AA00AF2E8F /* Regist */ = {
+			isa = PBXGroup;
+			children = (
+				3BDD65C11D45F5DC009EA15F /* RegistViewController.h */,
+				3BDD65C21D45F5DC009EA15F /* RegistViewController.m */,
+				3BDD65C31D45F5DC009EA15F /* RegistViewController.xib */,
+			);
+			name = Regist;
+			sourceTree = "<group>";
+		};
+		3B4335831D7665D000AF2E8F /* UserInfo */ = {
+			isa = PBXGroup;
+			children = (
+				3B4335841D76661700AF2E8F /* UserInfoViewController.h */,
+				3B4335851D76661700AF2E8F /* UserInfoViewController.m */,
+				3B4335871D76773D00AF2E8F /* UserInfoViewController.xib */,
+			);
+			name = UserInfo;
+			sourceTree = "<group>";
+		};
 		3B4EA0271D75297900E23B63 /* ASProgressPopUpView */ = {
 			isa = PBXGroup;
 			children = (
@@ -729,6 +764,7 @@
 			children = (
 				3BDD65131D45DE73009EA15F /* AppDelegate.h */,
 				3BDD65141D45DE73009EA15F /* AppDelegate.m */,
+				3BF1731B1D46F161008DF4DC /* 注册登录界面 */,
 				3B2791ED1D6308CB00B99320 /* 首页 */,
 				3BF1731C1D46F16E008DF4DC /* 密保箱 */,
 				3BBEF1471D4B3A05001BAE66 /* 密码本 */,
@@ -736,7 +772,6 @@
 				3B2791F31D631A5300B99320 /* 睡眠状态 */,
 				3B12AE371D6BFC2600C469EF /* 闹钟 */,
 				3B0278DF1D6E87BC0053820A /* 文件夹 */,
-				3BF1731B1D46F161008DF4DC /* 注册登录界面 */,
 				3BEFB46D1D499487003DABF7 /* SM4加密算法 */,
 				3BDD651C1D45DE73009EA15F /* Assets.xcassets */,
 				3BDD65481D45E4CA009EA15F /* iOS */,
@@ -873,12 +908,9 @@
 		3BF1731B1D46F161008DF4DC /* 注册登录界面 */ = {
 			isa = PBXGroup;
 			children = (
-				3BDD65431D45DF65009EA15F /* RegistAndLoginViewController.h */,
-				3BDD65441D45DF65009EA15F /* RegistAndLoginViewController.m */,
-				3BDD65451D45DF65009EA15F /* RegistAndLoginViewController.xib */,
-				3BDD65C11D45F5DC009EA15F /* RegistViewController.h */,
-				3BDD65C21D45F5DC009EA15F /* RegistViewController.m */,
-				3BDD65C31D45F5DC009EA15F /* RegistViewController.xib */,
+				3B4335831D7665D000AF2E8F /* UserInfo */,
+				3B4335801D7665A200AF2E8F /* Login */,
+				3B4335811D7665AA00AF2E8F /* Regist */,
 				3B8CBF371D758B07007DE127 /* UserModel.h */,
 				3B8CBF381D758B07007DE127 /* UserModel.m */,
 			);
@@ -1065,6 +1097,7 @@
 				3BDD65BF1D45E4CA009EA15F /* user@2x.png in Resources */,
 				3BDD65951D45E4CA009EA15F /* file@2x.png in Resources */,
 				3B12AE6B1D6C1CA300C469EF /* close@2x.png in Resources */,
+				3B4335881D76773D00AF2E8F /* UserInfoViewController.xib in Resources */,
 				3BDD65941D45E4CA009EA15F /* connect@3x.png in Resources */,
 				3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */,
 				3BDD65B51D45E4CA009EA15F /* select@2x.png in Resources */,
@@ -1202,6 +1235,7 @@
 				3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */,
 				3BDD65C41D45F5DC009EA15F /* RegistViewController.m in Sources */,
 				3B12AE3A1D6BFCF100C469EF /* ClockViewController.m in Sources */,
+				3B4335861D76661700AF2E8F /* UserInfoViewController.m in Sources */,
 				3B4EA02D1D75297900E23B63 /* ASProgressPopUpView.m in Sources */,
 				3BDD65121D45DE73009EA15F /* main.m in Sources */,
 				3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */,

@@ -25,7 +25,7 @@
     // Do any additional setup after loading the view from its nib.
     
     //navigationbar左右按钮的配置
-    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"列表" style:UIBarButtonItemStylePlain target:self action:@selector(listAction)];
+    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"list"] style:UIBarButtonItemStylePlain target:self action:@selector(listAction)];
     self.navigationItem.leftBarButtonItem = leftButton;
     
     UIBarButtonItem *rightButton1 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"search"] style:UIBarButtonItemStylePlain target:self action:nil];

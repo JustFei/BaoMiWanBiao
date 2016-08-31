@@ -9,9 +9,14 @@
 #import "RegistViewController.h"
 #import "UserModel.h"
 #import <BmobSDK/Bmob.h>
+#import <BmobSDK/BmobSMS.h>
+#import "UserInfoViewController.h"
 
-@interface RegistViewController ()
-
+@interface RegistViewController ()<UIAlertViewDelegate,UITextFieldDelegate>
+{
+    int seconds;
+    NSTimer *countDown;
+}
 @end
 
 @implementation RegistViewController
@@ -19,104 +24,142 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    
+    seconds = 60;
     [self modifyUI];
 }
 
 - (void)modifyUI
 {
-    //手机号输入框UI设置
-    UIImageView *leftView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 13, 16)];
-    leftView.image = [UIImage imageNamed:@"user.png"];
-    self.phoneNumberTextField.leftViewMode = UITextFieldViewModeAlways;
-    self.phoneNumberTextField.leftView = leftView;
-    self.phoneNumberTextField.placeholder = @"  请输入手机号";
-    self.phoneNumberTextField.layer.borderWidth= 1.0f;
-    self.phoneNumberTextField.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
+    self.navigationItem.title = @"注册";
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backButtonAction)];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    self.phoneNumberView.layer.borderWidth= 1.0f;
+    self.phoneNumberView.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
     
     //验证码输入框UI设置
-    UIImageView *leftView1 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 13, 16)];
-    leftView1.image = [UIImage imageNamed:@"key.png"];
-    self.safeCodeTextField.leftViewMode = UITextFieldViewModeAlways;
-    self.safeCodeTextField.leftView = leftView1;
-    self.safeCodeTextField.placeholder = @"  请输入验证码";
-    self.safeCodeTextField.layer.borderWidth= 1.0f;
-    self.safeCodeTextField.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
-    
-    
-    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 84, 44)];
-    [rightButton addTarget:self action:@selector(verifyTheNum) forControlEvents:UIControlEventTouchUpInside];
-    [rightButton setTitle:@"获取验证码" forState:UIControlStateNormal];
-    rightButton.titleLabel.font = [UIFont systemFontOfSize:13];
-    [rightButton setTitleColor:[UIColor colorWithRed:0 green:138.0 / 255.0 blue:249.0 / 255.0 alpha:1] forState:UIControlStateNormal];
-    self.safeCodeTextField.rightViewMode = UITextFieldViewModeAlways;
-    self.safeCodeTextField.rightView = rightButton;
+    self.safeCodeView.layer.borderWidth= 1.0f;
+    self.safeCodeView.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
     
     //两次密码输入框
     //第一次
-    UIImageView *leftView2 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 13, 16)];
-    leftView2.image = [UIImage imageNamed:@"locked.png"];
-    self.firstEnterPwdTextField.leftViewMode = UITextFieldViewModeAlways;
-    self.firstEnterPwdTextField.leftView = leftView2;
-    self.firstEnterPwdTextField.placeholder = @"  请设置登陆密码";
-    self.firstEnterPwdTextField.layer.borderWidth= 1.0f;
-    self.firstEnterPwdTextField.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
+    self.firstEnterPwdView.layer.borderWidth= 1.0f;
+    self.firstEnterPwdView.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
     
     //第二次
-    UIImageView *leftView3 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 13, 16)];
-    leftView3.image = [UIImage imageNamed:@"locked.png"];
-    self.secondEnterPwdTextField.leftViewMode = UITextFieldViewModeAlways;
-    self.secondEnterPwdTextField.leftView = leftView3;
-    self.secondEnterPwdTextField.placeholder = @"  请确认登录密码";
-    self.secondEnterPwdTextField.layer.borderWidth= 1.0f;
-    self.secondEnterPwdTextField.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
+    self.secondEnterPwdView.layer.borderWidth= 1.0f;
+    self.secondEnterPwdView.layer.borderColor= [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (IBAction)NextStepButtonAction:(UIButton *)sender {
+
+#pragma mark - UITextFieldDelegate
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+#if 0
+    int pwdStrong = [self validatePassword];
+    switch (pwdStrong) {
+        case 1:
+            NSLog(@"弱");
+            break;
+        case 2:
+            NSLog(@"中");
+            break;
+        case 3:
+            NSLog(@"中强");
+            break;
+        case 4:
+            NSLog(@"强");
+            
+        default:
+            break;
+    }
+#endif
     
-    //在GameScore创建一条数据，如果当前没GameScore表，则会创建GameScore表
-    BmobObject  *userModel = [BmobObject objectWithClassName:@"UserModel"];
-    //phone为输入框中的值
-    [userModel setObject:self.phoneNumberTextField.text forKey:@"phone"];
-    //设置userName为小明
-    [userModel setObject:self.firstEnterPwdTextField.text forKey:@"pwd"];
-//    //设置cheatMode为NO
-//    [userModel setObject:[NSNumber numberWithBool:NO] forKey:@"cheatMode"];
-//    //设置age为18
-//    [userModel setObject:[NSNumber numberWithInt:18] forKey:@"age"];
-    
-    //异步保存到服务器
-    [userModel saveInBackgroundWithResultBlock:^(BOOL isSuccessful, NSError *error) {
-        if (isSuccessful) {
-            //创建成功后会返回objectId，updatedAt，createdAt等信息
-            //创建对象成功，打印对象值
-            NSLog(@"%@",userModel);
-        } else if (error){
-            //发生错误后的动作
-            NSLog(@"%@",error);
-        } else {
-            NSLog(@"Unknow error");
-        }
-    }];
-}
-- (IBAction)backButtonAction:(UIButton *)sender {
-    
-    [self hiddenKeyboard];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    return YES;
 }
 
 #pragma mark - 点击事件
-- (void)verifyTheNum
-{
-    //验证次号码是否已经存在
-    //查找UserModel表
-    BmobQuery   *bquery = [BmobQuery queryWithClassName:@"UserModel"];
-    //添加playerName不是小明的约束条件
-    [bquery whereKey:@"phone" equalTo:self.phoneNumberTextField.text];
+- (IBAction)getSafeCodeAction:(UIButton *)sender {
+    
+    if ([self isMobileNumber: self.phoneNumberTextField.text]) {
+        //验证次号码是否已经存在
+        //查找UserModel表
+        BmobQuery   *bquery = [BmobQuery queryWithClassName:@"UserModel"];
+        //添加playerName不是小明的约束条件
+        [bquery whereKey:@"phone" equalTo:self.phoneNumberTextField.text];
+        [bquery countObjectsInBackgroundWithBlock:^(int number,NSError  *error){
+            NSLog(@"%d",number);
+            
+            //如果存在，提示换号码
+            if (number > 0) {
+                UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"该号码已被注册，请换个号码试试！" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
+                [view show];
+            }else {
+                //不存在，就请求验证码
+                
+                //改变获取验证码按钮为60秒倒计时
+                [self changeGetSafeCodeButtonState];
+                
+                //请求验证码
+                [BmobSMS requestSMSCodeInBackgroundWithPhoneNumber:self.phoneNumberTextField.text andTemplate:@"密保宝" resultBlock:^(int number, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@",error);
+                    } else {
+                        //获得smsID
+                        NSLog(@"sms ID：%d",number);
+                    }
+                }];
+            }
+        }];
+    }else {
+        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入正确的手机号" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
+        [view show];
+    }
+}
+
+- (IBAction)NextStepButtonAction:(UIButton *)sender {
+    
+    if ([self.firstEnterPwdTextField.text isEqualToString:self.secondEnterPwdTextField.text]) {
+        //验证码验证成功后，停止定时器
+        //验证
+        [BmobSMS verifySMSCodeInBackgroundWithPhoneNumber:self.phoneNumberTextField.text andSMSCode:self.safeCodeTextField.text resultBlock:^(BOOL isSuccessful, NSError *error) {
+            if (isSuccessful) {
+                NSLog(@"%@",@"验证成功，可执行用户请求的操作");
+                [self releaseTImer];
+                
+                //传递model给下一个控制器
+                UserModel *model = [[UserModel alloc] init];
+                model.phone = self.phoneNumberTextField.text;
+                model.pwd = self.secondEnterPwdTextField.text;
+                UserInfoViewController *vc = [[UserInfoViewController alloc] initWithNibName:@"UserInfoViewController" bundle:nil];
+                vc.userModel = model;
+                [self.navigationController pushViewController:vc animated:YES];
+            } else {
+                NSLog(@"%@",error);
+                UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码输入错误，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
+                [view show];
+                
+            }
+        }];
+        
+    }else
+    {
+        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"两次输入的密码不一致，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
+        [view show];
+    }
+    
+    
+    
+}
+- (void)backButtonAction{
+    
+    [self hiddenKeyboard];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 //点击屏幕除了键盘其他的地方
@@ -142,14 +185,143 @@
     }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)changeGetSafeCodeButtonState
+{
+    self.getSafeCode.enabled = NO;
+    
+    countDown = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerFireMethod:) userInfo:nil repeats:YES];
+    
 }
-*/
+                          
+-(void)timerFireMethod:(NSTimer *)theTimer {
+    if (seconds == 1) {
+        [theTimer invalidate];
+        seconds = 60;
+        [self.getSafeCode setTitle:@"获取验证码" forState: UIControlStateNormal];
+        [self.getSafeCode setTitleColor:UIColorFromRGBWithAlpha(0x2c91F4, 1) forState:UIControlStateNormal];
+        [self.getSafeCode setEnabled:YES];
+    }else{
+        seconds--;
+        NSString *title = [NSString stringWithFormat:@"%d秒后尝试",seconds];
+        [self.getSafeCode setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [self.getSafeCode setEnabled:NO];
+        [self.getSafeCode setTitle:title forState:UIControlStateNormal];
+    }
+}
+
+//如果登陆成功，停止验证码的倒数，
+- (void)releaseTImer {
+    if (countDown) {
+        if ([countDown respondsToSelector:@selector(isValid)]) {
+            if ([countDown isValid]) {
+                [countDown invalidate];
+                seconds = 60;
+            }
+        }
+    }
+}
+
+#pragma mark - 正则表达式
+//判断手机号格式
+- (BOOL)isMobileNumber:(NSString *)mobileNum
+{
+    if (mobileNum.length != 11)
+    {
+        return NO;
+    }
+    /**
+     * 手机号码:
+     * 13[0-9], 14[5,7], 15[0, 1, 2, 3, 5, 6, 7, 8, 9], 17[0, 1, 6, 7, 8], 18[0-9]
+     * 移动号段: 134,135,136,137,138,139,147,150,151,152,157,158,159,170,178,182,183,184,187,188
+     * 联通号段: 130,131,132,145,152,155,156,170,171,176,185,186
+     * 电信号段: 133,134,153,170,177,180,181,189
+     */
+    NSString *MOBILE = @"^1(3[0-9]|4[57]|5[0-35-9]|7[01678]|8[0-9])\\d{8}$";
+    /**
+     * 中国移动：China Mobile
+     * 134,135,136,137,138,139,147,150,151,152,157,158,159,170,178,182,183,184,187,188
+     */
+    NSString *CM = @"^1(3[4-9]|4[7]|5[0-27-9]|7[08]|8[2-478])\\d{8}$";
+    /**
+     * 中国联通：China Unicom
+     * 130,131,132,145,152,155,156,170,171,176,185,186
+     */
+    NSString *CU = @"^1(3[0-2]|4[5]|5[256]|7[016]|8[56])\\d{8}$";
+    /**
+     * 中国电信：China Telecom
+     * 133,134,153,170,177,180,181,189
+     */
+    NSString *CT = @"^1(3[34]|53|7[07]|8[019])\\d{8}$";
+    
+    
+    NSPredicate *regexmobile = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", MOBILE];
+    NSPredicate *regexcm = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CM];
+    NSPredicate *regexcu = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CU];
+    NSPredicate *regexct = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CT];
+    
+    if (([regexmobile evaluateWithObject:mobileNum] == YES)
+        || ([regexcm evaluateWithObject:mobileNum] == YES)
+        || ([regexct evaluateWithObject:mobileNum] == YES)
+        || ([regexcu evaluateWithObject:mobileNum] == YES))
+    {
+        return YES;
+    }
+    else
+    {
+        return NO;
+    }
+}
+
+- (int)validatePassword
+
+{
+    int count = 0;
+//    NSString * length = @"^\\w{6,18}$";//长度
+    
+    NSString * number = @"^\\w*\\d+\\w*$";//数字
+    
+    NSString * lower = @"^\\w*[a-z]+\\w*$";//小写字母
+    
+    NSString * upper = @"^\\w*[A-Z]+\\w*$";//大写字母
+    
+    NSString * punct = @"/^[:punct:]+$/x";
+    
+    NSPredicate *regexnumber = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",number];
+    NSPredicate *regexlower = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",lower];
+    NSPredicate *regexupper = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",upper];
+    NSPredicate *regexpunct = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",punct];
+    
+    BOOL isHaveNumber = [regexnumber evaluateWithObject: self.firstEnterPwdTextField.text];
+    BOOL isHaveLower = [regexlower evaluateWithObject:self.firstEnterPwdTextField.text];
+    BOOL isHaveUpper = [regexupper evaluateWithObject:self.firstEnterPwdTextField.text];
+    BOOL isHavePunct = [regexpunct evaluateWithObject:self.firstEnterPwdTextField.text];
+    
+//    return [self validateWithRegExp: number] && [self validateWithRegExp: lower] && [self validateWithRegExp: upper];
+    
+    if (isHaveNumber) {
+        count ++;
+    }
+    if (isHaveLower) {
+        count ++;
+    }
+    if (isHaveUpper) {
+        count ++;
+    }
+    if (isHavePunct) {
+        count ++;
+    }
+    
+    return count;
+}
+
+//- (BOOL)validateWithRegExp: (NSString *)regExp
+//
+//{
+//    
+//    NSPredicate * predicate = [NSPredicate predicateWithFormat: @"SELF MATCHES %@", regExp];
+//    
+//    return [predicate evaluateWithObject: self.firstEnterPwdTextField.text];
+//    
+//}
 
 @end

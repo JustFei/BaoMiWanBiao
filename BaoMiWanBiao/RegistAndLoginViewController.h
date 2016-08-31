@@ -12,15 +12,18 @@
 
 //用户头像
 @property (weak, nonatomic) IBOutlet UIImageView *userHeadIamgeView;
-
+//用户名输入View
+@property (weak, nonatomic) IBOutlet UIView *userNameView;
 //用户名输入框
 @property (weak, nonatomic) IBOutlet UITextField *userNameTextField;
+//密码输入View
+@property (weak, nonatomic) IBOutlet UIView *passWordView;
 //密码输入框
 @property (weak, nonatomic) IBOutlet UITextField *passWordTextField;
-
 //注册按钮属性
 @property (weak, nonatomic) IBOutlet UIButton *registButton;
-
+//忘记密码按钮
+@property (weak, nonatomic) IBOutlet UIButton *forgetPwdButton;
 
 
 @end

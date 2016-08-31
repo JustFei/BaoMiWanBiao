@@ -218,12 +218,12 @@
                   moduleName = "BaoMiWanBiao"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mofujian/Desktop/%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8%E9%A1%B9%E7%9B%AE/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8/BaoMiWanBiao/BaoMiWanBiao/ClockContentView.m"
-                  timestampString = "494243733.946397"
+                  timestampString = "494329737.35673"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "225"
                   endingLineNumber = "225"
-                  offsetFromSymbolStart = "891">
+                  offsetFromSymbolStart = "968">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -233,12 +233,12 @@
                   moduleName = "BaoMiWanBiao"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mofujian/Desktop/%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8%E9%A1%B9%E7%9B%AE/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8/BaoMiWanBiao/BaoMiWanBiao/ClockContentView.m"
-                  timestampString = "494243733.946657"
+                  timestampString = "494329737.358146"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "225"
-                  endingLineNumber = "225"
-                  offsetFromSymbolStart = "15">
+                  startingLineNumber = "226"
+                  endingLineNumber = "226"
+                  offsetFromSymbolStart = "20">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -350,6 +350,54 @@
             startingLineNumber = "240"
             endingLineNumber = "240"
             landmarkName = "-calculatePopUpViewSize"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BaoMiWanBiao/RegistViewController.m"
+            timestampString = "494331197.173185"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "311"
+            endingLineNumber = "311"
+            landmarkName = "-validatePassword"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BaoMiWanBiao/RegistAndLoginViewController.m"
+            timestampString = "494328954.734767"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "-loginButtonAction:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BaoMiWanBiao/RegistAndLoginViewController.m"
+            timestampString = "494328954.734767"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "-loginButtonAction:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
