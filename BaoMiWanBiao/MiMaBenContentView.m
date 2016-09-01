@@ -125,7 +125,8 @@
 - (XxfFmdbTool *)sqlTool
 {
     if (!_sqlTool) {
-        XxfFmdbTool *tool = [[XxfFmdbTool alloc] initWithPath:@"accountInfo.sqlite"];
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        XxfFmdbTool *tool = [[XxfFmdbTool alloc] initWithPath:userPhone];
         
         _sqlTool = tool;
     }

@@ -378,7 +378,8 @@
 - (ClockFmdbTool *)fmTool
 {
     if (!_fmTool) {
-        ClockFmdbTool *tool = [[ClockFmdbTool alloc] initWithPath:@"xxf"];
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        ClockFmdbTool *tool = [[ClockFmdbTool alloc] initWithPath:userPhone];
         
         _fmTool = tool;
     }

@@ -41,7 +41,7 @@ static FMDatabase *_fmdb;
         }
         
         //创建表
-        [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists %@ClockData(id integer primary key, time text, isopen bool);",path]];
+        [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists ClockData(id integer primary key, time text, isopen bool);"]];
     }
     
     return self;
@@ -56,7 +56,7 @@ static FMDatabase *_fmdb;
  */
 - (BOOL)insertModel:(ClockModel *)model
 {
-    NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO %@ClockData(time, isopen) VALUES ('%@', '%d');", _username, model.time, model.isOpen];
+    NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO ClockData(time, isopen) VALUES ('%@', '%d');", model.time, model.isOpen];
     
     BOOL result = [_fmdb executeUpdate:insertSql];
     if (result) {
@@ -76,7 +76,7 @@ static FMDatabase *_fmdb;
  */
 - (NSArray *)queryData {
     
-    NSString *queryString = [NSString stringWithFormat:@"SELECT * FROM %@ClockData;",_username];
+    NSString *queryString = [NSString stringWithFormat:@"SELECT * FROM ClockData;"];
     
     NSMutableArray *arrM = [NSMutableArray array];
     FMResultSet *set = [_fmdb executeQuery:queryString];
@@ -109,7 +109,7 @@ static FMDatabase *_fmdb;
  */
 - (BOOL)modifyData:(NSInteger )modifySqlID model:(ClockModel *)modifySqlModel
 {
-    NSString *modifySqlTime = [NSString stringWithFormat:@"update %@ClockData set time = ? , isopen = ? where id = ?",_username ];
+    NSString *modifySqlTime = [NSString stringWithFormat:@"update ClockData set time = ? , isopen = ? where id = ?" ];
     BOOL result = result = [_fmdb executeUpdate:modifySqlTime, modifySqlModel.time, [NSNumber numberWithBool:modifySqlModel.isOpen], [NSNumber numberWithInteger:modifySqlID]];
     
     if (result) {
@@ -123,7 +123,7 @@ static FMDatabase *_fmdb;
 
 - (BOOL)deleteData:(NSInteger )deleteSql
 {
-    NSString *deleteSqlStr = [NSString stringWithFormat:@"DELETE FROM %@ClockData WHERE id = ?",_username];
+    NSString *deleteSqlStr = [NSString stringWithFormat:@"DELETE FROM ClockData WHERE id = ?"];
     
     BOOL result = [_fmdb executeUpdate:deleteSqlStr,[NSNumber numberWithInteger:deleteSql]];
     

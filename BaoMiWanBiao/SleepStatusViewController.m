@@ -222,7 +222,8 @@
 - (SleepFmdbTool *)fmTool
 {
     if (!_fmTool) {
-        SleepFmdbTool *tool = [[SleepFmdbTool alloc] initWithPath:@"xxf"];
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        SleepFmdbTool *tool = [[SleepFmdbTool alloc] initWithPath:userPhone];
         
         _fmTool = tool;
     }

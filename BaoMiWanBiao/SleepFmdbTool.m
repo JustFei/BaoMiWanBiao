@@ -41,7 +41,7 @@ static FMDatabase *_fmdb;
         }
         
         //创建表
-        [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists %@SleepData(id integer primary key, date text, sumsleep text, deepsleep text, lowsleep text);",path]];
+        [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists SleepData(id integer primary key, date text, sumsleep text, deepsleep text, lowsleep text);"]];
     }
     
     return self;
@@ -56,7 +56,7 @@ static FMDatabase *_fmdb;
  */
 - (BOOL)insertModel:(SleepDailyDataModel *)model
 {
-    NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO %@SleepData(date, sumsleep, deepsleep, lowsleep) VALUES ('%@', '%@', '%@', '%@');", _username, model.date, model.sumSleepTime, model.deepSleepTime, model.lowSleepTime];
+    NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO SleepData(date, sumsleep, deepsleep, lowsleep) VALUES ('%@', '%@', '%@', '%@');", model.date, model.sumSleepTime, model.deepSleepTime, model.lowSleepTime];
     
     BOOL result = [_fmdb executeUpdate:insertSql];
     if (result) {
@@ -79,10 +79,10 @@ static FMDatabase *_fmdb;
     NSString *queryString;
     
     if (querySql == nil) {
-        queryString = [NSString stringWithFormat:@"SELECT * FROM %@SleepData;",_username];
+        queryString = [NSString stringWithFormat:@"SELECT * FROM SleepData;"];
     }else {
         //这里一定不能将？用需要查询的日期代替掉
-        queryString = [NSString stringWithFormat:@"SELECT * FROM %@SleepData where date = ?;",_username ];
+        queryString = [NSString stringWithFormat:@"SELECT * FROM SleepData where date = ?;" ];
     }
     
     NSMutableArray *arrM = [NSMutableArray array];
@@ -126,7 +126,7 @@ static FMDatabase *_fmdb;
         return NO;
     }
     
-    NSString *modifySql = [NSString stringWithFormat:@"update %@SleepData set sumsleep = ? deepsleep = ? lowsleep = ? where date = ?",_username ];
+    NSString *modifySql = [NSString stringWithFormat:@"update SleepData set sumsleep = ? deepsleep = ? lowsleep = ? where date = ?" ];
     
     return [_fmdb executeUpdate:modifySql, modifySqlModel.sumSleepTime, modifySqlModel.deepSleepTime, modifySqlModel.lowSleepTime, modifySqlDate];
 }

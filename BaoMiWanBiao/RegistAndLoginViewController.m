@@ -10,6 +10,7 @@
 #import "RegistViewController.h"
 #import <BmobSDK/Bmob.h>
 #import "MainViewController.h"
+#import "MBProgressHUD.h"
 
 @interface RegistAndLoginViewController ()<UITextFieldDelegate>
 
@@ -59,27 +60,35 @@
             //都有数据的情况下，请求查询
             BmobQuery *bquery = [BmobQuery queryWithClassName:@"UserModel"];
             [bquery whereKey:@"phone" equalTo:self.userNameTextField.text];
+            
+            //显示等待菊花
+            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            
             [bquery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
                 if (number == 0) {
                     UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"该用户不存在，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
                     [view show];
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
                 }
             }];
             
             [bquery findObjectsInBackgroundWithBlock:^(NSArray *array, NSError *error) {
+                
+                //隐藏等待菊花
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                
                 if (!error) {
                     for (BmobObject *obj in array) {
                         //打印playerName
                         NSLog(@"phone = %@", [obj objectForKey:@"phone"]);
                         NSLog(@"pwd = %@", [obj objectForKey:@"pwd"]);
                         //打印objectId,createdAt,updatedAt
-                        //                    NSLog(@"obj.objectId = %@", [obj objectId]);
-                        //                    NSLog(@"obj.createdAt = %@", [obj createdAt]);
-                        //                    NSLog(@"obj.updatedAt = %@", [obj updatedAt]);
+                        
                         if (![self.passWordTextField.text isEqualToString:[obj objectForKey:@"pwd"]]) {
                             UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"密码不正确，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
                             [view show];
                         }else {
+                            [[NSUserDefaults standardUserDefaults] setObject:self.userNameTextField.text forKey:@"UserName"];
                             MainViewController *vc = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
                             [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated: YES completion:nil];
                         }
@@ -90,7 +99,13 @@
                 }
                 
             }];
+        }else {
+            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入密码" delegate:self cancelButtonTitle:@"去输入" otherButtonTitles:nil, nil];
+            [view show];
         }
+    }else {
+        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入账号" delegate:self cancelButtonTitle:@"去输入" otherButtonTitles:nil, nil];
+        [view show];
     }
     
 }
@@ -123,6 +138,63 @@
 
     }
 }
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    
+    if (textField.tag == 101) {
+        if(range.length + range.location > textField.text.length)
+        {
+            return NO;
+        }
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        return newLength <= 11;
+    }else
+        if (textField.tag == 102) {
+            if(range.length + range.location > textField.text.length)
+            {
+                return NO;
+            }
+            
+            NSUInteger newLength = [textField.text length] + [string length] - range.length;
+            return newLength <= 8;
+        }
+    
+    return YES;
+    
+    
+    
+#if 0
+    int pwdStrong = [self validatePassword];
+    switch (pwdStrong) {
+        case 1:
+            NSLog(@"弱");
+            break;
+        case 2:
+            NSLog(@"中");
+            break;
+        case 3:
+            NSLog(@"中强");
+            break;
+        case 4:
+            NSLog(@"强");
+            
+        default:
+            break;
+    }
+#endif
+    
+    //    if(range.length + range.location > textField.text.length)
+    //    {
+    //        return NO;
+    //    }
+    //
+    //    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    //    return newLength <= 11;
+    
+    //    return YES;
+}
+
 //控制输入字符长度
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {

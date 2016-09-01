@@ -11,6 +11,7 @@
 #import <BmobSDK/Bmob.h>
 #import <BmobSDK/BmobSMS.h>
 #import "UserInfoViewController.h"
+#import "MBProgressHUD.h"
 
 @interface RegistViewController ()<UIAlertViewDelegate,UITextFieldDelegate>
 {
@@ -60,6 +61,39 @@
 #pragma mark - UITextFieldDelegate
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+
+    if (textField.tag == 101) {
+        if(range.length + range.location > textField.text.length)
+        {
+            return NO;
+        }
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        return newLength <= 11;
+    }else
+    if (textField.tag == 102) {
+        if(range.length + range.location > textField.text.length)
+        {
+            return NO;
+        }
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        return newLength <= 6;
+    }else
+    if (textField.tag == 103 || textField.tag == 104) {
+        if(range.length + range.location > textField.text.length)
+        {
+            return NO;
+        }
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        return newLength <= 8;
+    }
+    
+    return YES;
+    
+    
+    
 #if 0
     int pwdStrong = [self validatePassword];
     switch (pwdStrong) {
@@ -80,7 +114,15 @@
     }
 #endif
     
-    return YES;
+//    if(range.length + range.location > textField.text.length)
+//    {
+//        return NO;
+//    }
+//    
+//    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+//    return newLength <= 11;
+    
+//    return YES;
 }
 
 #pragma mark - 点击事件
@@ -105,13 +147,25 @@
                 //改变获取验证码按钮为60秒倒计时
                 [self changeGetSafeCodeButtonState];
                 
+                //显示等待菊花
+                [MBProgressHUD showHUDAddedTo:self.view animated:YES];
                 //请求验证码
                 [BmobSMS requestSMSCodeInBackgroundWithPhoneNumber:self.phoneNumberTextField.text andTemplate:@"密保宝" resultBlock:^(int number, NSError *error) {
                     if (error) {
                         NSLog(@"%@",error);
+                        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码发送失败，请检查当前网络状态" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                        [view show];
+                        
+                        //隐藏等待菊花
+                        [MBProgressHUD hideHUDForView:self.view animated:YES];
                     } else {
                         //获得smsID
                         NSLog(@"sms ID：%d",number);
+                        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码已发送，请注意查收" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+                        [view show];
+                        
+                        //隐藏等待菊花
+                        [MBProgressHUD hideHUDForView:self.view animated:YES];
                     }
                 }];
             }
@@ -125,12 +179,18 @@
 - (IBAction)NextStepButtonAction:(UIButton *)sender {
     
     if ([self.firstEnterPwdTextField.text isEqualToString:self.secondEnterPwdTextField.text]) {
-        //验证码验证成功后，停止定时器
+        
+        //显示等待菊花
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         //验证
         [BmobSMS verifySMSCodeInBackgroundWithPhoneNumber:self.phoneNumberTextField.text andSMSCode:self.safeCodeTextField.text resultBlock:^(BOOL isSuccessful, NSError *error) {
             if (isSuccessful) {
                 NSLog(@"%@",@"验证成功，可执行用户请求的操作");
+                //验证码验证成功后，停止定时器
                 [self releaseTImer];
+                
+                //隐藏等待菊花
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
                 
                 //传递model给下一个控制器
                 UserModel *model = [[UserModel alloc] init];
@@ -143,10 +203,11 @@
                 NSLog(@"%@",error);
                 UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码输入错误，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
                 [view show];
-                
+                //隐藏等待菊花
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
             }
         }];
-        
+    
     }else
     {
         UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"两次输入的密码不一致，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];

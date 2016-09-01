@@ -41,11 +41,6 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b2Q-ot-6Ho" userLabel="SafeCodeView">
                     <rect key="frame" x="12" y="140" width="296" height="44"/>
                     <subviews>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入验证码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gbK-7P-YNB">
-                            <rect key="frame" x="38" y="0.0" width="132" height="44"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </textField>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IYs-jN-uyc">
                             <rect key="frame" x="178" y="7" width="110" height="30"/>
                             <constraints>
@@ -63,6 +58,14 @@
                                 <constraint firstAttribute="width" constant="19" id="WEe-au-0eW"/>
                             </constraints>
                         </imageView>
+                        <textField opaque="NO" clipsSubviews="YES" tag="102" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入验证码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gbK-7P-YNB">
+                            <rect key="frame" x="38" y="0.0" width="132" height="44"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="Yvf-RQ-07I"/>
+                            </connections>
+                        </textField>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
@@ -88,10 +91,10 @@
                                 <constraint firstAttribute="width" constant="19" id="ZDC-aT-jnm"/>
                             </constraints>
                         </imageView>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请设置8位数的字母、数字和符号的登陆密码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Cx9-hn-Yql">
+                        <textField opaque="NO" clipsSubviews="YES" tag="103" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请设置8位数的字母、数字和符号的登陆密码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Cx9-hn-Yql">
                             <rect key="frame" x="38" y="0.0" width="258" height="44"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
                             <connections>
                                 <outlet property="delegate" destination="-1" id="Fkn-DU-AXl"/>
                             </connections>
@@ -117,10 +120,13 @@
                                 <constraint firstAttribute="width" constant="19" id="TDD-hO-Epg"/>
                             </constraints>
                         </imageView>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请确认登录密码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="M5S-Fe-N75">
+                        <textField opaque="NO" clipsSubviews="YES" tag="104" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请确认登录密码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="M5S-Fe-N75">
                             <rect key="frame" x="38" y="0.0" width="258" height="44"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="cyY-ww-bcF"/>
+                            </connections>
                         </textField>
                     </subviews>
                     <constraints>
@@ -143,10 +149,13 @@
                                 <constraint firstAttribute="width" constant="19" id="GgC-sv-rdg"/>
                             </constraints>
                         </imageView>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入手机号" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="udh-sB-CNu">
+                        <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入手机号" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="udh-sB-CNu">
                             <rect key="frame" x="38" y="0.0" width="258" height="44"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="y5i-MI-SKd"/>
+                            </connections>
                         </textField>
                     </subviews>
                     <constraints>

@@ -8,3 +8,4 @@
 
 #import "XXFFontConstants.h"
 #import "XXFColorConstants.h"
+#import "XXFStringConstants.h"

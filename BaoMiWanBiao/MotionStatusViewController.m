@@ -325,7 +325,8 @@
 - (MotionFmdbTool *)fmTool
 {
     if (!_fmTool) {
-        MotionFmdbTool *tool = [[MotionFmdbTool alloc] initWithPath:@"xxf"];
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        MotionFmdbTool *tool = [[MotionFmdbTool alloc] initWithPath:userPhone];
         
         _fmTool = tool;
     }

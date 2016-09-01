@@ -8,6 +8,7 @@
 
 #import "UserInfoViewController.h"
 #import "MainViewController.h"
+#import "MBProgressHUD.h"
 
 @interface UserInfoViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -45,6 +46,7 @@
     [self.reservedQuestionView.layer setBorderColor:[UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor];
     self.answerView.layer.borderWidth = 1.0f;
     [self.answerView.layer setBorderColor:[UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1].CGColor];
+    self.answerTextField.enabled = NO;
     
     //开启预留问题的点击效果
     self.reservedQuestionView.userInteractionEnabled = YES;
@@ -132,6 +134,8 @@
     CGRect frame = self.questionTableView.frame;
     frame.size.height = 0;
     self.questionTableView.frame = frame;
+    
+    self.answerTextField.enabled = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -141,12 +145,16 @@
 
 #pragma mark - 点击事件
 - (IBAction)sureButtonAction:(UIButton *)sender {
+    
+    UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请完善用户信息" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
     if (self.idNumberTextField.text != NULL) {
         if (self.answerTextField.text != NULL) {
             self.userModel.identityCode = self.idNumberTextField.text;
             self.userModel.question = questionNumber;
             self.userModel.answer = self.answerTextField.text;
             
+            //显示等待菊花
+            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             //这里上传所有的用户数据
             //往GameScore表添加一条playerName为小明，分数为78的数据
             BmobObject *gameScore = [BmobObject objectWithClassName:@"UserModel"];
@@ -159,9 +167,19 @@
                 //进行操作
                 if (isSuccessful) {
                     NSLog(@"数据上传成功");
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
                 }
             }];
+            
+            //这里保存用户名到本地
+            [[NSUserDefaults standardUserDefaults] setObject:self.userModel.phone forKey:@"UserName"];
+            
+        }else {
+            [view show];
         }
+        
+    }else {
+        [view show];
     }
     
     

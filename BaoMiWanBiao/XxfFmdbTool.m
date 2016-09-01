@@ -10,6 +10,12 @@
 #import "PasswordNoteModel.h"
 #import "PasswordNoteMainModel.h"
 
+@interface XxfFmdbTool ()
+{
+    NSString *_username;
+}
+@end
+
 @implementation XxfFmdbTool
 
 static FMDatabase *_fmdb;
@@ -18,8 +24,9 @@ static FMDatabase *_fmdb;
 {
     self = [super init];
     if (self) {
-        NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@",path]];
+        NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@.sqlite",path]];
         _fmdb = [FMDatabase databaseWithPath:filePath];
+        _username = path;
         
         NSLog(@"filePath == %@",filePath);
         
@@ -39,7 +46,7 @@ static FMDatabase *_fmdb;
          *  @param bool 是否加密
          *
          */
-        [_fmdb executeUpdate:@"create table if not exists PasswordNoteTable(id integer primary key, name text, account text, password text, memorandum text, isEncrypt bool);"];
+        [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists PasswordNoteTable(id integer primary key, name text, account text, password text, memorandum text, isEncrypt bool);"]];
     }
     return self;
 }
@@ -66,7 +73,7 @@ static FMDatabase *_fmdb;
 - (NSArray *)queryData:(NSString *)querySql {
     
     if (querySql == nil) {
-        querySql = @"SELECT * FROM PasswordNoteTable;";
+        querySql = [NSString stringWithFormat:@"SELECT * FROM PasswordNoteTable;"];
     }
     
     NSMutableArray *arrM = [NSMutableArray array];

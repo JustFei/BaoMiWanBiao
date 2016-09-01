@@ -57,12 +57,13 @@
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:_rightButton];
     self.navigationItem.rightBarButtonItem = rightItem;
     
-    self.folderView.backgroundColor = [UIColor whiteColor];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    self.folderView.backgroundColor = [UIColor whiteColor];
 }
 
 #pragma mark - navigationbar左右按钮的事件
