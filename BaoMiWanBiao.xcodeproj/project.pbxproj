@@ -80,6 +80,8 @@
 		3BCDF4101D6ACF3A00B6D7D5 /* MotionFmdbTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BCDF40F1D6ACF3A00B6D7D5 /* MotionFmdbTool.m */; };
 		3BCDF4131D6AD02500B6D7D5 /* MotionDailyDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BCDF4121D6AD02500B6D7D5 /* MotionDailyDataModel.m */; };
 		3BD797001D55D34B00DB6821 /* JBBarChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD796FF1D55D34B00DB6821 /* JBBarChartFooterView.m */; };
+		3BD8242A1D7921360089BBCD /* FolderPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD824281D7921360089BBCD /* FolderPhotoViewController.m */; };
+		3BD8242B1D7921360089BBCD /* FolderPhotoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BD824291D7921360089BBCD /* FolderPhotoViewController.xib */; };
 		3BDD65121D45DE73009EA15F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDD65111D45DE73009EA15F /* main.m */; };
 		3BDD65151D45DE73009EA15F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDD65141D45DE73009EA15F /* AppDelegate.m */; };
 		3BDD651D1D45DE73009EA15F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BDD651C1D45DE73009EA15F /* Assets.xcassets */; };
@@ -292,6 +294,9 @@
 		3BD797031D55D55C00DB6821 /* XXFConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXFConstants.h; sourceTree = "<group>"; };
 		3BD797051D55D62900DB6821 /* BaoMiWanBiao-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BaoMiWanBiao-Prefix.pch"; sourceTree = "<group>"; };
 		3BD797061D55D68600DB6821 /* XXFColorConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXFColorConstants.h; sourceTree = "<group>"; };
+		3BD824271D7921360089BBCD /* FolderPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderPhotoViewController.h; sourceTree = "<group>"; };
+		3BD824281D7921360089BBCD /* FolderPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderPhotoViewController.m; sourceTree = "<group>"; };
+		3BD824291D7921360089BBCD /* FolderPhotoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FolderPhotoViewController.xib; sourceTree = "<group>"; };
 		3BDD650D1D45DE73009EA15F /* BaoMiWanBiao.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BaoMiWanBiao.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BDD65111D45DE73009EA15F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3BDD65131D45DE73009EA15F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -410,13 +415,8 @@
 		3B0278DF1D6E87BC0053820A /* 文件夹 */ = {
 			isa = PBXGroup;
 			children = (
-				3B0278E01D6E885E0053820A /* FolderViewController.h */,
-				3B0278E11D6E885E0053820A /* FolderViewController.m */,
-				3B0278E41D6FD0480053820A /* FolderContentView.h */,
-				3B0278E51D6FD0480053820A /* FolderContentView.m */,
-				3B0278E71D6FD5E90053820A /* FolderPhotoCell.h */,
-				3B0278E81D6FD5E90053820A /* FolderPhotoCell.m */,
-				3B0278E91D6FD5E90053820A /* FolderPhotoCell.xib */,
+				3BD824231D791DB60089BBCD /* Folder */,
+				3BC0B47D1D4851F200616A27 /* 系统相册图片选择 */,
 			);
 			name = "文件夹";
 			sourceTree = "<group>";
@@ -553,6 +553,7 @@
 		3B659DF11D49E1D000EC568B /* 手动加密密保箱 */ = {
 			isa = PBXGroup;
 			children = (
+				3BD824261D7920F40089BBCD /* FolderPhoto */,
 				3BF1731D1D46F20D008DF4DC /* MiBaoXiangViewController.h */,
 				3BF1731E1D46F20D008DF4DC /* MiBaoXiangViewController.m */,
 				3BC0B4781D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.h */,
@@ -735,6 +736,46 @@
 				3B2E164F1D77CAD900DD5716 /* XXFStringConstants.h */,
 			);
 			name = Constants;
+			sourceTree = "<group>";
+		};
+		3BD824231D791DB60089BBCD /* Folder */ = {
+			isa = PBXGroup;
+			children = (
+				3BD824241D791DC90089BBCD /* FolderC */,
+				3BD824251D791DD40089BBCD /* FolderV */,
+			);
+			name = Folder;
+			sourceTree = "<group>";
+		};
+		3BD824241D791DC90089BBCD /* FolderC */ = {
+			isa = PBXGroup;
+			children = (
+				3B0278E01D6E885E0053820A /* FolderViewController.h */,
+				3B0278E11D6E885E0053820A /* FolderViewController.m */,
+			);
+			name = FolderC;
+			sourceTree = "<group>";
+		};
+		3BD824251D791DD40089BBCD /* FolderV */ = {
+			isa = PBXGroup;
+			children = (
+				3B0278E41D6FD0480053820A /* FolderContentView.h */,
+				3B0278E51D6FD0480053820A /* FolderContentView.m */,
+				3B0278E71D6FD5E90053820A /* FolderPhotoCell.h */,
+				3B0278E81D6FD5E90053820A /* FolderPhotoCell.m */,
+				3B0278E91D6FD5E90053820A /* FolderPhotoCell.xib */,
+			);
+			name = FolderV;
+			sourceTree = "<group>";
+		};
+		3BD824261D7920F40089BBCD /* FolderPhoto */ = {
+			isa = PBXGroup;
+			children = (
+				3BD824271D7921360089BBCD /* FolderPhotoViewController.h */,
+				3BD824281D7921360089BBCD /* FolderPhotoViewController.m */,
+				3BD824291D7921360089BBCD /* FolderPhotoViewController.xib */,
+			);
+			name = FolderPhoto;
 			sourceTree = "<group>";
 		};
 		3BDD65041D45DE73009EA15F = {
@@ -922,7 +963,6 @@
 		3BF1731C1D46F16E008DF4DC /* 密保箱 */ = {
 			isa = PBXGroup;
 			children = (
-				3BC0B47D1D4851F200616A27 /* 系统相册图片选择 */,
 				3B659DF11D49E1D000EC568B /* 手动加密密保箱 */,
 				3B0278E31D6E886F0053820A /* 图片预览 */,
 			);
@@ -1138,6 +1178,7 @@
 				3BDD65B41D45E4CA009EA15F /* secret_text@3x.png in Resources */,
 				3B12AE661D6C1CA300C469EF /* clock@3x.png in Resources */,
 				3BDD659E1D45E4CA009EA15F /* key@3x.png in Resources */,
+				3BD8242B1D7921360089BBCD /* FolderPhotoViewController.xib in Resources */,
 				3BDD65BC1D45E4CA009EA15F /* ture_box@3x.png in Resources */,
 				3B12AE631D6C1CA300C469EF /* circlelock@3x.png in Resources */,
 				3B12AE671D6C1CA300C469EF /* open.png in Resources */,
@@ -1223,6 +1264,7 @@
 				3BCDF4101D6ACF3A00B6D7D5 /* MotionFmdbTool.m in Sources */,
 				3B12AE361D6BE49300C469EF /* SleepFmdbTool.m in Sources */,
 				3B0278E21D6E885E0053820A /* FolderViewController.m in Sources */,
+				3BD8242A1D7921360089BBCD /* FolderPhotoViewController.m in Sources */,
 				3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */,
 				3B12AE731D6C3E6C00C469EF /* ClockFmdbTool.m in Sources */,
 				3BDD65151D45DE73009EA15F /* AppDelegate.m in Sources */,

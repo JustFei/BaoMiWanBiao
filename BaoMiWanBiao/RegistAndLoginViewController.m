@@ -157,6 +157,13 @@
             }
             
             NSUInteger newLength = [textField.text length] + [string length] - range.length;
+            
+            if (newLength <= 0) {
+                [self.forgetPwdButton setHidden:NO];
+            } else {
+                [self.forgetPwdButton setHidden:YES];
+            }
+            
             return newLength <= 8;
         }
     
@@ -196,26 +203,22 @@
 }
 
 //控制输入字符长度
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    
-    int MAX_CHARS = 30;
-    
-    NSMutableString *newtxt = [NSMutableString stringWithString:textField.text];
-    
-    [newtxt replaceCharactersInRange:range withString:string];
-    
-    //输入密码字符个数大于0时，忘记密码按钮隐藏
-    if (textField.tag == 102) {
-        if ([newtxt length] == 0) {
-            [self.forgetPwdButton setHidden:NO];
-        } else {
-            [self.forgetPwdButton setHidden:YES];
-        }
-    }
-
-    return ([newtxt length] <= MAX_CHARS);
-}
+//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+//{
+//    
+//    int MAX_CHARS = 30;
+//    
+//    NSMutableString *newtxt = [NSMutableString stringWithString:textField.text];
+//    
+//    [newtxt replaceCharactersInRange:range withString:string];
+//    
+//    //输入密码字符个数大于0时，忘记密码按钮隐藏
+//    if (textField.tag == 102) {
+//        
+//    }
+//
+//    return ([newtxt length] <= MAX_CHARS);
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

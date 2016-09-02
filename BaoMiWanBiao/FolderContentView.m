@@ -181,7 +181,6 @@
     [[self findViewController:self].navigationController pushViewController:pick animated:YES];
 }
 
-#pragma mark - deletePics
 //删除图片按钮
 - (void)deleteImages
 {
@@ -204,39 +203,46 @@
             NSLog(@"FileDir is exists");
         }
         
-        //循环删除数据
-        for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
-            @autoreleasepool {
-                //此处为删除加密文件夹里面的内容
-                NSString *jiemiFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",_userPhone ,dataArr[index]]];
-                //先判断有没有该路径
-                BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiemiFilePath];
-                //如果有就删除，
-                if (!jiemiDirHave) {
-                    NSLog(@"no  havejiemi");
-                    return ;
-                }else {
-                    
-                    BOOL blDele= [fileManager removeItemAtPath:jiemiFilePath error:nil];
-                    self.changeRightItemTitleblock();
-                    
-                    if (blDele) {
-                        NSLog(@"delejiami success");
-                    }else {
-                        NSLog(@"delejiami fail");
-                    }
-                }
-            }
-        }
-        
         //删除数据源
         [self.localPhotos removeObjectsInArray:[self.dataDic allValues]];
         
         //删除界面的cell
         [self.photoTableView deleteRowsAtIndexPaths:[self.dataDic allKeys] withRowAnimation:UITableViewRowAnimationFade];
         
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            //循环删除数据
+            for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
+                @autoreleasepool {
+                    dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        //此处为删除加密文件夹里面的内容
+                        NSString *jiemiFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",_userPhone ,dataArr[index]]];
+                        //先判断有没有该路径
+                        BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiemiFilePath];
+                        //如果有就删除，
+                        if (!jiemiDirHave) {
+                            NSLog(@"no  havejiemi");
+                            return ;
+                        }else {
+                            
+                            BOOL blDele= [fileManager removeItemAtPath:jiemiFilePath error:nil];
+                            
+                            
+                            if (blDele) {
+                                NSLog(@"delejiami success");
+                            }else {
+                                NSLog(@"delejiami fail");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
         //删除存储删除信息的字典dataDic
         [self.dataDic removeAllObjects];
+        
+        //改变左右按钮的状态
+        self.changeRightItemTitleblock();
         
         [self.photoTableView setEditing:!self.photoTableView.editing animated:YES];
         _deleteImageButton.hidden = YES;

@@ -11,6 +11,7 @@
 #import "LocalPhotoViewController.h"
 #import "PhotoShowViewController.h"
 #import "ASProgressPopUpView.h"
+#import "FolderPhotoViewController.h"
 
 #import "SM4-OCMethod.h"
 
@@ -21,7 +22,7 @@
 #define WIDTH self.view.frame.size.width
 #define HEIGHT self.view.frame.size.height
 
-@interface MiBaoXiangViewController ()<UITableViewDelegate,UITableViewDataSource,SelectPhotoDelegate,ASProgressPopUpViewDataSource>
+@interface MiBaoXiangViewController ()<UITableViewDelegate,UITableViewDataSource,SelectPhotoDelegate,FolderSelectPhotoDelegate,ASProgressPopUpViewDataSource>
 {
     //选中图片数组，也是TableView的数据源
     NSMutableArray *_selectPhotos;
@@ -35,12 +36,18 @@
     UIButton *_deleteImageButton;
     
     NSString *userPhone;
+    
+    UIButton *_leftButton;
+    UIButton *_rightButton;
 }
 
 @property (nonatomic ,weak) UITableView *photoView;
 
 //存储着多选删除的多个图片的信息，key：选中cell的indexPath，value：这张图片的路径
 @property (nonatomic ,strong) NSMutableDictionary *dataDic;
+
+//全选删除时的数据源
+@property (nonatomic, strong) NSMutableArray *deleteDataArray;
 
 @property (weak, nonatomic) ASProgressPopUpView *addProgressView;
 @property (nonatomic ,strong) SM4_OCMethod *SM4;
@@ -57,7 +64,13 @@
     self.navigationItem.title = @"密码本";
     //左侧返回按键设置
 
-    UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    _leftButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 55, 30)];
+    [_leftButton setTitle:@" 取消" forState:UIControlStateNormal];
+    [_leftButton setFont:[UIFont systemFontOfSize:14]];
+    [_leftButton setTitleColor:[UIColor colorWithWhite:1.0 alpha:0] forState:UIControlStateNormal];
+    [_leftButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    [_leftButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithCustomView:_leftButton];
     self.navigationItem.leftBarButtonItem = leftBackItem;
     userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
     
@@ -80,14 +93,14 @@
     self.photoView.backgroundColor = [UIColor whiteColor];
     
     self.view.backgroundColor=[UIColor whiteColor];
-    self.navigationItem.title=@"自动加密文件夹";
+    self.navigationItem.title=@"手动加密文件夹";
     
     //设置右边
-    UIButton *rightButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,70,30)];
-    [rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [rightButton setTitle:@"编辑" forState:UIControlStateNormal];
-    [rightButton addTarget:self action:@selector(edit)forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithCustomView:rightButton];
+    _rightButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,70,30)];
+    [_rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_rightButton setTitle:@"编辑" forState:UIControlStateNormal];
+    [_rightButton addTarget:self action:@selector(edit:)forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithCustomView:_rightButton];
     self.navigationItem.rightBarButtonItem= rightItem;
     
     UIView *tabbarView = [[UIView alloc] initWithFrame:CGRectMake(0, HEIGHT - 49, WIDTH, 49)];
@@ -96,13 +109,13 @@
     tabbarView.layer.borderColor = [[UIColor grayColor] CGColor];
     
     _addImageButton = [[UIButton alloc] initWithFrame:CGRectMake(12, 10, WIDTH - 24, tabbarView.frame.size.height - 20)];
-    [_addImageButton setTitle:@"添加图片" forState:UIControlStateNormal];
+    [_addImageButton setTitle:@"添加保密文件" forState:UIControlStateNormal];
     [_addImageButton setBackgroundColor:[UIColor colorWithRed:0 green:137.0 / 255.0 blue:252.0 / 255.0 alpha:1]];
     [_addImageButton addTarget:self action:@selector(addImage) forControlEvents:UIControlEventTouchUpInside];
     _addImageButton.tag = 101;
     
     _deleteImageButton = [[UIButton alloc] initWithFrame:CGRectMake(12, 10, WIDTH - 24, tabbarView.frame.size.height - 20)];
-    [_deleteImageButton setTitle:@"移除选中图片到文件夹" forState:UIControlStateNormal];
+    [_deleteImageButton setTitle:@"移除" forState:UIControlStateNormal];
     [_deleteImageButton setBackgroundColor:[UIColor redColor]];
     [_deleteImageButton addTarget:self action:@selector(deleteImages) forControlEvents:UIControlEventTouchUpInside];
     _deleteImageButton.tag = 102;
@@ -126,7 +139,7 @@
     for (NSInteger index = mutArr.count - 1; index >= 0 ; index --) {
         if ([mutArr[index] isEqualToString:@".DS_Store"]) {
             [mutArr removeObjectAtIndex:index];
-            NSLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%ld",index ,mutArr.count);
+            NSLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%lu",(long)index ,(unsigned long)mutArr.count);
             
         }
     }
@@ -135,23 +148,66 @@
     return mutArr;
 }
 
-
+#pragma mark - 点击事件
 //编辑按钮点击事件
-- (void)edit
+- (void)edit:(UIButton *)sender
 {
-    if (_localPhotos.count != 0) {
-        if (self.photoView.isEditing) {
-            [self.photoView setEditing:NO animated:YES];
-            
-            //将删除图片按钮最前置
-            _addImageButton.hidden = NO;
-            _deleteImageButton.hidden = YES;
-        }else {
-            [self.photoView setEditing:YES animated:YES];
-            
-            //将添加图片按钮最前置
-            _addImageButton.hidden = YES;
-            _deleteImageButton.hidden = NO;
+
+    if (_localPhotos.count == 0) {
+        return;
+    }
+
+    
+    //如果在编辑title下，点击就变成全选
+    if ([sender.titleLabel.text isEqualToString:@"编辑"]) {
+        [sender setTitle:@"全选" forState:UIControlStateNormal];
+        [_leftButton setTitleColor:[UIColor colorWithWhite:1.0 alpha:1] forState:UIControlStateNormal];
+        if (_localPhotos.count != 0) {
+            if (self.photoView.isEditing) {
+                [self.photoView setEditing:NO animated:YES];
+                
+                //将删除图片按钮最前置
+                _addImageButton.hidden = NO;
+                _deleteImageButton.hidden = YES;
+            }else {
+                [self.photoView setEditing:YES animated:YES];
+                
+                //将添加图片按钮最前置
+                _addImageButton.hidden = YES;
+                _deleteImageButton.hidden = NO;
+            }
+        }
+        
+        //启动表格的编辑模式
+        [self.photoView setEditing:YES animated:YES];
+        //如果在全选title下，点击就变成取消全选
+    }else if ([sender.titleLabel.text isEqualToString:@"全选"]){
+        [sender setTitle:@"取消全选" forState:UIControlStateNormal];
+        
+        //全选所有数据
+        //先删除之前添加到 deleteDataArray 数组中的数据
+        [self.deleteDataArray removeAllObjects];
+        //再添加所有数据
+        [self.deleteDataArray addObjectsFromArray:_localPhotos];
+        [self.dataDic removeAllObjects];
+        
+        for (int i = 0; i < _localPhotos.count; i ++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            //设为选中状态
+            [self.photoView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+            [self.dataDic setObject:[_localPhotos objectAtIndex:indexPath.row] forKey:indexPath];
+        }
+        
+        //如果在取消全选下，点击就变回全选
+    }else if([sender.titleLabel.text isEqualToString:@"取消全选"]) {
+        [sender setTitle:@"全选" forState:UIControlStateNormal];
+        
+        [self.deleteDataArray removeAllObjects];
+        
+        for (int i = 0; i < _localPhotos.count; i ++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            //取消选中状态
+            [self.photoView deselectRowAtIndexPath:indexPath animated:YES];
         }
     }
 }
@@ -159,23 +215,145 @@
 //添加图片按钮
 - (void)addImage
 {
-    LocalPhotoViewController *pick=[[LocalPhotoViewController alloc] init];
-    [pick.view setBackgroundColor:[UIColor whiteColor]];
+//    LocalPhotoViewController *pick=[[LocalPhotoViewController alloc] init];
+//    [pick.view setBackgroundColor:[UIColor whiteColor]];
     self.navigationItem.backBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:nil action:nil];
-    pick.selectPhotoDelegate=self;
-//    pick.selectPhotos=_selectPhotos;
+//    pick.selectPhotoDelegate=self;
+//    _selectPhotos = pick.selectPhotos;
+    FolderPhotoViewController *pick = [[FolderPhotoViewController alloc] init];
+    pick.view.backgroundColor = [UIColor whiteColor];
+    pick.selectPhotoDelegate = self;
     _selectPhotos = pick.selectPhotos;
     
     [self.navigationController pushViewController:pick animated:YES];
 }
 
+//返回按钮
 - (void)backAction
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    if (self.photoView.editing) {
+        //这里执行退出编辑模式
+        [self.photoView setEditing:NO animated:YES];
+        
+        //改变左侧按钮的title
+        [_leftButton setTitleColor:[UIColor colorWithWhite:1.0 alpha:0] forState:UIControlStateNormal];
+        
+        //改变右侧按钮状态和title
+        _rightButton.selected = !_rightButton.selected;
+        [_rightButton setTitle:@"编辑" forState:UIControlStateNormal];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+//删除图片按钮
+- (void)deleteImages
+{
+    //    self.photoView.editing = NO;
+    //以下代码是处理数据的删除的操作。
+    if (self.dataDic.count != 0) {
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        
+        //先删除本地沙盒文件
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSMutableArray *dataArr = [NSMutableArray arrayWithArray:self.dataDic.allValues];
+        
+        //在此创建解密文件夹，如果存在就不创建
+        
+        NSString *createJieMiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi",userPhone]];
+        //判断是否存在Thumbnail文件夹，如果不存在，就创建
+        if (![[NSFileManager defaultManager] fileExistsAtPath:createJieMiDir]) {
+            [fileManager createDirectoryAtPath:createJieMiDir withIntermediateDirectories:YES attributes:nil error:nil];
+            
+        }else {
+            NSLog(@"FileDir is exists");
+        }
+        
+        //此处为处理删除时先删除UI上的cell可以让人产生秒删的感觉，实际上后台还在慢慢的move数据。此处用了子线程异步做循环，循环里面子线程在同步做删除，这样可以做到性能和体验的最优解~
+        
+        //删除数据源
+        [_localPhotos removeObjectsInArray:[self.dataDic allValues]];
+        
+        //删除界面的cell
+        [self.photoView deleteRowsAtIndexPaths:[self.dataDic allKeys] withRowAnimation:UITableViewRowAnimationFade];
+        
+        [_rightButton setTitle:@"编辑" forState:UIControlStateNormal];
+        [_leftButton setTitleColor:[UIColor colorWithWhite:1.0 alpha:0] forState:UIControlStateNormal];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            //循环删除数据
+            for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
+                
+                @autoreleasepool {
+                    dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        
+                        //此处为删除加密文件夹里面的内容
+                        NSString *jiamiFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JiaMi/%@",userPhone ,dataArr[index]]];
+                        NSString *moveToPath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",userPhone , dataArr[index]]];
+                        //先判断有没有该路径
+                        BOOL jiamiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiamiFilePath];
+                        BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
+                        //如果有就删除，
+                        if (!jiamiDirHave) {
+                            NSLog(@"no  havejiami");
+                            return ;
+                        }else {
+                            
+                            
+                            if (!jiemiDirHave) {
+                                
+                                //在移除前先进行解密，再移除
+                                //SM4解密
+                                NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
+                                NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
+                                BOOL jiemiResult = [jiemiPhotoData writeToFile:jiamiFilePath atomically:YES];
+                                
+                                NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiemiResult);
+                                
+                                BOOL blMove= [fileManager moveItemAtPath:jiamiFilePath toPath:moveToPath error:nil];
+                                [_jiamiPhotosArr removeObject:dataArr[index]];
+                                if (blMove) {
+                                    NSLog(@"movejiami success");
+                                }else {
+                                    NSLog(@"movejiami fail");
+                                }
+                            }else{
+                                BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
+                                [_jiamiPhotosArr removeObject:dataArr[index]];
+                                if (blDele) {
+                                    NSLog(@"delejiami success");
+                                }else {
+                                    NSLog(@"delejiami fail");
+                                }
+                            }
+                        }
+                        
+                        
+                    });
+                    
+                    
+                }
+                
+            }
+        });
+        
+        
+        
+        //删除存储删除信息的字典dataDic
+        [self.dataDic removeAllObjects];
+        
+        [_leftButton setTitleColor:[UIColor colorWithWhite:1.0 alpha:0] forState:UIControlStateNormal];
+        [_rightButton setTitle:@"编辑" forState:UIControlStateNormal];
+        
+        [self.photoView setEditing:!self.photoView.editing animated:YES];
+        _deleteImageButton.hidden = YES;
+        _addImageButton.hidden = NO;
+    }
 }
 
 //选中了几张图片
--(void)getSelectedPhoto:(NSMutableArray *)photos{
+-(void)getFolderSelectedPhoto:(NSMutableArray *)photos{
     //选中的图片存储在_selectPhotos数组中
     _selectPhotos = [NSMutableArray arrayWithArray:photos];
     NSLog(@"供选择%lu张照片",(unsigned long)[photos count]);
@@ -183,12 +361,19 @@
     for (NSInteger index = 0; index < _selectPhotos.count; index ++) {
         @autoreleasepool {
             //设置cell的图片和图片名字
-            ALAsset *asset=[_selectPhotos objectAtIndex:index];
+            NSString *picName=[_selectPhotos objectAtIndex:index];
             
             
             //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）
             dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                BOOL result = [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
+                
+                
+                //获取本地图片路径名
+                NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",userPhone ,picName]];
+                //    NSLog(@"%@",loaclImagePath);
+                UIImage *localImage = [[UIImage alloc] initWithContentsOfFile:loaclImagePath];
+                
+                BOOL result = [self saveImageToDocumentDirectory:localImage appendingString:picName];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     //添加加密文件夹数据源里的项目
@@ -291,111 +476,19 @@
     NSString *jiamiFilePath = [NSString stringWithFormat:@"%@/%@", createJiamiDir, imageName];
     NSData *imageData = UIImagePNGRepresentation(image);
     NSData *jiamiData = [self.SM4 Sm4Jiami:imageData];
+    
     BOOL jiamiResult = [jiamiData writeToFile:jiamiFilePath atomically:YES];
+    
+    //获取本地图片路径名
+    NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",userPhone ,imageName]];
+    [fileManager removeItemAtPath:loaclImagePath error:nil];
     
     NSLog(@"5yt是否成功：%d"  ,jiamiResult);
     
     return jiamiResult;
 }
 
-#pragma mark - deletePics
-//删除图片按钮
-- (void)deleteImages
-{
-    //以下代码是处理数据的删除的操作。
-    if (self.dataDic.count != 0) {
-        
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
-        //先删除本地沙盒文件
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSMutableArray *dataArr = [NSMutableArray arrayWithArray:self.dataDic.allValues];
-        
-        //在此创建解密文件夹，如果存在就不创建
-        
-        NSString *createJieMiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi",userPhone]];
-        //判断是否存在Thumbnail文件夹，如果不存在，就创建
-        if (![[NSFileManager defaultManager] fileExistsAtPath:createJieMiDir]) {
-            [fileManager createDirectoryAtPath:createJieMiDir withIntermediateDirectories:YES attributes:nil error:nil];
-            
-        }else {
-            NSLog(@"FileDir is exists");
-        }
-        
-            //删除数据源
-        [_localPhotos removeObjectsInArray:[self.dataDic allValues]];
-        
-        //删除界面的cell
-        [self.photoView deleteRowsAtIndexPaths:[self.dataDic allKeys] withRowAnimation:UITableViewRowAnimationFade];
-        
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            //循环删除数据
-            for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
-                
-                @autoreleasepool {
-                    dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        
-                        //此处为删除加密文件夹里面的内容
-                        NSString *jiamiFilePath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JiaMi/%@",userPhone ,dataArr[index]]];
-                        NSString *moveToPath = [paths.lastObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",userPhone , dataArr[index]]];
-                        //先判断有没有该路径
-                        BOOL jiamiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiamiFilePath];
-                        BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
-                        //如果有就删除，
-                        if (!jiamiDirHave) {
-                            NSLog(@"no  havejiami");
-                            return ;
-                        }else {
-                            
-                            
-                            if (!jiemiDirHave) {
-                                
-                                //在移除前先进行解密，再移除
-                                //SM4解密
-                                NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
-                                NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
-                                BOOL jiemiResult = [jiemiPhotoData writeToFile:jiamiFilePath atomically:YES];
-                                
-                                NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiemiResult);
-                                
-                                BOOL blMove= [fileManager moveItemAtPath:jiamiFilePath toPath:moveToPath error:nil];
-                                [_jiamiPhotosArr removeObject:dataArr[index]];
-                                if (blMove) {
-                                    NSLog(@"movejiami success");
-                                }else {
-                                    NSLog(@"movejiami fail");
-                                }
-                            }else{
-                                BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
-                                [_jiamiPhotosArr removeObject:dataArr[index]];
-                                if (blDele) {
-                                    NSLog(@"delejiami success");
-                                }else {
-                                    NSLog(@"delejiami fail");
-                                }
-                            }
-                        }
-                        
-                        
-                    });
-                    
-                    
-                }
-                
-            }
-        });
 
-        
-
-        //删除存储删除信息的字典dataDic
-        [self.dataDic removeAllObjects];
-        
-        [self.photoView setEditing:!self.photoView.editing animated:YES];
-        _deleteImageButton.hidden = YES;
-        _addImageButton.hidden = NO;
-    }
-}
 
 #pragma mark -左划删除
 //设置编辑风格EditingStyle
@@ -541,12 +634,12 @@
     NSString *s;
         int a = progress * _selectPhotos.count;
         s = [NSString stringWithFormat:@"正在加密第%d张图片",a];
-//        s = [NSString stringWithFormat:@"哒哒哒哒哒%d",a];
         NSLog(@"%@",s);
         if (progress >= 1) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [progressView setHidden:YES];
                 progressView.progress = 0.0;
+
             });
         }
 

@@ -78,6 +78,10 @@
         
         //改变右侧按钮状态和title
         _rightButton.selected = !_rightButton.selected;
+        
+        //改变删除按钮
+        [self.folderView.addImageButton setHidden:NO];
+        [self.folderView.deleteImageButton setHidden:YES];
         [_rightButton setTitle:@"编辑" forState:UIControlStateNormal];
     } else {
         [self.navigationController popViewControllerAnimated:YES];
@@ -87,6 +91,9 @@
 
 - (void)editPhotos:(UIButton *)sender
 {
+    if (self.folderView.localPhotos.count == 0) {
+        return;
+    }
     //如果在编辑title下，点击就变成全选
     if ([sender.titleLabel.text isEqualToString:@"编辑"]) {
         [sender setTitle:@"全选" forState:UIControlStateNormal];
@@ -95,13 +102,13 @@
             if (self.folderView.photoTableView.isEditing) {
                 [self.folderView.photoTableView setEditing:NO animated:YES];
                 
-                //将删除图片按钮最前置
+                //将添加图片按钮最前置
                 self.folderView.addImageButton.hidden = NO;
                 self.folderView.deleteImageButton.hidden = YES;
             }else {
                 [self.folderView.photoTableView setEditing:YES animated:YES];
                 
-                //将添加图片按钮最前置
+                //将删除图片按钮最前置
                 self.folderView.addImageButton.hidden = YES;
                 self.folderView.deleteImageButton.hidden = NO;
             }
