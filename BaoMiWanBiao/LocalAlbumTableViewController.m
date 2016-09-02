@@ -65,7 +65,7 @@
     // emumerate through our groups and only add groups that contain photos
     ALAssetsLibraryGroupsEnumerationResultsBlock listGroupBlock = ^(ALAssetsGroup *group, BOOL *stop) {
         
-        ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allPhotos];
+        ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allAssets];
         [group setAssetsFilter:onlyPhotosFilter];
         if ([group numberOfAssets] > 0)
         {

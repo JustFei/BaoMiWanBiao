@@ -87,7 +87,7 @@
             [cell.img setImage:localImage];
             [cell.btnSelect setHidden:YES];
 //            NSString *url=[asset valueForProperty:ALAssetPropertyAssetURL];
-//            [cell.btnSelect setHidden:[selectPhotoNames indexOfObject:url]==NSNotFound];
+            [cell.btnSelect setHidden:[selectPhotoNames indexOfObject:self.folderFildeNameArr[indexPath.row]]==NSNotFound];
         });
         
         return cell;
@@ -99,17 +99,15 @@
     if(cell.btnSelect.hidden)
     {
         [cell.btnSelect setHidden:NO];
-//        ALAsset *asset=self.photos[indexPath.row];
+
         
         [self.selectPhotos addObject:self.folderFildeNameArr[indexPath.row]];
-//        [selectPhotoNames addObject:[asset valueForProperty:ALAssetPropertyAssetURL]];
+        [selectPhotoNames addObject:self.folderFildeNameArr[indexPath.row]];
     }else{
         [cell.btnSelect setHidden:YES];
         NSString *asset=self.folderFildeNameArr[indexPath.row];
         for (NSString *a in self.selectPhotos) {
-//            NSLog(@"%@-----%@",[asset valueForProperty:ALAssetPropertyAssetURL],[a valueForProperty:ALAssetPropertyAssetURL]);
-//            NSString *str1=[asset valueForProperty:ALAssetPropertyAssetURL];
-//            NSString *str2=[a valueForProperty:ALAssetPropertyAssetURL];
+
             if([asset isEqual:a])
             {
                 [self.selectPhotos removeObject:a];
@@ -117,7 +115,7 @@
             }
         }
         
-//        [selectPhotoNames removeObject:[asset valueForProperty:ALAssetPropertyAssetURL]];
+        [selectPhotoNames removeObject:self.folderFildeNameArr[indexPath.row]];
     }
     
     if(self.selectPhotos.count==0)

@@ -19,6 +19,8 @@
 
 #import "MainViewController.h"
 
+#import "PKRevealController.h"
+
 @interface AppDelegate ()
 
 @end
@@ -36,14 +38,50 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil]];
-    self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:nil];
     //设置navigationbar的背景颜色以及title，item的颜色
     [[UINavigationBar appearance] setBarTintColor:UIColorFromRGBWithAlpha(0x2c91F4, 1)];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar
       appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    
+    //判断距离上次登陆过了多久
+    [self judgeLastLogin];
+    
     return YES;
+}
+
+- (void)judgeLastLogin
+{
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"LastLogin"]) {
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        [gregorian setFirstWeekday:2];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        
+        NSDate *lastDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastLogin"];
+        NSDate *nowDate = [NSDate date];
+        
+        NSDateComponents *dayComponents = [gregorian components:NSDayCalendarUnit fromDate:lastDate toDate:nowDate options:0];
+        
+        NSLog(@"距离上次登录间距min== %ld,day = %ld",dayComponents.minute ,dayComponents.day);
+        //超过24小时，就重新登陆
+        if (dayComponents.day >= 1) {
+            self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:nil];
+        }else {
+            
+            UIViewController *vc = [[UIViewController alloc] init];
+            vc.view.backgroundColor = [UIColor redColor];
+            
+            
+            
+            
+            PKRevealController *revealController = [PKRevealController revealControllerWithFrontViewController:[[UINavigationController alloc] initWithRootViewController:[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil]]  leftViewController:vc];
+            self.window.rootViewController = revealController;
+        }
+        
+    }else {
+        self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:nil];
+    }
 }
 
 - (void)onGetNetworkState:(int)iError

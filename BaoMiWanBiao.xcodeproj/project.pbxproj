@@ -82,6 +82,7 @@
 		3BD797001D55D34B00DB6821 /* JBBarChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD796FF1D55D34B00DB6821 /* JBBarChartFooterView.m */; };
 		3BD8242A1D7921360089BBCD /* FolderPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD824281D7921360089BBCD /* FolderPhotoViewController.m */; };
 		3BD8242B1D7921360089BBCD /* FolderPhotoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BD824291D7921360089BBCD /* FolderPhotoViewController.xib */; };
+		3BD8242E1D795D320089BBCD /* ListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD8242D1D795D320089BBCD /* ListView.m */; };
 		3BDD65121D45DE73009EA15F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDD65111D45DE73009EA15F /* main.m */; };
 		3BDD65151D45DE73009EA15F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDD65141D45DE73009EA15F /* AppDelegate.m */; };
 		3BDD651D1D45DE73009EA15F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BDD651C1D45DE73009EA15F /* Assets.xcassets */; };
@@ -297,6 +298,8 @@
 		3BD824271D7921360089BBCD /* FolderPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderPhotoViewController.h; sourceTree = "<group>"; };
 		3BD824281D7921360089BBCD /* FolderPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderPhotoViewController.m; sourceTree = "<group>"; };
 		3BD824291D7921360089BBCD /* FolderPhotoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FolderPhotoViewController.xib; sourceTree = "<group>"; };
+		3BD8242C1D795D320089BBCD /* ListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListView.h; sourceTree = "<group>"; };
+		3BD8242D1D795D320089BBCD /* ListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListView.m; sourceTree = "<group>"; };
 		3BDD650D1D45DE73009EA15F /* BaoMiWanBiao.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BaoMiWanBiao.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BDD65111D45DE73009EA15F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3BDD65131D45DE73009EA15F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -475,6 +478,8 @@
 				3B2791EE1D6308F200B99320 /* MainViewController.h */,
 				3B2791EF1D6308F200B99320 /* MainViewController.m */,
 				3B2791F01D6308F200B99320 /* MainViewController.xib */,
+				3BD8242C1D795D320089BBCD /* ListView.h */,
+				3BD8242D1D795D320089BBCD /* ListView.m */,
 			);
 			name = "首页";
 			sourceTree = "<group>";
@@ -1272,6 +1277,7 @@
 				3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */,
 				3BDD65461D45DF65009EA15F /* RegistAndLoginViewController.m in Sources */,
 				3B8C1B861D51F9DD00D061C8 /* MotionHistoryViewController.m in Sources */,
+				3BD8242E1D795D320089BBCD /* ListView.m in Sources */,
 				3BBEF15A1D4B495E001BAE66 /* AddMiMaViewContentView.m in Sources */,
 				3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */,
 				3B12AE3D1D6BFD1600C469EF /* ClockContentView.m in Sources */,

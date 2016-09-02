@@ -5,17 +5,20 @@ PODS:
   - FMDB/standard (2.6.2)
   - JBChartView (3.0.12)
   - MBProgressHUD (1.0.0)
+  - PKRevealController (2.0.6)
 
 DEPENDENCIES:
   - BmobSDK (~> 1.7.2)
   - FMDB (~> 2.6.2)
   - JBChartView (~> 3.0.12)
   - MBProgressHUD (~> 1.0.0)
+  - PKRevealController (~> 2.0.6)
 
 SPEC CHECKSUMS:
   BmobSDK: e188cb31d6a8417ab668aee821da227d7512b865
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   JBChartView: 08877554448ccf99c12625ad0ebce70588ff8318
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
+  PKRevealController: ffb45a16f5a5032ad90a3d16e5cbb0d8e035bd58
 
 COCOAPODS: 0.39.0

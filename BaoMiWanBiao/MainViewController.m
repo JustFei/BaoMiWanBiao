@@ -14,7 +14,13 @@
 #import "ClockViewController.h"
 #import "FolderViewController.h"
 
+#import "ListView.h"
+
 @interface MainViewController ()
+{
+    BOOL showListView;
+}
+@property (nonatomic ,weak) ListView *listView;
 
 @end
 
@@ -34,19 +40,36 @@
     self.navigationItem.rightBarButtonItems = @[rightButton2,rightButton1];
     
     //使用系统自带的返回手势（需要从最左边开始滑动）
-    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
+//    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
+    
+//    self.listView.backgroundColor = [UIColor redColor];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - 按钮点击事件
 /**
  *  左划进入列表ViewController
  *
  */
 - (void)listAction
 {
+    if (showListView) {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.listView.frame = CGRectMake(0, 0, 200, self.view.frame.size.height);
+        }];
+        showListView = !showListView;
+    }else {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.listView.frame = CGRectMake(-200, 0, 200, self.view.frame.size.height);
+        }];
+        showListView = !showListView;
+    }
     
 }
 
@@ -118,14 +141,18 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#pragma mark - 懒加载
+- (ListView *)listView
+{
+    if (!_listView) {
+        ListView *view = [[ListView alloc] initWithFrame:CGRectMake(-200, 0, 200, self.view.frame.size.height)];
+        view.backgroundColor = [UIColor redColor];
+        
+        [self.view addSubview:view];
+        _listView = view;
+    }
+    
+    return _listView;
 }
-*/
 
 @end

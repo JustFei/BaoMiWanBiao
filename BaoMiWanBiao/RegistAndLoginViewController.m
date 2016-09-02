@@ -88,6 +88,9 @@
                             UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"密码不正确，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
                             [view show];
                         }else {
+                            //最后一次登陆的时间
+                            [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastLogin"];
+                            //当前用户名
                             [[NSUserDefaults standardUserDefaults] setObject:self.userNameTextField.text forKey:@"UserName"];
                             MainViewController *vc = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
                             [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated: YES completion:nil];

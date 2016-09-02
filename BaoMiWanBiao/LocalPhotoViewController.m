@@ -52,7 +52,7 @@
     self.navigationItem.rightBarButtonItem = btnDone;
     NSUInteger groupTypes = ALAssetsGroupSavedPhotos;
     ALAssetsLibraryGroupsEnumerationResultsBlock listGroupBlock = ^(ALAssetsGroup *group, BOOL *stop) {
-        ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allPhotos];
+        ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allAssets];
         [group setAssetsFilter:onlyPhotosFilter];
         
         if ([group numberOfAssets] > 0)
@@ -197,7 +197,7 @@
                 }
             };
             
-            ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allPhotos];
+            ALAssetsFilter *onlyPhotosFilter = [ALAssetsFilter allAssets];
             [self.currentAlbum setAssetsFilter:onlyPhotosFilter];
             [self.currentAlbum enumerateAssetsUsingBlock:assetsEnumerationBlock];
             self.title = [self.currentAlbum valueForProperty:ALAssetsGroupPropertyName];

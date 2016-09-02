@@ -262,29 +262,129 @@
             //设置cell的图片和图片名字
             ALAsset *asset=[_selectPhotos objectAtIndex:index];
             
-            //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）
-            dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                
-                //将获取到的图片保存到APP的沙盒中
-                BOOL result = [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    //添加加密文件夹数据源里的项目
-                    //                _jiemiPhotosArr = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JieMi",userPhone]];
+            if ([asset thumbnail] != nil) {
+                if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]){
+                    NSLog(@"是照片");
                     
-                    if (result) {
-                        _localPhotos = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JieMi",_userPhone]];
-                    }
+                    //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）
+                    dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        
+                        //将获取到的图片保存到APP的沙盒中
+                        BOOL result = [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            //添加加密文件夹数据源里的项目
+                            //                _jiemiPhotosArr = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JieMi",userPhone]];
+                            
+                            if (result) {
+                                _localPhotos = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JieMi",_userPhone]];
+                            }
+                            
+                            [self.photoTableView reloadData];
+                            
+                            [self.addProgressView setHidden:NO];
+                            //添加进度条
+                            CGFloat percent = (float)(index + 1) / _selectPhotos.count;
+                            [self.addProgressView setProgress:percent animated:YES];
+                        });
+                    });
                     
-                    [self.photoTableView reloadData];
+                }else if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo] ){
+                    NSLog(@"是视频");
                     
-                    [self.addProgressView setHidden:NO];
-                    //添加进度条
-                    CGFloat percent = (float)(index + 1) / _selectPhotos.count;
-                    [self.addProgressView setProgress:percent animated:YES];
-                });
-            });
+#warning this is a biiiiiiiiiiiig bug!!!! how to save video
+                    
+                    NSURL *url=[asset valueForProperty:ALAssetPropertyAssetURL];
+                    
+                    // 解析一下,为什么视频不像图片一样一次性开辟本身大小的内存写入?
+                    // 想想,如果1个视频有1G多,难道直接开辟1G多的空间大小来写?
+                    ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        if (url) {
+                            [assetLibrary assetForURL:url resultBlock:^(ALAsset *asset) {
+                                ALAssetRepresentation *rep = [asset defaultRepresentation];
+                                NSString * videoPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]  stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@-JieMi/%@",_userPhone,[asset.defaultRepresentation filename]]];
+                                
+                                [self write:videoPath rep:rep];
+                                
+                            } failureBlock:nil];  
+                        }  
+                    });
+                    
+                }
+            }
         }
+    }
+}
+
+#if 0
++ (void)getVideoFromPHAsset:(ALAsset *)asset Complete:(Result)result {
+    NSArray *assetResources = [PHAssetResource assetResourcesForAsset:asset];
+    PHAssetResource *resource;
+    
+    for (PHAssetResource *assetRes in assetResources) {
+        if (assetRes.type == PHAssetResourceTypePairedVideo ||
+            assetRes.type == PHAssetResourceTypeVideo) {
+            resource = assetRes;
+        }
+    }
+    NSString *fileName = @"tempAssetVideo.mov";
+    if (resource.originalFilename) {
+        fileName = resource.originalFilename;
+    }
+    
+    if (asset.mediaType == PHAssetMediaTypeVideo || asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
+        PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+        options.version = PHImageRequestOptionsVersionCurrent;
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+        
+        NSString *PATH_MOVIE_FILE = [NSTemporaryDirectory() stringByAppendingPathComponent:fileName];
+        [[NSFileManager defaultManager] removeItemAtPath:PATH_MOVIE_FILE error:nil];
+        [[PHAssetResourceManager defaultManager] writeDataForAssetResource:resource
+                                                                    toFile:[NSURL fileURLWithPath:PATH_MOVIE_FILE]
+                                                                   options:nil
+                                                         completionHandler:^(NSError * _Nullable error) {
+                                                             if (error) {
+                                                                 result(nil, nil);
+                                                             } else {
+                                                                 
+                                                                 NSData *data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:PATH_MOVIE_FILE]];
+                                                                 result(data, fileName);
+                                                             }
+                                                             [[NSFileManager defaultManager] removeItemAtPath:PATH_MOVIE_FILE  error:nil];
+                                                         }];
+    } else {
+        result(nil, nil);
+    }
+}
+
+#endif
+
+
+
+- (void)write:(NSString *)videoPath rep:(ALAssetRepresentation *)rep
+{
+    char const *cvideoPath = [videoPath UTF8String];
+    FILE *file = fopen(cvideoPath, "a+");
+    if (file) {
+        const int bufferSize = 11024 * 1024;
+        // 初始化一个1M的buffer
+        Byte *buffer = (Byte*)malloc(bufferSize);
+        NSUInteger read = 0, offset = 0, written = 0;
+        NSError* err = nil;
+        if (rep.size != 0)
+        {
+            do {
+                read = [rep getBytes:buffer fromOffset:offset length:bufferSize error:&err];
+                written = fwrite(buffer, sizeof(char), read, file);
+                offset += read;
+            } while (read != 0 && !err);//没到结尾，没出错，ok继续
+        }
+        // 释放缓冲区，关闭文件
+        free(buffer);
+        buffer = NULL;
+        fclose(file);
+        file = NULL;
     }
 }
 
@@ -323,10 +423,10 @@
     
     
     /**
-     *  加密文件存储
+     *  解密文件存储
      */
     NSString *createJiamiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi",_userPhone]];
-    //判断是否存在JiaMi文件夹，如果不存在，就创建
+    //判断是否存在JieMi文件夹，如果不存在，就创建
     if (![[NSFileManager defaultManager] fileExistsAtPath:createJiamiDir]) {
         [fileManager createDirectoryAtPath:createJiamiDir withIntermediateDirectories:YES attributes:nil error:nil];
         

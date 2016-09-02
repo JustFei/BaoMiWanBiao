@@ -168,9 +168,12 @@
                 if (isSuccessful) {
                     NSLog(@"数据上传成功");
                     [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    
+                    
                 }
             }];
-            
+            //最后一次登陆的时间
+            [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastLogin"];
             //这里保存用户名到本地
             [[NSUserDefaults standardUserDefaults] setObject:self.userModel.phone forKey:@"UserName"];
             
