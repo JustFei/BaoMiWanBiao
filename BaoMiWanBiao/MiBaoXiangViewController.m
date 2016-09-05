@@ -203,7 +203,7 @@
         [sender setTitle:@"全选" forState:UIControlStateNormal];
         
         [self.deleteDataArray removeAllObjects];
-        
+        [self.dataDic removeAllObjects];
         for (int i = 0; i < _localPhotos.count; i ++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
             //取消选中状态
@@ -240,7 +240,12 @@
         
         //改变右侧按钮状态和title
         _rightButton.selected = !_rightButton.selected;
+        
+        //改变删除按钮
+        [_addImageButton setHidden:NO];
+        [_deleteImageButton setHidden:YES];
         [_rightButton setTitle:@"编辑" forState:UIControlStateNormal];
+        
     } else {
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -305,19 +310,15 @@
                                 
                                 //在移除前先进行解密，再移除
                                 //SM4解密
-                                NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
+                                NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath options:NSDataReadingMappedIfSafe error:nil];
                                 NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
-                                BOOL jiemiResult = [jiemiPhotoData writeToFile:jiamiFilePath atomically:YES];
+//                                BOOL jiemiResult = [jiemiPhotoData writeToFile:moveToPath atomically:YES];
+                                [self writeFile:jiemiPhotoData WithFilePath:moveToPath];
+                                //移除加密文件夹中的
+                                [fileManager removeItemAtPath:jiamiFilePath error:nil];
                                 
-                                NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiemiResult);
-                                
-                                BOOL blMove= [fileManager moveItemAtPath:jiamiFilePath toPath:moveToPath error:nil];
                                 [_jiamiPhotosArr removeObject:dataArr[index]];
-                                if (blMove) {
-                                    NSLog(@"movejiami success");
-                                }else {
-                                    NSLog(@"movejiami fail");
-                                }
+                                
                             }else{
                                 BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
                                 [_jiamiPhotosArr removeObject:dataArr[index]];
@@ -363,25 +364,46 @@
             //设置cell的图片和图片名字
             NSString *picName=[_selectPhotos objectAtIndex:index];
             
+            //            NSString * exestr = [picName pathExtension];
             
-            //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）
+            //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）(现在采用fwrite写入文件，可以做到几十M以内就可以完成写入)
             dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 
+                NSFileManager *fileManager = [[NSFileManager alloc] init];
                 
+                NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                NSString *createJiamiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JiaMi",userPhone]];
+                //判断是否存在JiaMi文件夹，如果不存在，就创建
+                if (![[NSFileManager defaultManager] fileExistsAtPath:createJiamiDir]) {
+                    [fileManager createDirectoryAtPath:createJiamiDir withIntermediateDirectories:YES attributes:nil error:nil];
+                    
+                }else {
+                    NSLog(@"3FileDir is exists");
+                }
+                NSString *jiamiFilePath = [NSString stringWithFormat:@"%@/%@", createJiamiDir, picName];
+                
+                //获取jiemi图片路径名
+                NSString *jiemiImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",userPhone ,picName]];
+                
+                NSData *imageData = [NSData dataWithContentsOfFile:jiemiImagePath options:NSDataReadingMappedIfSafe error:nil];
+                NSData *jiamiData = [self.SM4 Sm4Jiami:imageData];
+                
+                //如果大于1M，就分段写，如果小于的话，就直接写入
+                if (jiamiData.length <= 1024 * 1024) {
+                    [jiamiData writeToFile:jiamiFilePath atomically:YES];
+                }else {
+                    [self writeFile:jiamiData WithFilePath:jiamiFilePath];
+                }
                 //获取本地图片路径名
                 NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",userPhone ,picName]];
-                //    NSLog(@"%@",loaclImagePath);
-                UIImage *localImage = [[UIImage alloc] initWithContentsOfFile:loaclImagePath];
-                
-                BOOL result = [self saveImageToDocumentDirectory:localImage appendingString:picName];
+                [fileManager removeItemAtPath:loaclImagePath error:nil];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     //添加加密文件夹数据源里的项目
                     _jiamiPhotosArr = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JiaMi",userPhone]];
                     
-                            if (result) {
                     _localPhotos = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JiaMi",userPhone]];
-                            }
+                    
                     [self.addProgressView setHidden:NO];
                     //添加进度条
                     CGFloat percent = (float)(index + 1) / _selectPhotos.count;
@@ -389,6 +411,7 @@
                     
                     [self.photoView reloadData];
                 });
+                
             });
         }
     }
@@ -423,10 +446,6 @@
     [cell.thumbnail setImage:localImage];
     cell.imageName.text = _localPhotos[indexPath.row];
     
-    //从系统相册里获取的图片
-    //[cell.thumbnail setImage:posterImage];
-    //cell.imageName.text=[asset.defaultRepresentation filename];
-    
     return cell;
 }
 
@@ -435,62 +454,40 @@
     return 60;
 }
 
-#pragma mark - 文件本地保存（加密操作）
-//将获取到的图片保存到APP的沙盒中
-- (BOOL)saveImageToDocumentDirectory:(UIImage *)image appendingString:(NSString *)imageName
+#pragma mark - 文件本地保存（加密操作）写入文件的方法
+- (void)writeFile:(NSData *)data WithFilePath:(NSString *)filePath
 {
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    
-    /**
-     *  缩略图文件存储
-     */
-    NSString *createThumbnailDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-Thumbnail",userPhone]];
-    //判断是否存在Thumbnail文件夹，如果不存在，就创建
-    if (![[NSFileManager defaultManager] fileExistsAtPath:createThumbnailDir]) {
-        [fileManager createDirectoryAtPath:createThumbnailDir withIntermediateDirectories:YES attributes:nil error:nil];
-        
-    }else {
-        NSLog(@"1FileDir is exists");
+    FILE *file = fopen([filePath UTF8String], [@"ab+" UTF8String]);
+    if (file) {
+        const int bufferSize = 1024 * 1024;
+        // 初始化一个1M的buffer
+        Byte *buffer = (Byte*)malloc(bufferSize);
+        NSUInteger read = 0, offset = 0, written = 0;
+        NSError* err = nil;
+        if (data.length != 0)
+        {
+            do {
+                read = bufferSize;
+                if ((data.length - read) < offset) {
+                    read = data.length - offset;
+                }
+                //更新缓冲区
+                [data getBytes:buffer range:NSMakeRange(offset, read)];
+                written = fwrite(buffer, sizeof(char), read, file);
+                offset += read;
+                NSLog(@"%ld",(data.length - offset));
+                
+            } while (!(read < bufferSize) && !err);//没到结尾，没出错，ok继续
+        }
+        // 释放缓冲区，关闭文件
+        free(buffer);
+        buffer = NULL;
+        fclose(file);
+        file = NULL;
     }
-    NSString *thumbnailFilePath = [NSString stringWithFormat:@"%@/%@", createThumbnailDir, imageName];
-    //只做缩略图
-    UIImage *thumbnailImage = [self imageCompressForSize:image targetSize:CGSizeMake(55, 55)];
-    NSData *thumbnailData = UIImagePNGRepresentation(thumbnailImage);
-    BOOL thumbnailResult = [thumbnailData writeToFile:thumbnailFilePath atomically:YES];
-    NSLog(@"缩略图的地址：%@",thumbnailFilePath);
-    NSLog(@"2slt是否成功：%d" ,thumbnailResult);
-    
-    /**
-     *  加密文件存储
-     */
-    NSString *createJiamiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JiaMi",userPhone]];
-    //判断是否存在JiaMi文件夹，如果不存在，就创建
-    if (![[NSFileManager defaultManager] fileExistsAtPath:createJiamiDir]) {
-        [fileManager createDirectoryAtPath:createJiamiDir withIntermediateDirectories:YES attributes:nil error:nil];
-        
-    }else {
-        NSLog(@"3FileDir is exists");
-    }
-    NSString *jiamiFilePath = [NSString stringWithFormat:@"%@/%@", createJiamiDir, imageName];
-    NSData *imageData = UIImagePNGRepresentation(image);
-    NSData *jiamiData = [self.SM4 Sm4Jiami:imageData];
-    
-    BOOL jiamiResult = [jiamiData writeToFile:jiamiFilePath atomically:YES];
-    
-    //获取本地图片路径名
-    NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi/%@",userPhone ,imageName]];
-    [fileManager removeItemAtPath:loaclImagePath error:nil];
-    
-    NSLog(@"5yt是否成功：%d"  ,jiamiResult);
-    
-    return jiamiResult;
 }
 
-
-
-#pragma mark -左划删除
+#pragma mark - 左划删除
 //设置编辑风格EditingStyle
 -(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -617,6 +614,8 @@
         NSString *jiamiFilePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JiaMi/%@",userPhone ,_jiamiPhotosArr[indexPath.row]]];
         NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath];
         NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
+        
+        //这里判断文件为图片还是视频，分别传递到不同的控制器
         UIImage *jiemiImage = [UIImage imageWithData:jiemiPhotoData];
         
         PhotoShowViewController *psVC = [[PhotoShowViewController alloc] initWithImage:jiemiImage title:cell.imageName.text];

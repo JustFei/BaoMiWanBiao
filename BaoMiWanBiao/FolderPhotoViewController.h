@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @protocol FolderSelectPhotoDelegate<NSObject>
 -(void)getFolderSelectedPhoto:(NSMutableArray *)photos;

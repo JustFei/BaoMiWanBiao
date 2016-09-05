@@ -263,22 +263,34 @@
             ALAsset *asset=[_selectPhotos objectAtIndex:index];
             
             if ([asset thumbnail] != nil) {
-                if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]){
-                    NSLog(@"是照片");
-                    
+//                if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]){
+//                    NSLog(@"是照片");
+                
                     //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）
                     dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        ALAssetRepresentation *rep = [asset defaultRepresentation];
                         
-                        //将获取到的图片保存到APP的沙盒中
-                        BOOL result = [self saveImageToDocumentDirectory:[UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage] appendingString:[asset.defaultRepresentation filename]];
+                        NSFileManager *fileManager = [[NSFileManager alloc] init];
+                        
+                        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                        NSString *createJiemiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi",_userPhone]];
+                        //判断是否存在JieMi文件夹，如果不存在，就创建
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:createJiemiDir]) {
+                            [fileManager createDirectoryAtPath:createJiemiDir withIntermediateDirectories:YES attributes:nil error:nil];
+                            
+                        }else {
+                            NSLog(@"FileDir is exists");
+                        }
+                        NSString *jiemiFilePath = [NSString stringWithFormat:@"%@/%@", createJiemiDir, [asset.defaultRepresentation filename]];
+                        
+                        [self write:jiemiFilePath rep:rep];
+                        [self saveThumWithAsset:asset imageName:[asset.defaultRepresentation filename]];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             //添加加密文件夹数据源里的项目
                             //                _jiemiPhotosArr = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JieMi",userPhone]];
                             
-                            if (result) {
                                 _localPhotos = [self gitImagesWithDirctory:[NSString stringWithFormat:@"%@-JieMi",_userPhone]];
-                            }
                             
                             [self.photoTableView reloadData];
                             
@@ -289,7 +301,9 @@
                         });
                     });
                     
-                }else if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo] ){
+//                }
+#if 0
+                else if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo] ){
                     NSLog(@"是视频");
                     
 #warning this is a biiiiiiiiiiiig bug!!!! how to save video
@@ -306,61 +320,28 @@
                                 NSString * videoPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]  stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@-JieMi/%@",_userPhone,[asset.defaultRepresentation filename]]];
                                 
                                 [self write:videoPath rep:rep];
+                                [self saveThumWithAsset:asset imageName:[asset.defaultRepresentation filename]];
+                                
+                                [self.photoTableView reloadData];
+                                
+                                [self.addProgressView setHidden:NO];
+                                //添加进度条
+                                CGFloat percent = (float)(index + 1) / _selectPhotos.count;
+                                [self.addProgressView setProgress:percent animated:YES];
                                 
                             } failureBlock:nil];  
-                        }  
+                        }
+//                        dispatch_sync(dispatch_get_main_queue(), ^{
+                        
+//                        });
                     });
                     
                 }
+#endif
             }
         }
     }
 }
-
-#if 0
-+ (void)getVideoFromPHAsset:(ALAsset *)asset Complete:(Result)result {
-    NSArray *assetResources = [PHAssetResource assetResourcesForAsset:asset];
-    PHAssetResource *resource;
-    
-    for (PHAssetResource *assetRes in assetResources) {
-        if (assetRes.type == PHAssetResourceTypePairedVideo ||
-            assetRes.type == PHAssetResourceTypeVideo) {
-            resource = assetRes;
-        }
-    }
-    NSString *fileName = @"tempAssetVideo.mov";
-    if (resource.originalFilename) {
-        fileName = resource.originalFilename;
-    }
-    
-    if (asset.mediaType == PHAssetMediaTypeVideo || asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
-        PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
-        options.version = PHImageRequestOptionsVersionCurrent;
-        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-        
-        NSString *PATH_MOVIE_FILE = [NSTemporaryDirectory() stringByAppendingPathComponent:fileName];
-        [[NSFileManager defaultManager] removeItemAtPath:PATH_MOVIE_FILE error:nil];
-        [[PHAssetResourceManager defaultManager] writeDataForAssetResource:resource
-                                                                    toFile:[NSURL fileURLWithPath:PATH_MOVIE_FILE]
-                                                                   options:nil
-                                                         completionHandler:^(NSError * _Nullable error) {
-                                                             if (error) {
-                                                                 result(nil, nil);
-                                                             } else {
-                                                                 
-                                                                 NSData *data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:PATH_MOVIE_FILE]];
-                                                                 result(data, fileName);
-                                                             }
-                                                             [[NSFileManager defaultManager] removeItemAtPath:PATH_MOVIE_FILE  error:nil];
-                                                         }];
-    } else {
-        result(nil, nil);
-    }
-}
-
-#endif
-
-
 
 - (void)write:(NSString *)videoPath rep:(ALAssetRepresentation *)rep
 {
@@ -378,6 +359,7 @@
                 read = [rep getBytes:buffer fromOffset:offset length:bufferSize error:&err];
                 written = fwrite(buffer, sizeof(char), read, file);
                 offset += read;
+                NSLog(@"%llu",rep.size - offset);
             } while (read != 0 && !err);//没到结尾，没出错，ok继续
         }
         // 释放缓冲区，关闭文件
@@ -390,12 +372,22 @@
 
 #pragma mark - 文件本地保存
 //将获取到的图片保存到APP的沙盒中
-- (BOOL)saveImageToDocumentDirectory:(UIImage *)image appendingString:(NSString *)imageName
+- (BOOL)saveImageToDocumentDirectory:(ALAsset *)asset appendingString:(NSString *)imageName
+{
+    BOOL thumResult = [self saveThumWithAsset:asset imageName:imageName];
+    BOOL jiemiResult = [self saveFullScreenWithAsset:asset imageName:imageName];
+    
+    
+    
+    return jiemiResult && thumResult;
+}
+
+//存储缩略图
+- (BOOL)saveThumWithAsset:(ALAsset *)asset imageName:(NSString *)imageName
 {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    
     /**
      *  缩略图文件存储
      */
@@ -409,44 +401,57 @@
     }
     NSString *thumbnailFilePath = [NSString stringWithFormat:@"%@/%@", createThumbnailDir, imageName];
     //只做缩略图
-    UIImage *thumbnailImage = [self imageCompressForSize:image targetSize:CGSizeMake(55, 55)];
+    //    UIImage *thumbnailImage = [self imageCompressForSize:image targetSize:CGSizeMake(55, 55)];
+    CGImageRef thumbnailImageRef = [asset thumbnail];
+    UIImage *thumbnailImage = [UIImage imageWithCGImage:thumbnailImageRef];
     NSData *thumbnailData = UIImagePNGRepresentation(thumbnailImage);
+    
+    BOOL thumbnailResult;
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:thumbnailFilePath]) {
         
-        BOOL thumbnailResult = [thumbnailData writeToFile:thumbnailFilePath atomically:YES];
+        thumbnailResult = [thumbnailData writeToFile:thumbnailFilePath atomically:YES];
         
         NSLog(@"缩略图已经存储到%@，是否成功：%d",thumbnailFilePath ,thumbnailResult);
     }else {
         NSLog(@"该缩略图同名或者已经存在了");
     }
     
+    return thumbnailResult;
+}
+
+//存储源文件
+- (BOOL)saveFullScreenWithAsset:(ALAsset *)asset imageName:(NSString *)imageName
+{
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     
     /**
      *  解密文件存储
      */
-    NSString *createJiamiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi",_userPhone]];
+    NSString *createJiemiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi",_userPhone]];
     //判断是否存在JieMi文件夹，如果不存在，就创建
-    if (![[NSFileManager defaultManager] fileExistsAtPath:createJiamiDir]) {
-        [fileManager createDirectoryAtPath:createJiamiDir withIntermediateDirectories:YES attributes:nil error:nil];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:createJiemiDir]) {
+        [fileManager createDirectoryAtPath:createJiemiDir withIntermediateDirectories:YES attributes:nil error:nil];
         
     }else {
         NSLog(@"FileDir is exists");
     }
-    NSString *jiamiFilePath = [NSString stringWithFormat:@"%@/%@", createJiamiDir, imageName];
-    NSData *imageData = UIImagePNGRepresentation(image);
+    NSString *jiemiFilePath = [NSString stringWithFormat:@"%@/%@", createJiemiDir, imageName];
+    NSData *imageData = UIImagePNGRepresentation([UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]);
     
-    BOOL jiamiResult;
+    BOOL jiemiResult;
     
-    if (![[NSFileManager defaultManager] fileExistsAtPath:jiamiFilePath]) {
-        jiamiResult = [imageData writeToFile:jiamiFilePath atomically:YES];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:jiemiFilePath]) {
+        jiemiResult = [imageData writeToFile:jiemiFilePath atomically:YES];
         
-        NSLog(@"图片已经存储到%@，是否成功：%d" ,jiamiFilePath ,jiamiResult);
+        NSLog(@"图片已经存储到%@，是否成功：%d" ,jiemiFilePath ,jiemiResult);
     }else {
         NSLog(@"添加到解密文件夹中的文件名已存在");
     }
     
-    return jiamiResult;
+    return jiemiResult;
 }
 
 #pragma mark - ASProgressPopUpView dataSource

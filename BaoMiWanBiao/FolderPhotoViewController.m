@@ -100,11 +100,12 @@
     {
         [cell.btnSelect setHidden:NO];
 
-        
         [self.selectPhotos addObject:self.folderFildeNameArr[indexPath.row]];
         [selectPhotoNames addObject:self.folderFildeNameArr[indexPath.row]];
     }else{
         [cell.btnSelect setHidden:YES];
+        
+
         NSString *asset=self.folderFildeNameArr[indexPath.row];
         for (NSString *a in self.selectPhotos) {
 

@@ -73,38 +73,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/FolderViewController.m"
-            timestampString = "494485795.26289"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
-            landmarkName = "-editPhotos:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/FolderViewController.m"
-            timestampString = "494485796.710009"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
-            landmarkName = "-editPhotos:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/RegistAndLoginViewController.m"
             timestampString = "494491727.262696"
             startingColumnNumber = "9223372036854775807"
@@ -217,78 +185,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/FolderContentView.m"
-            timestampString = "494500368.305494"
+            filePath = "BaoMiWanBiao/MiBaoXiangViewController.m"
+            timestampString = "494763899.76657"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "295"
-            endingLineNumber = "295"
-            landmarkName = "-getSelectedPhoto:"
+            startingLineNumber = "259"
+            endingLineNumber = "259"
+            landmarkName = "-deleteImages"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/FolderContentView.m"
-            timestampString = "494500407.855253"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "299"
-            endingLineNumber = "299"
-            landmarkName = "-getSelectedPhoto:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/FolderContentView.m"
-            timestampString = "494500777.104511"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "302"
-            endingLineNumber = "302"
-            landmarkName = "-getSelectedPhoto:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__38-[FolderContentView getSelectedPhoto:]_block_invoke.207"
-                  moduleName = "BaoMiWanBiao"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofujian/Desktop/%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8%E9%A1%B9%E7%9B%AE/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8/BaoMiWanBiao/BaoMiWanBiao/FolderContentView.m"
-                  timestampString = "494501820.289972"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "302"
-                  endingLineNumber = "302"
-                  offsetFromSymbolStart = "59">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__38-[FolderContentView getSelectedPhoto:]_block_invoke_2.208"
-                  moduleName = "BaoMiWanBiao"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofujian/Desktop/%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8%E9%A1%B9%E7%9B%AE/%E4%BF%9D%E5%AF%86%E8%85%95%E8%A1%A8/BaoMiWanBiao/BaoMiWanBiao/FolderContentView.m"
-                  timestampString = "494501820.290158"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "302"
-                  endingLineNumber = "302"
-                  offsetFromSymbolStart = "19">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -34,7 +34,6 @@
         //5.定义char类型的变量plainInChar，长度为数据流的长度加上p。
         unsigned char plainInChar[plainInDataLength + p];
         
-#warning 这里在拷贝内存的时候，有几张图片就是考不过去，第1，2，3张图片作为代表
         //6.将数据流的内存拷贝到char的内存中去，长度为填充过后的长度
         memcpy(plainInChar, mingwenData.bytes, plainInDataLength);
         //7.进行数据填充，在源数据后面填充知道达到16的倍数，填充的内容是p == 14（十六进制是0e）
