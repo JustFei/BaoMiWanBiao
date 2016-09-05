@@ -144,6 +144,7 @@
         [sender setTitle:@"全选" forState:UIControlStateNormal];
 
         [self.folderView.deleteDataArray removeAllObjects];
+        [self.folderView.dataDic removeAllObjects];
         
         for (int i = 0; i < self.folderView.localPhotos.count; i ++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];

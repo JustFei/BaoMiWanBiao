@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '11ED90CBEAF70C3F83BE8B2C'
-               BlueprintName = 'FMDB'
+               BlueprintIdentifier = 'E86B23E2D7A4FC646398C771B94607AD'
+               BlueprintName = 'PKRevealController'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libFMDB.a'>
+               BuildableName = 'libPKRevealController.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

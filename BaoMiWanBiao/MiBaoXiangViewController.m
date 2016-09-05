@@ -254,7 +254,7 @@
 //删除图片按钮
 - (void)deleteImages
 {
-    //    self.photoView.editing = NO;
+    NSLog(@"总共有%ld个数据",self.dataDic.count);
     //以下代码是处理数据的删除的操作。
     if (self.dataDic.count != 0) {
         
@@ -265,7 +265,6 @@
         NSMutableArray *dataArr = [NSMutableArray arrayWithArray:self.dataDic.allValues];
         
         //在此创建解密文件夹，如果存在就不创建
-        
         NSString *createJieMiDir = [paths.firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-JieMi",userPhone]];
         //判断是否存在Thumbnail文件夹，如果不存在，就创建
         if (![[NSFileManager defaultManager] fileExistsAtPath:createJieMiDir]) {
@@ -289,7 +288,6 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             //循环删除数据
             for (NSInteger index = dataArr.count - 1; index >= 0; index --) {
-                
                 @autoreleasepool {
                     dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                         
@@ -312,8 +310,14 @@
                                 //SM4解密
                                 NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:jiamiFilePath options:NSDataReadingMappedIfSafe error:nil];
                                 NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
-//                                BOOL jiemiResult = [jiemiPhotoData writeToFile:moveToPath atomically:YES];
-                                [self writeFile:jiemiPhotoData WithFilePath:moveToPath];
+                                
+                                //如果大于1M，就分段写，如果小于的话，就直接写入
+                                if (jiemiPhotoData.length <= 1024 * 1024) {
+                                    [jiemiPhotoData writeToFile:moveToPath atomically:YES];
+                                }else {
+                                    [self writeFile:jiemiPhotoData WithFilePath:moveToPath];
+                                }
+                                
                                 //移除加密文件夹中的
                                 [fileManager removeItemAtPath:jiamiFilePath error:nil];
                                 

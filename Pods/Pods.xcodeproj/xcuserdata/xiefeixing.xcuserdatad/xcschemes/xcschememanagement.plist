@@ -6,18 +6,28 @@
 	<dict>
 		<key>FMDB.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>1</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>JBChartView.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
-		<key>Pods.xcscheme</key>
+		<key>MBProgressHUD.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>3</integer>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PKRevealController.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-BaoMiWanBiao.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -27,12 +37,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BB107E3E2811757ECD2A6E1497CF7524</key>
+		<key>CC29B95C57B0A0491CAD33CE564B22D1</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>CDB1C8A47DD3943770D41E1A3B42F7DF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D058B89EB3B3DF45457A2DCD3971AFFE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E86B23E2D7A4FC646398C771B94607AD</key>
 		<dict>
 			<key>primary</key>
 			<true/>

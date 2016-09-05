@@ -1,6 +1,9 @@
 FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/BmobSDK"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/BmobSDK" "${PODS_ROOT}/Headers/Public/FMDB" "${PODS_ROOT}/Headers/Public/JBChartView" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/PKRevealController"
+LIBRARY_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/FMDB" "$PODS_CONFIGURATION_BUILD_DIR/JBChartView" "$PODS_CONFIGURATION_BUILD_DIR/MBProgressHUD" "$PODS_CONFIGURATION_BUILD_DIR/PKRevealController"
 OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/BmobSDK" -isystem "${PODS_ROOT}/Headers/Public/FMDB" -isystem "${PODS_ROOT}/Headers/Public/JBChartView" -isystem "${PODS_ROOT}/Headers/Public/MBProgressHUD" -isystem "${PODS_ROOT}/Headers/Public/PKRevealController"
 OTHER_LDFLAGS = $(inherited) -ObjC -l"FMDB" -l"JBChartView" -l"MBProgressHUD" -l"PKRevealController" -l"icucore" -l"sqlite3" -l"z.1.2.5" -framework "BmobSDK" -framework "CFNetwork" -framework "CoreGraphics" -framework "CoreLocation" -framework "CoreTelephony" -framework "Foundation" -framework "MobileCoreServices" -framework "QuartzCore" -framework "Security" -framework "SystemConfiguration" -framework "UIKit"
+PODS_BUILD_DIR = $BUILD_DIR
+PODS_CONFIGURATION_BUILD_DIR = $PODS_BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_ROOT = ${SRCROOT}/Pods

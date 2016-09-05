@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2EAD62F894D4B94C94806DE5 /* libPods-BaoMiWanBiao.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5DECB30785AE9B7BFD6A2 /* libPods-BaoMiWanBiao.a */; };
 		3B0278E21D6E885E0053820A /* FolderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0278E11D6E885E0053820A /* FolderViewController.m */; };
 		3B0278E61D6FD0480053820A /* FolderContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0278E51D6FD0480053820A /* FolderContentView.m */; };
 		3B0278EA1D6FD5E90053820A /* FolderPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0278E81D6FD5E90053820A /* FolderPhotoCell.m */; };
@@ -153,8 +154,6 @@
 		3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF1731E1D46F20D008DF4DC /* MiBaoXiangViewController.m */; };
 		3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */; };
 		3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */; };
-		485007A37313A95B5BA60865 /* libPods-BaoMiWanBiao.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31943B3CDCBB4C244BD1DEE6 /* libPods-BaoMiWanBiao.a */; };
-		4A2D59F29E80D72E811BFE1E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7C1E8C81FC86181499D788 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -175,9 +174,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1B7C1E8C81FC86181499D788 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.debug.xcconfig"; sourceTree = "<group>"; };
-		31943B3CDCBB4C244BD1DEE6 /* libPods-BaoMiWanBiao.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BaoMiWanBiao.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		08F5DECB30785AE9B7BFD6A2 /* libPods-BaoMiWanBiao.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BaoMiWanBiao.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B0278E01D6E885E0053820A /* FolderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderViewController.h; sourceTree = "<group>"; };
 		3B0278E11D6E885E0053820A /* FolderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderViewController.m; sourceTree = "<group>"; };
 		3B0278E41D6FD0480053820A /* FolderContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderContentView.h; sourceTree = "<group>"; };
@@ -385,7 +382,8 @@
 		3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteModel.m; sourceTree = "<group>"; };
 		3BF367F21D4C7EC000637BEC /* XxfFmdbTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XxfFmdbTool.h; sourceTree = "<group>"; };
 		3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XxfFmdbTool.m; sourceTree = "<group>"; };
-		6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.release.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.release.xcconfig"; sourceTree = "<group>"; };
+		DF841635E71B3B3F533987E0 /* Pods-BaoMiWanBiao.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.release.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.release.xcconfig"; sourceTree = "<group>"; };
+		E96962ABACB6ED93478DFEDA /* Pods-BaoMiWanBiao.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -393,8 +391,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A2D59F29E80D72E811BFE1E /* libPods.a in Frameworks */,
-				485007A37313A95B5BA60865 /* libPods-BaoMiWanBiao.a in Frameworks */,
+				2EAD62F894D4B94C94806DE5 /* libPods-BaoMiWanBiao.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -792,8 +789,8 @@
 				3BDD65291D45DE74009EA15F /* BaoMiWanBiaoTests */,
 				3BDD65341D45DE74009EA15F /* BaoMiWanBiaoUITests */,
 				3BDD650E1D45DE73009EA15F /* Products */,
-				54CB55DD1168B1DFE3967623 /* Pods */,
-				E6AFD94EFE541A378288FACC /* Frameworks */,
+				FE2112FC4F05DBE90DB6A731 /* Pods */,
+				FCD5760BA65DCED6A5E5D6E0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -974,22 +971,21 @@
 			name = "密保箱";
 			sourceTree = "<group>";
 		};
-		54CB55DD1168B1DFE3967623 /* Pods */ = {
+		FCD5760BA65DCED6A5E5D6E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */,
-				6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		E6AFD94EFE541A378288FACC /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1B7C1E8C81FC86181499D788 /* libPods.a */,
-				31943B3CDCBB4C244BD1DEE6 /* libPods-BaoMiWanBiao.a */,
+				08F5DECB30785AE9B7BFD6A2 /* libPods-BaoMiWanBiao.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FE2112FC4F05DBE90DB6A731 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E96962ABACB6ED93478DFEDA /* Pods-BaoMiWanBiao.debug.xcconfig */,
+				DF841635E71B3B3F533987E0 /* Pods-BaoMiWanBiao.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -999,12 +995,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3BDD653A1D45DE74009EA15F /* Build configuration list for PBXNativeTarget "BaoMiWanBiao" */;
 			buildPhases = (
-				A691002FE39979A97C8CB001 /* Check Pods Manifest.lock */,
+				2A7B1E48CB93BCFFB0196CFD /* [CP] Check Pods Manifest.lock */,
 				3BDD65091D45DE73009EA15F /* Sources */,
 				3BDD650A1D45DE73009EA15F /* Frameworks */,
 				3BDD650B1D45DE73009EA15F /* Resources */,
-				3B805D8AEA1986BD6BA863D4 /* Embed Pods Frameworks */,
-				F5BE70C26E50C0AE99D737B5 /* Copy Pods Resources */,
+				996A89A565C84ADA72E88634 /* [CP] Embed Pods Frameworks */,
+				162356050ADCB9868B93149B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1212,29 +1208,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3B805D8AEA1986BD6BA863D4 /* Embed Pods Frameworks */ = {
+		162356050ADCB9868B93149B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A691002FE39979A97C8CB001 /* Check Pods Manifest.lock */ = {
+		2A7B1E48CB93BCFFB0196CFD /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1242,19 +1238,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		F5BE70C26E50C0AE99D737B5 /* Copy Pods Resources */ = {
+		996A89A565C84ADA72E88634 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1445,7 +1441,7 @@
 		};
 		3BDD653B1D45DE74009EA15F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */;
+			baseConfigurationReference = E96962ABACB6ED93478DFEDA /* Pods-BaoMiWanBiao.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1460,7 +1456,7 @@
 		};
 		3BDD653C1D45DE74009EA15F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */;
+			baseConfigurationReference = DF841635E71B3B3F533987E0 /* Pods-BaoMiWanBiao.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1475,7 +1471,6 @@
 		};
 		3BDD653E1D45DE74009EA15F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = BaoMiWanBiaoTests/Info.plist;
@@ -1488,7 +1483,6 @@
 		};
 		3BDD653F1D45DE74009EA15F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = BaoMiWanBiaoTests/Info.plist;
@@ -1501,7 +1495,6 @@
 		};
 		3BDD65411D45DE74009EA15F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2E86A9A2A03FC834C6D99C21 /* Pods-BaoMiWanBiao.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BaoMiWanBiaoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1513,7 +1506,6 @@
 		};
 		3BDD65421D45DE74009EA15F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C70C4F758CADCBC902B8FAC /* Pods-BaoMiWanBiao.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = BaoMiWanBiaoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
