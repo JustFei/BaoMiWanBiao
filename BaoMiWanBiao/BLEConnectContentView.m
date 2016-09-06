@@ -13,6 +13,7 @@
 #import "MBProgressHUD.h"
 #import "MainViewController.h"
 #import "BLEConnectViewController.h"
+#import "CBPeripheralSingleton.h"
 
 
 @interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, CBCentralManagerDelegate, UIAlertViewDelegate>
@@ -32,13 +33,15 @@
 
 @property (nonatomic ,weak) UIView *headView;
 
+@property (nonatomic ,strong) CBPeripheralSingleton *peripheralSing;
+
 @end
 
 @implementation BLEConnectContentView
 
 - (void)layoutSubviews
 {
-    
+    self.peripheralSing = [CBPeripheralSingleton sharePeripheral];
     self.BLEListView.frame = self.bounds;
     
     //初始化BabyBluetooth 蓝牙库
@@ -105,6 +108,7 @@
         
         //currPeripheral指向我们点击的cell的peripheral
         weakSelf.currPeripheral = peripheral;
+        weakSelf.peripheralSing.peripheral = peripheral;
         
         [MBProgressHUD hideHUDForView:weakSelf animated:YES];
         UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",peripheral.name] delegate:weakSelf cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];

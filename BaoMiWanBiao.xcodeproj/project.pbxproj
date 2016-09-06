@@ -159,6 +159,7 @@
 		3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF1731E1D46F20D008DF4DC /* MiBaoXiangViewController.m */; };
 		3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */; };
 		3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */; };
+		9C36F6CC1D7F2AB90029FC1C /* CBPeripheralSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C36F6CB1D7F2AB90029FC1C /* CBPeripheralSingleton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -396,6 +397,8 @@
 		3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteModel.m; sourceTree = "<group>"; };
 		3BF367F21D4C7EC000637BEC /* XxfFmdbTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XxfFmdbTool.h; sourceTree = "<group>"; };
 		3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XxfFmdbTool.m; sourceTree = "<group>"; };
+		9C36F6CA1D7F2AB90029FC1C /* CBPeripheralSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBPeripheralSingleton.h; sourceTree = "<group>"; };
+		9C36F6CB1D7F2AB90029FC1C /* CBPeripheralSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBPeripheralSingleton.m; sourceTree = "<group>"; };
 		DF841635E71B3B3F533987E0 /* Pods-BaoMiWanBiao.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.release.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.release.xcconfig"; sourceTree = "<group>"; };
 		E96962ABACB6ED93478DFEDA /* Pods-BaoMiWanBiao.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -855,6 +858,7 @@
 			children = (
 				3BDD65131D45DE73009EA15F /* AppDelegate.h */,
 				3BDD65141D45DE73009EA15F /* AppDelegate.m */,
+				9C36F6C91D7F2A4F0029FC1C /* 蓝牙单例 */,
 				3BB518FB1D7E6A0A00ADFC50 /* 蓝牙连接 */,
 				3BF1731B1D46F161008DF4DC /* 注册登录界面 */,
 				3B2791ED1D6308CB00B99320 /* 首页 */,
@@ -1016,6 +1020,15 @@
 				3B0278E31D6E886F0053820A /* 图片预览 */,
 			);
 			name = "密保箱";
+			sourceTree = "<group>";
+		};
+		9C36F6C91D7F2A4F0029FC1C /* 蓝牙单例 */ = {
+			isa = PBXGroup;
+			children = (
+				9C36F6CA1D7F2AB90029FC1C /* CBPeripheralSingleton.h */,
+				9C36F6CB1D7F2AB90029FC1C /* CBPeripheralSingleton.m */,
+			);
+			name = "蓝牙单例";
 			sourceTree = "<group>";
 		};
 		FCD5760BA65DCED6A5E5D6E0 /* Frameworks */ = {
@@ -1338,6 +1351,7 @@
 				3BDD65461D45DF65009EA15F /* RegistAndLoginViewController.m in Sources */,
 				3B8C1B861D51F9DD00D061C8 /* MotionHistoryViewController.m in Sources */,
 				3BD8242E1D795D320089BBCD /* ListView.m in Sources */,
+				9C36F6CC1D7F2AB90029FC1C /* CBPeripheralSingleton.m in Sources */,
 				3BBEF15A1D4B495E001BAE66 /* AddMiMaViewContentView.m in Sources */,
 				3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */,
 				3B12AE3D1D6BFD1600C469EF /* ClockContentView.m in Sources */,
@@ -1513,12 +1527,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BaoMiWanBiao/BaoMiWanBiao-Prefix.pch";
 				INFOPLIST_FILE = BaoMiWanBiao/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Bobo.BaoMiWanBiao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -1528,12 +1544,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BaoMiWanBiao/BaoMiWanBiao-Prefix.pch";
 				INFOPLIST_FILE = BaoMiWanBiao/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Bobo.BaoMiWanBiao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

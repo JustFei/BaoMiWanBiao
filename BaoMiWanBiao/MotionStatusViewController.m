@@ -12,6 +12,7 @@
 #import "MotionFmdbTool.h"
 #import "MotionDailyDataModel.h"
 #import "BabyBluetooth.h"
+#import "CBPeripheralSingleton.h"
 
 @interface MotionStatusViewController ()
 {
@@ -71,7 +72,7 @@
 
 @property (nonatomic ,strong) MotionDailyDataModel *MotionModel;
 
-@property (nonatomic ,strong) CBPeripheral *currPeripheral;
+@property (nonatomic ,strong) CBPeripheralSingleton *peripheralSing;
 
 @end
 
@@ -91,15 +92,17 @@
     self.dateLabel.text = @"今天";
     self.afterButton.enabled = NO;
     
-    self.currPeripheral = [[NSUserDefaults standardUserDefaults] objectForKey:@"currentPeripheral"];
+    self.peripheralSing = [CBPeripheralSingleton sharePeripheral];
+    
+    NSLog(@"存储的连接设备 = %@",self.peripheralSing.peripheral.name);
     
     baby = [BabyBluetooth shareBabyBluetooth];
     
     [self babyDelegate];
     
     //如果当前有连接的设备，就寻找特征
-    if (self.currPeripheral) {
-        baby.having(self.currPeripheral).connectToPeripherals().discoverServices().discoverCharacteristics().readValueForCharacteristic().discoverDescriptorsForCharacteristic().readValueForDescriptors().begin();
+    if (self.peripheralSing.peripheral) {
+        baby.having(self.peripheralSing.peripheral).connectToPeripherals().discoverServices().discoverCharacteristics().readValueForCharacteristic().discoverDescriptorsForCharacteristic().readValueForDescriptors().begin();
     }
     
     [self getDataFromDB];
