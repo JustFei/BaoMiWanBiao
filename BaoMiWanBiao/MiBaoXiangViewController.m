@@ -559,16 +559,14 @@
             }else {
                 //在移除前先进行解密，再移除
                 //SM4解密
-                NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:filePath];
+                NSData *jiamiPhotoData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:nil];
                 NSData *jiemiPhotoData = [self.SM4 SM4Jiemi:jiamiPhotoData];
-                BOOL jiemiResult = [jiemiPhotoData writeToFile:filePath atomically:YES];
-                
-                NSLog(@"图片已经存储到%@，是否成功：%d" ,filePath ,jiemiResult);
-                BOOL blMove = [fileManager moveItemAtPath:filePath toPath:moveToPath error:nil];
-                if (blMove) {
-                    NSLog(@"move success");
+
+                //如果大于1M，就分段写，如果小于的话，就直接写入
+                if (jiemiPhotoData.length <= 1024 * 1024) {
+                    [jiemiPhotoData writeToFile:moveToPath atomically:YES];
                 }else {
-                    NSLog(@"move fail");
+                    [self writeFile:jiemiPhotoData WithFilePath:moveToPath];
                 }
             }
         }

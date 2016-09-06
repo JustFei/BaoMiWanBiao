@@ -1,4 +1,5 @@
 PODS:
+  - BabyBluetooth (0.7.0)
   - BmobSDK (1.7.2)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
@@ -8,6 +9,7 @@ PODS:
   - PKRevealController (2.0.6)
 
 DEPENDENCIES:
+  - BabyBluetooth (~> 0.7.0)
   - BmobSDK (~> 1.7.2)
   - FMDB (~> 2.6.2)
   - JBChartView (~> 3.0.12)
@@ -15,12 +17,11 @@ DEPENDENCIES:
   - PKRevealController (~> 2.0.6)
 
 SPEC CHECKSUMS:
+  BabyBluetooth: d50758aecf24d4a0ab9271d69f0f116d6bee51c9
   BmobSDK: e188cb31d6a8417ab668aee821da227d7512b865
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   JBChartView: 08877554448ccf99c12625ad0ebce70588ff8318
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   PKRevealController: ffb45a16f5a5032ad90a3d16e5cbb0d8e035bd58
 
-PODFILE CHECKSUM: 4a9dba0be2d4bbe25505804867dfd7e60de4171e
-
-COCOAPODS: 1.0.1
+COCOAPODS: 0.39.0

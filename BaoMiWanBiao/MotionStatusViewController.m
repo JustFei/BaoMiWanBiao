@@ -11,8 +11,12 @@
 #import "MotionLineViewController.h"
 #import "MotionFmdbTool.h"
 #import "MotionDailyDataModel.h"
+#import "BabyBluetooth.h"
 
 @interface MotionStatusViewController ()
+{
+    BabyBluetooth *baby;
+}
 
 @property (nonatomic ,strong) UIAlertAction *secureTextAlertAction;
 
@@ -67,6 +71,8 @@
 
 @property (nonatomic ,strong) MotionDailyDataModel *MotionModel;
 
+@property (nonatomic ,strong) CBPeripheral *currPeripheral;
+
 @end
 
 @implementation MotionStatusViewController
@@ -85,6 +91,17 @@
     self.dateLabel.text = @"今天";
     self.afterButton.enabled = NO;
     
+    self.currPeripheral = [[NSUserDefaults standardUserDefaults] objectForKey:@"currentPeripheral"];
+    
+    baby = [BabyBluetooth shareBabyBluetooth];
+    
+    [self babyDelegate];
+    
+    //如果当前有连接的设备，就寻找特征
+    if (self.currPeripheral) {
+        baby.having(self.currPeripheral).connectToPeripherals().discoverServices().discoverCharacteristics().readValueForCharacteristic().discoverDescriptorsForCharacteristic().readValueForDescriptors().begin();
+    }
+    
     [self getDataFromDB];
 }
 
@@ -98,6 +115,36 @@
     [super viewWillDisappear:YES];
     
     self.senddate = nil;
+}
+
+#pragma mark - babyDelegate
+- (void)babyDelegate
+{
+    //设置发现设备的Services的委托
+    [baby setBlockOnDiscoverServices:^(CBPeripheral *peripheral, NSError *error) {
+        for (CBService *s in peripheral.services) {
+            //每个service
+        }
+    }];
+    //设置发现设service的Characteristics的委托
+    [baby setBlockOnDiscoverCharacteristics:^(CBPeripheral *peripheral, CBService *service, NSError *error) {
+        NSLog(@"===service name:%@",service.UUID);
+    }];
+    //设置读取characteristics的委托
+    [baby setBlockOnReadValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
+        NSLog(@"characteristic name:%@ value is:%@",characteristics.UUID,characteristics.value);
+    }];
+    //设置发现characteristics的descriptors的委托
+    [baby setBlockOnDiscoverDescriptorsForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
+        NSLog(@"===characteristic name:%@",characteristic.service.UUID);
+        for (CBDescriptor *d in characteristic.descriptors) {
+            NSLog(@"CBDescriptor name is :%@",d.UUID);
+        }
+    }];
+    //设置读取Descriptor的委托
+    [baby setBlockOnReadValueForDescriptors:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
+        NSLog(@"Descriptor name:%@ value is:%@",descriptor.characteristic.UUID, descriptor.value);
+    }];
 }
 
 /**

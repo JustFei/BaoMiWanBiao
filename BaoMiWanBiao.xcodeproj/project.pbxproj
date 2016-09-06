@@ -60,6 +60,11 @@
 		3B8C1B871D51F9DD00D061C8 /* MotionHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */; };
 		3B8CBF391D758B07007DE127 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8CBF381D758B07007DE127 /* UserModel.m */; };
 		3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */; };
+		3BB518FA1D7E606600ADFC50 /* BLEConnectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB518F91D7E606600ADFC50 /* BLEConnectView.m */; };
+		3BB518FE1D7E6A3800ADFC50 /* BLEConnectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB518FD1D7E6A3800ADFC50 /* BLEConnectViewController.m */; };
+		3BB519011D7E6C1300ADFC50 /* BLEConnectContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB519001D7E6C1300ADFC50 /* BLEConnectContentView.m */; };
+		3BB519041D7E6D5E00ADFC50 /* BLECell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB519031D7E6D5E00ADFC50 /* BLECell.m */; };
+		3BB519061D7E6D8700ADFC50 /* BLECell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB519051D7E6D8700ADFC50 /* BLECell.xib */; };
 		3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF1491D4B3A3C001BAE66 /* MiMaBenViewController.m */; };
 		3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF14C1D4B3A69001BAE66 /* MiMaBenContentView.m */; };
 		3BBEF1511D4B3B52001BAE66 /* MiMaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEF14F1D4B3B52001BAE66 /* MiMaTableViewCell.m */; };
@@ -252,6 +257,15 @@
 		3B8CBF381D758B07007DE127 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		3BA27A311D4C374100B4C32F /* SM4-OCMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SM4-OCMethod.h"; sourceTree = "<group>"; };
 		3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SM4-OCMethod.m"; sourceTree = "<group>"; };
+		3BB518F81D7E606600ADFC50 /* BLEConnectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEConnectView.h; sourceTree = "<group>"; };
+		3BB518F91D7E606600ADFC50 /* BLEConnectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLEConnectView.m; sourceTree = "<group>"; };
+		3BB518FC1D7E6A3800ADFC50 /* BLEConnectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEConnectViewController.h; sourceTree = "<group>"; };
+		3BB518FD1D7E6A3800ADFC50 /* BLEConnectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLEConnectViewController.m; sourceTree = "<group>"; };
+		3BB518FF1D7E6C1300ADFC50 /* BLEConnectContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEConnectContentView.h; sourceTree = "<group>"; };
+		3BB519001D7E6C1300ADFC50 /* BLEConnectContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLEConnectContentView.m; sourceTree = "<group>"; };
+		3BB519021D7E6D5E00ADFC50 /* BLECell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLECell.h; sourceTree = "<group>"; };
+		3BB519031D7E6D5E00ADFC50 /* BLECell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLECell.m; sourceTree = "<group>"; };
+		3BB519051D7E6D8700ADFC50 /* BLECell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BLECell.xib; sourceTree = "<group>"; };
 		3BBEF1481D4B3A3C001BAE66 /* MiMaBenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiMaBenViewController.h; sourceTree = "<group>"; };
 		3BBEF1491D4B3A3C001BAE66 /* MiMaBenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiMaBenViewController.m; sourceTree = "<group>"; };
 		3BBEF14B1D4B3A69001BAE66 /* MiMaBenContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiMaBenContentView.h; sourceTree = "<group>"; };
@@ -477,6 +491,8 @@
 				3B2791F01D6308F200B99320 /* MainViewController.xib */,
 				3BD8242C1D795D320089BBCD /* ListView.h */,
 				3BD8242D1D795D320089BBCD /* ListView.m */,
+				3BB518F81D7E606600ADFC50 /* BLEConnectView.h */,
+				3BB518F91D7E606600ADFC50 /* BLEConnectView.m */,
 			);
 			name = "首页";
 			sourceTree = "<group>";
@@ -667,6 +683,36 @@
 			name = View;
 			sourceTree = "<group>";
 		};
+		3BB518FB1D7E6A0A00ADFC50 /* 蓝牙连接 */ = {
+			isa = PBXGroup;
+			children = (
+				3BB5190B1D7ECEBB00ADFC50 /* BLEConnectC */,
+				3BB5190A1D7ECEAF00ADFC50 /* BLEConnectV */,
+			);
+			name = "蓝牙连接";
+			sourceTree = "<group>";
+		};
+		3BB5190A1D7ECEAF00ADFC50 /* BLEConnectV */ = {
+			isa = PBXGroup;
+			children = (
+				3BB518FF1D7E6C1300ADFC50 /* BLEConnectContentView.h */,
+				3BB519001D7E6C1300ADFC50 /* BLEConnectContentView.m */,
+				3BB519021D7E6D5E00ADFC50 /* BLECell.h */,
+				3BB519031D7E6D5E00ADFC50 /* BLECell.m */,
+				3BB519051D7E6D8700ADFC50 /* BLECell.xib */,
+			);
+			name = BLEConnectV;
+			sourceTree = "<group>";
+		};
+		3BB5190B1D7ECEBB00ADFC50 /* BLEConnectC */ = {
+			isa = PBXGroup;
+			children = (
+				3BB518FC1D7E6A3800ADFC50 /* BLEConnectViewController.h */,
+				3BB518FD1D7E6A3800ADFC50 /* BLEConnectViewController.m */,
+			);
+			name = BLEConnectC;
+			sourceTree = "<group>";
+		};
 		3BBEF1471D4B3A05001BAE66 /* 密码本 */ = {
 			isa = PBXGroup;
 			children = (
@@ -809,6 +855,7 @@
 			children = (
 				3BDD65131D45DE73009EA15F /* AppDelegate.h */,
 				3BDD65141D45DE73009EA15F /* AppDelegate.m */,
+				3BB518FB1D7E6A0A00ADFC50 /* 蓝牙连接 */,
 				3BF1731B1D46F161008DF4DC /* 注册登录界面 */,
 				3B2791ED1D6308CB00B99320 /* 首页 */,
 				3BF1731C1D46F16E008DF4DC /* 密保箱 */,
@@ -1001,6 +1048,7 @@
 				3BDD650B1D45DE73009EA15F /* Resources */,
 				996A89A565C84ADA72E88634 /* [CP] Embed Pods Frameworks */,
 				162356050ADCB9868B93149B /* [CP] Copy Pods Resources */,
+				D254D49D4DE94ED92C00389A /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1102,6 +1150,7 @@
 				3BDD65BD1D45E4CA009EA15F /* unlock@2x.png in Resources */,
 				3BC0B48F1D48520E00616A27 /* LocalPhotoViewController.xib in Resources */,
 				3BDD65961D45E4CA009EA15F /* file@3x.png in Resources */,
+				3BB519061D7E6D8700ADFC50 /* BLECell.xib in Resources */,
 				3BDD658C1D45E4CA009EA15F /* bg_sport@3x.png in Resources */,
 				3BDD65B21D45E4CA009EA15F /* secret_box@3x.png in Resources */,
 				3BDD658B1D45E4CA009EA15F /* bg_sport@2x.png in Resources */,
@@ -1253,6 +1302,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D254D49D4DE94ED92C00389A /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1277,6 +1341,7 @@
 				3BBEF15A1D4B495E001BAE66 /* AddMiMaViewContentView.m in Sources */,
 				3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */,
 				3B12AE3D1D6BFD1600C469EF /* ClockContentView.m in Sources */,
+				3BB519011D7E6C1300ADFC50 /* BLEConnectContentView.m in Sources */,
 				3BC0B4921D48520E00616A27 /* AssetHelper.m in Sources */,
 				3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */,
 				3BDD65C41D45F5DC009EA15F /* RegistViewController.m in Sources */,
@@ -1291,6 +1356,8 @@
 				3BEFB4741D4994C5003DABF7 /* sm4.c in Sources */,
 				3BCDF4131D6AD02500B6D7D5 /* MotionDailyDataModel.m in Sources */,
 				3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */,
+				3BB518FA1D7E606600ADFC50 /* BLEConnectView.m in Sources */,
+				3BB519041D7E6D5E00ADFC50 /* BLECell.m in Sources */,
 				3B0556CC1D654830009B994E /* SleepHistoryViewController.m in Sources */,
 				3BC0B47B1D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.m in Sources */,
 				3BBEF15E1D4B4E97001BAE66 /* AddMiMaCell.m in Sources */,
@@ -1306,6 +1373,7 @@
 				3BBEF1561D4B4691001BAE66 /* AddMiMaViewController.m in Sources */,
 				3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */,
 				3BC0B48E1D48520E00616A27 /* LocalPhotoViewController.m in Sources */,
+				3BB518FE1D7E6A3800ADFC50 /* BLEConnectViewController.m in Sources */,
 				3BC0B48B1D48520E00616A27 /* LocalAlbumTableViewController.m in Sources */,
 				3BEFB4761D4994C5003DABF7 /* sms4.c in Sources */,
 				3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */,

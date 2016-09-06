@@ -13,7 +13,9 @@
 #import "SleepStatusViewController.h"
 #import "ClockViewController.h"
 #import "FolderViewController.h"
+#import "BLEConnectViewController.h"
 
+#import "BLEConnectView.h"
 #import "ListView.h"
 
 @interface MainViewController ()
@@ -21,6 +23,8 @@
     BOOL showListView;
 }
 @property (nonatomic ,weak) ListView *listView;
+
+@property (nonatomic ,weak) BLEConnectView *connectView;
 
 @end
 
@@ -42,9 +46,24 @@
     //使用系统自带的返回手势（需要从最左边开始滑动）
 //    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
     
-//    self.listView.backgroundColor = [UIColor redColor];
+
+    [self.view bringSubviewToFront:self.connectView];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
     
     
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    __weak typeof(self) weakSelf = self;
+    self.connectView.hiddenSelfCallBack = ^void {
+        [weakSelf.connectView removeFromSuperview];
+    };
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,7 +97,9 @@
  */
 - (void)searchWatchAction
 {
-    
+    BLEConnectViewController *vc = [[BLEConnectViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
+    [self.tabBarController setHidesBottomBarWhenPushed:YES];
 }
 
 /**
@@ -153,6 +174,19 @@
     }
     
     return _listView;
+}
+
+- (BLEConnectView *)connectView
+{
+    if (!_connectView) {
+        BLEConnectView *view = [[BLEConnectView alloc] initWithFrame:self.view.frame];
+        view.backgroundColor = [UIColor whiteColor];
+        
+        [self.view addSubview:view];
+        _connectView = view;
+    }
+    
+    return _connectView;
 }
 
 @end
