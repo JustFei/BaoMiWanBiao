@@ -94,15 +94,21 @@
     
     self.peripheralSing = [CBPeripheralSingleton sharePeripheral];
     
-    NSLog(@"存储的连接设备 = %@",self.peripheralSing.peripheral.name);
+    NSLog(@"存储的连接设备 = %@\n write = %@\n notify = %@",self.peripheralSing.peripheral.name ,self.peripheralSing.writeCharacteristic.UUID ,self.peripheralSing.notifyCharacteristic.UUID);
     
     baby = [BabyBluetooth shareBabyBluetooth];
+    
+    baby.having(self.peripheralSing.peripheral).connectToPeripherals().discoverServices().discoverCharacteristics().readValueForCharacteristic().begin();
     
     [self babyDelegate];
     
     //如果当前有连接的设备，就寻找特征
     if (self.peripheralSing.peripheral) {
-        baby.having(self.peripheralSing.peripheral).connectToPeripherals().discoverServices().discoverCharacteristics().readValueForCharacteristic().discoverDescriptorsForCharacteristic().readValueForDescriptors().begin();
+        //写入获取运动的信息
+//        [self.peripheralSing.peripheral writeValue:[self hexToBytes:@"FC030700000000000000000000000000000000"]  forCharacteristic:self.peripheralSing.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+//        //写入开始心率
+//        [self.peripheralSing.peripheral writeValue:[self hexToBytes:@"FC090100000000000000000000000000000000"] forCharacteristic:self.peripheralSing.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+        [self.peripheralSing.peripheral writeValue:[self hexToBytes:@"FC0A0000000000000000000000000000000000"] forCharacteristic:self.peripheralSing.writeCharacteristic type:CBCharacteristicWriteWithResponse];
     }
     
     [self getDataFromDB];
@@ -123,31 +129,143 @@
 #pragma mark - babyDelegate
 - (void)babyDelegate
 {
+    __weak typeof(self) weakSelf = self;
+    __weak typeof(baby) weakBaby = baby;
+    
+    [baby setBlockOnConnected:^(CBCentralManager *central, CBPeripheral *peripheral) {
+        NSLog(@"连接到了设备:%@",peripheral.name);
+        
+    }];
+    
     //设置发现设备的Services的委托
     [baby setBlockOnDiscoverServices:^(CBPeripheral *peripheral, NSError *error) {
+//        [peripheral discoverServices:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]]];
+        
         for (CBService *s in peripheral.services) {
             //每个service
+            NSLog(@"服务 = %@",s);
+            [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]] forService:s];
+            
         }
     }];
     //设置发现设service的Characteristics的委托
     [baby setBlockOnDiscoverCharacteristics:^(CBPeripheral *peripheral, CBService *service, NSError *error) {
-        NSLog(@"===service name:%@",service.UUID);
+        
+        
+        for (CBCharacteristic *characteristic in service.characteristics) {
+            
+            NSLog(@"===service name:%@",characteristic.UUID);
+            
+            
+        }
     }];
+    
     //设置读取characteristics的委托
     [baby setBlockOnReadValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
         NSLog(@"characteristic name:%@ value is:%@",characteristics.UUID,characteristics.value);
+        
+//        static dispatch_once_t onceToken;
+//        dispatch_once(&onceToken, ^{
+//            NSLog(@"保存的write特征 = %@",weakSelf.peripheralSing.writeCharacteristic.UUID);
+//            
+//
+//
+//        });
+        
+        
+//        static dispatch_once_t onceToken;
+//        dispatch_once(&onceToken, ^{
+//            NSLog(@"保存的Notify特征 = %@",weakSelf.peripheralSing.notifyCharacteristic);
+//            if (weakSelf.peripheralSing.notifyCharacteristic) {
+//                [weakBaby notify:weakSelf.peripheralSing.peripheral
+//                  characteristic:weakSelf.peripheralSing.notifyCharacteristic
+//                           block:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
+//                               //接收到值会进入这个方法
+//                               NSLog(@"new value %@",characteristics.value);
+//                               [weakSelf readValueFromCharacteristicsWithValue:characteristics.value];
+//                           }];
+//            }
+//        });
     }];
-    //设置发现characteristics的descriptors的委托
-    [baby setBlockOnDiscoverDescriptorsForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"===characteristic name:%@",characteristic.service.UUID);
-        for (CBDescriptor *d in characteristic.descriptors) {
-            NSLog(@"CBDescriptor name is :%@",d.UUID);
+    
+    [baby setBlockOnDidWriteValueForCharacteristic:^(CBCharacteristic *characteristic, NSError *error) {
+        
+        if (!error) {
+            NSLog(@"写入特征成功 = %@",characteristic.value);
+            //self.peripheral是一个CBPeripheral实例,self.characteristic是一个CBCharacteristic实例
+                [weakBaby notify:weakSelf.peripheralSing.peripheral
+                  characteristic:weakSelf.peripheralSing.notifyCharacteristic
+                           block:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
+                               //接收到值会进入这个方法
+                               NSLog(@"new value %@",characteristics.value);
+                               [weakSelf readValueFromCharacteristicsWithValue:characteristic.value];
+                           }];
+        }else {
+            NSLog(@"写入特征失败 = %@",characteristic.UUID);
         }
+        
     }];
-    //设置读取Descriptor的委托
-    [baby setBlockOnReadValueForDescriptors:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
-        NSLog(@"Descriptor name:%@ value is:%@",descriptor.characteristic.UUID, descriptor.value);
-    }];
+}
+
+//NSString转换为NSdata，这样就省去了一个一个字节去写入
+- (NSData *)hexToBytes:(NSString *)str
+{
+    NSMutableData* data = [NSMutableData data];
+    int idx;
+    for (idx = 0; idx+2 <= str.length; idx+=2) {
+        NSRange range = NSMakeRange(idx, 2);
+        NSString* hexStr = [str substringWithRange:range];
+        NSScanner* scanner = [NSScanner scannerWithString:hexStr];
+        unsigned int intValue;
+        [scanner scanHexInt:&intValue];
+        [data appendBytes:&intValue length:1];
+    }
+    return data;
+}
+
+//解析订阅的里程，步数，卡路里值
+- (void)readValueFromCharacteristicsWithValue:(NSData *)valueData
+{
+    if ([valueData bytes]!=nil) {
+        const unsigned char *hexBytesLight = [valueData bytes];
+        
+        NSString *Str1 = [NSString stringWithFormat:@"%02x", hexBytesLight[0]];
+        NSLog(@"标识符 = %@",Str1);
+        
+        if ([Str1 isEqualToString:@"03"]) {
+            //03070000 a000000b 00003300 00000000 00000000
+            NSData *stepData = [valueData subdataWithRange:NSMakeRange(2, 3)];
+            int stepValue = [self parseIntFromData:stepData];
+            NSLog(@"今日步数 = %d",stepValue);
+            self.currentWalkNum.text = [NSString stringWithFormat:@"%d",stepValue];
+            
+            NSData *mileageData = [valueData subdataWithRange:NSMakeRange(5, 3)];
+            int mileageValue = [self parseIntFromData:mileageData];
+            NSLog(@"今日里程数 = %d",mileageValue);
+            self.mileageNum.text = [NSString stringWithFormat:@"%d",mileageValue];
+            
+            NSData *kcalData = [valueData subdataWithRange:NSMakeRange(8, 3)];
+            int kcalValue = [self parseIntFromData:kcalData];
+            NSLog(@"卡路里 = %d",kcalValue);
+            self.kcalNum.text = [NSString stringWithFormat:@"%d",kcalValue];
+
+        }
+        if ([Str1 isEqualToString:@"0A"]) {
+            
+        }
+    }
+}
+
+//补充内容，因为没有三个字节转int的方法，这里补充一个通用方法,16进制转换成10进制
+- (unsigned)parseIntFromData:(NSData *)data{
+    
+    NSString *dataDescription = [data description];
+    NSString *dataAsString = [dataDescription substringWithRange:NSMakeRange(1, [dataDescription length]-2)];
+    
+    unsigned intData = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:dataAsString];
+    [scanner scanHexInt:&intData];
+    return intData;
 }
 
 /**

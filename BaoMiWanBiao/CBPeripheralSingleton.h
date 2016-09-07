@@ -13,6 +13,10 @@
 
 @property (nonatomic ,strong) CBPeripheral *peripheral;
 
+@property (nonatomic ,strong) CBCharacteristic *notifyCharacteristic;
+
+@property (nonatomic ,strong) CBCharacteristic *writeCharacteristic;
+
 + (instancetype)sharePeripheral;
 
 @end

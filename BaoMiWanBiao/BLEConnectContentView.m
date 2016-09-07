@@ -14,6 +14,7 @@
 #import "MainViewController.h"
 #import "BLEConnectViewController.h"
 #import "CBPeripheralSingleton.h"
+#import "AppDelegate.h"
 
 
 @interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, CBCentralManagerDelegate, UIAlertViewDelegate>
@@ -35,6 +36,8 @@
 
 @property (nonatomic ,strong) CBPeripheralSingleton *peripheralSing;
 
+@property(nonatomic) AppDelegate *appdelegate;
+
 @end
 
 @implementation BLEConnectContentView
@@ -45,9 +48,11 @@
     self.BLEListView.frame = self.bounds;
     
     //初始化BabyBluetooth 蓝牙库
-    baby = [BabyBluetooth shareBabyBluetooth];
+//    baby = [BabyBluetooth shareBabyBluetooth];
     //设置蓝牙委托
-    [self babyDelegate];
+//    [self babyDelegate];
+    self.appdelegate = (AppDelegate*)[[UIApplication sharedApplication]delegate];;
+    [self.appdelegate BleInit];
     
     // 蓝牙检测
     self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
@@ -69,6 +74,7 @@
     }
 }
 
+#if 0
 #pragma mark - babyDelegate
 //设置蓝牙委托
 -(void)babyDelegate{
@@ -110,9 +116,46 @@
         weakSelf.currPeripheral = peripheral;
         weakSelf.peripheralSing.peripheral = peripheral;
         
+        //指定返回我们需要的服务
+        [peripheral discoverServices:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]]];
+        
         [MBProgressHUD hideHUDForView:weakSelf animated:YES];
-        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",peripheral.name] delegate:weakSelf cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
-        [view show];
+    }];
+    
+    //设置发现设备的Services的委托
+    [baby setBlockOnDiscoverServices:^(CBPeripheral *peripheral, NSError *error) {
+        //        [peripheral discoverServices:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]]];
+        
+        for (CBService *s in peripheral.services) {
+            
+            NSLog(@"service name = %@",s);
+            //每个service
+            [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]] forService:s];
+            
+        }
+    }];
+    //设置发现设service的Characteristics的委托
+    [baby setBlockOnDiscoverCharacteristics:^(CBPeripheral *peripheral, CBService *service, NSError *error) {
+        
+        
+        for (CBCharacteristic *characteristic in service.characteristics) {
+            
+            //保存订阅的特征
+            if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"F000EFE2-0451-4000-0000-00000000B000"]]) {
+                weakSelf.peripheralSing.notifyCharacteristic = characteristic;
+            }
+            
+            //保存写入的特征
+            if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"F000EFE1-0451-4000-0000-00000000B000"]]) {
+                weakSelf.peripheralSing.writeCharacteristic = characteristic;
+            }
+        }
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",peripheral.name] delegate:weakSelf cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
+            view.tag = 102;
+            [view show];
+        });
         
     }];
     
@@ -121,6 +164,8 @@
         NSLog(@"断开了设备:%@",peripheral.name);
     }];
 }
+
+#endif
 
 //插入table数据
 -(void)insertTableView:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData{
@@ -158,10 +203,11 @@
         [baby cancelScan];
         [baby cancelAllPeripheralsConnection];
         
+        self.currPeripheral = peripheral;
         //显示等待菊花
         [MBProgressHUD showHUDAddedTo:self animated:YES];
         
-        baby.having(self.currPeripheral).connectToPeripherals().begin();
+        baby.having(self.currPeripheral).connectToPeripherals().discoverServices().discoverCharacteristics().begin();
         [weakCell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
         [weakCell.connectButton setBackgroundColor:[UIColor grayColor]];
     };
@@ -225,9 +271,10 @@
         [_switchButton setSelected:NO];
         
         //断开所有peripheral的连
-        [baby cancelAllPeripheralsConnection];
+//        [baby cancelAllPeripheralsConnection];
+        [self.appdelegate StartScan];
         //取消扫描
-        [baby cancelScan];
+//        [baby cancelScan];
         
         //移除cell
         NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
