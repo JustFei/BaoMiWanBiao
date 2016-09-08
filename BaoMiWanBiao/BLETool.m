@@ -8,7 +8,7 @@
 
 #import "BLETool.h"
 #import "BabyBluetooth.h"
-#import "manridyBlePeripheral.h"
+#import "manridyBleDevice.h"
 
 @interface BLETool ()
 {
@@ -76,14 +76,14 @@ static BLETool *bleTool = nil;
     [_baby cancelScan];
 }
 
-- (void)connectDevice:(manridyBlePeripheral *)dev
+- (void)connectDevice:(manridyBleDevice *)device
 {
-    
+    _baby.having(device.peripheral).connectToPeripherals().begin();
 }
 
 - (void)unConnectDevice
 {
-    
+    [_baby cancelAllPeripheralsConnection];
 }
 
 - (void)reConnectDevice
@@ -118,8 +118,9 @@ static BLETool *bleTool = nil;
     //设置扫描到设备的委托
     [_baby setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {
         NSLog(@"搜索到了设备:%@",peripheral.name);
-        manridyBlePeripheral *device = [[manridyBlePeripheral alloc] initWith:peripheral andAdvertisementData:<#(NSDictionary *)#>];
-        //        [weakSelf insertTableView:peripheral advertisementData:advertisementData];
+        manridyBleDevice *device = [[manridyBleDevice alloc] initWith:peripheral andAdvertisementData:advertisementData];
+        
+        [weakSelf.discoverDelegate manridyBLEDidDiscoverDeviceWithMAC:device];
     }];
     
     //设置发现设备的Services的委托

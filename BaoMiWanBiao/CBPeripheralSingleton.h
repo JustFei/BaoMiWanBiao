@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "manridyBlePeripheral.h"
+#import "manridyBleDevice.h"
 #import "BLETool.h"
 
 
-@interface CBPeripheralSingleton : NSObject
+@interface CBPeripheralSingleton : NSObject <BleDiscoverDelegate>
 
 @property (nonatomic ,strong) CBPeripheral *peripheral;
 
@@ -44,7 +44,7 @@
 - (BOOL)isBinded;
 
 //连接到设备
-- (void)connectDevice:(manridyBlePeripheral *)device;
+- (void)connectDevice:(manridyBleDevice *)device;
 
 //不连接某设备
 - (void)unConnectDevice;

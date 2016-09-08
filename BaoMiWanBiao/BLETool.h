@@ -16,7 +16,26 @@ typedef enum{
     kBLEstateBindUnConnected ,
 }kBLEstate;
 
-@class manridyBlePeripheral;
+@class manridyBleDevice;
+
+//发现设备协议
+@protocol BleDiscoverDelegate <NSObject>
+
+@required
+
+- (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device;
+
+@optional
+/**
+ *
+ *
+ *  @return the service did protocoled, for bracelet ,you could write @"FF20" ,you also can never implement this method for connect bracelet.
+ */
+- (NSString *)serverUUID;
+
+@end
+
+
 
 @interface BLETool : NSObject
 
@@ -26,6 +45,8 @@ typedef enum{
 
 @property (nonatomic ,readonly) CBPeripheral *currentDevice;
 
+@property (nonatomic ,assign) id <BleDiscoverDelegate>discoverDelegate;
+
 #pragma mark - action of connecting layer -连接层操作
 //扫描设备
 - (void)scanDevice;
@@ -34,7 +55,7 @@ typedef enum{
 - (void)stopScan;
 
 //连接设备
-- (void)connectDevice:(manridyBlePeripheral *)peripheral;
+- (void)connectDevice:(manridyBleDevice *)device;
 
 //断开设备连接
 - (void)unConnectDevice;

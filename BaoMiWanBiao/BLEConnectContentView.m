@@ -190,32 +190,30 @@ typedef enum{
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     BLECell *cell = [tableView dequeueReusableCellWithIdentifier:@"bleCell"];
-    manridyBlePeripheral *peripheral = self.peripheralsArr[indexPath.row];
-    cell.nameLabel.text = peripheral.deviceName;
+    manridyBleDevice *device = self.peripheralsArr[indexPath.row];
+    cell.nameLabel.text = device.deviceName;
     
     __weak typeof(cell) weakCell = cell;
+    //cell上点击连接的block
     cell.connectActionCallBack = ^void {
         
         //先停止扫描和断开其他链接
-//        [baby cancelScan];
-//        [baby cancelAllPeripheralsConnection];
         [[CBPeripheralSingleton sharePeripheral] stopScan];
         [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
         
-        self.currPeripheral = peripheral.cbDevice;
+        self.currPeripheral = device.peripheral;
         //显示等待菊花
         [MBProgressHUD showHUDAddedTo:self animated:YES];
         
-//        baby.having(self.currPeripheral).connectToPeripherals().discoverServices().discoverCharacteristics().begin();
-        [[CBPeripheralSingleton sharePeripheral] connectDevice:peripheral];
+        [[CBPeripheralSingleton sharePeripheral] connectDevice:device];
         [weakCell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
         [weakCell.connectButton setBackgroundColor:[UIColor grayColor]];
     };
     
+    //cell上点击断开连接的block
     cell.cancelActionCallBack = ^void {
+        
         //先停止扫描和断开其他链接
-//        [baby cancelScan];
-//        [baby cancelAllPeripheralsConnection];
         [[CBPeripheralSingleton sharePeripheral] stopScan];
         [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
         
@@ -352,12 +350,14 @@ typedef enum{
     [[CBPeripheralSingleton sharePeripheral] stopScan];
     NSString *regewx        = [NSString stringWithFormat:@"%@",_deviceFilter] ;
     NSPredicate * predwx    = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regewx];
-    for (manridyBlePeripheral *device in dataArray) {
+    for (manridyBleDevice *device in dataArray) {
         BOOL isMatchDevice = [predwx evaluateWithObject:device.deviceName];
         if (isMatchDevice) {
             [self.peripheralsArr addObject:device];
         }
     }
+    [self.BLEListView reloadData];
+    
     if (self.peripheralsArr.count != 0) {
         [self setScanState:ScanStateScaned];
     }else{

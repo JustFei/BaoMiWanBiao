@@ -1,5 +1,5 @@
 //
-//  manridyBlePeripheral.h
+//  manridyBleDevice.h
 //  BaoMiWanBiao
 //
 //  Created by 莫福见 on 16/9/8.
@@ -9,9 +9,9 @@
 @class CBPeripheral;
 #import <Foundation/Foundation.h>
 
-@interface manridyBlePeripheral : NSObject
+@interface manridyBleDevice : NSObject
 
-@property (nonatomic ,strong) CBPeripheral *cbDevice;
+@property (nonatomic ,strong) CBPeripheral *peripheral;
 //@property (nonatomic ,strong) NSString *mediaAC;
 //@property (nonatomic ,strong) NSNumber *RSSI;
 @property (nonatomic ,strong) NSString *uuidString;

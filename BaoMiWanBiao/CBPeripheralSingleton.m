@@ -24,7 +24,8 @@ static CBPeripheralSingleton *peripheral = nil;
 {
     self = [super init];
     if (self) {
-        
+        [BLETool shareInstance].discoverDelegate = self;
+        _deviceArray = [[NSMutableArray alloc] initWithCapacity:0];
     }
     return self;
 }
@@ -127,7 +128,7 @@ static CBPeripheralSingleton *peripheral = nil;
 }
 
 //连接到设备
-- (void)connectDevice:(manridyBlePeripheral *)device
+- (void)connectDevice:(manridyBleDevice *)device
 {
     [[BLETool shareInstance] connectDevice:device];
 }
@@ -136,6 +137,15 @@ static CBPeripheralSingleton *peripheral = nil;
 - (void)unConnectDevice
 {
     [[BLETool shareInstance] unConnectDevice];
+}
+
+#pragma mark -blelib3Delegate
+
+- (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device{
+    
+    if (![_deviceArray containsObject:device]) {
+        [_deviceArray addObject:device];
+    }
 }
 
 @end
