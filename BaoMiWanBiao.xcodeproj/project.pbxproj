@@ -46,6 +46,8 @@
 		3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F01D6308F200B99320 /* MainViewController.xib */; };
 		3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791F71D631AC400B99320 /* SleepStatusViewController.m */; };
 		3B2791FA1D631AC400B99320 /* SleepStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */; };
+		3B3762661D811B2500543AF7 /* manridyBlePeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3762651D811B2500543AF7 /* manridyBlePeripheral.m */; };
+		3B3762691D811C8A00543AF7 /* BLETool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3762681D811C8A00543AF7 /* BLETool.m */; };
 		3B4335861D76661700AF2E8F /* UserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4335851D76661700AF2E8F /* UserInfoViewController.m */; };
 		3B4335881D76773D00AF2E8F /* UserInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4335871D76773D00AF2E8F /* UserInfoViewController.xib */; };
 		3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EA0291D75297900E23B63 /* ASPopUpView.m */; };
@@ -233,6 +235,10 @@
 		3B2791F71D631AC400B99320 /* SleepStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepStatusViewController.m; sourceTree = "<group>"; };
 		3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SleepStatusViewController.xib; sourceTree = "<group>"; };
 		3B2E164F1D77CAD900DD5716 /* XXFStringConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXFStringConstants.h; sourceTree = "<group>"; };
+		3B3762641D811B2500543AF7 /* manridyBlePeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = manridyBlePeripheral.h; sourceTree = "<group>"; };
+		3B3762651D811B2500543AF7 /* manridyBlePeripheral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = manridyBlePeripheral.m; sourceTree = "<group>"; };
+		3B3762671D811C8A00543AF7 /* BLETool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLETool.h; sourceTree = "<group>"; };
+		3B3762681D811C8A00543AF7 /* BLETool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLETool.m; sourceTree = "<group>"; };
 		3B4335841D76661700AF2E8F /* UserInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoViewController.h; sourceTree = "<group>"; };
 		3B4335851D76661700AF2E8F /* UserInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoViewController.m; sourceTree = "<group>"; };
 		3B4335871D76773D00AF2E8F /* UserInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoViewController.xib; sourceTree = "<group>"; };
@@ -1027,6 +1033,10 @@
 			children = (
 				9C36F6CA1D7F2AB90029FC1C /* CBPeripheralSingleton.h */,
 				9C36F6CB1D7F2AB90029FC1C /* CBPeripheralSingleton.m */,
+				3B3762641D811B2500543AF7 /* manridyBlePeripheral.h */,
+				3B3762651D811B2500543AF7 /* manridyBlePeripheral.m */,
+				3B3762671D811C8A00543AF7 /* BLETool.h */,
+				3B3762681D811C8A00543AF7 /* BLETool.m */,
 			);
 			name = "蓝牙单例";
 			sourceTree = "<group>";
@@ -1339,6 +1349,7 @@
 			files = (
 				3BD797001D55D34B00DB6821 /* JBBarChartFooterView.m in Sources */,
 				3BBEF1511D4B3B52001BAE66 /* MiMaTableViewCell.m in Sources */,
+				3B3762661D811B2500543AF7 /* manridyBlePeripheral.m in Sources */,
 				3BCDF4101D6ACF3A00B6D7D5 /* MotionFmdbTool.m in Sources */,
 				3B12AE361D6BE49300C469EF /* SleepFmdbTool.m in Sources */,
 				3B0278E21D6E885E0053820A /* FolderViewController.m in Sources */,
@@ -1359,6 +1370,7 @@
 				3BC0B4921D48520E00616A27 /* AssetHelper.m in Sources */,
 				3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */,
 				3BDD65C41D45F5DC009EA15F /* RegistViewController.m in Sources */,
+				3B3762691D811C8A00543AF7 /* BLETool.m in Sources */,
 				3B12AE3A1D6BFCF100C469EF /* ClockViewController.m in Sources */,
 				3B4335861D76661700AF2E8F /* UserInfoViewController.m in Sources */,
 				3B4EA02D1D75297900E23B63 /* ASProgressPopUpView.m in Sources */,

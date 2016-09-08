@@ -14,14 +14,19 @@
 #import "MainViewController.h"
 #import "BLEConnectViewController.h"
 #import "CBPeripheralSingleton.h"
-#import "AppDelegate.h"
 
+
+typedef enum{
+    ScanStateScaning = 0,
+    ScanStateScaned ,
+    ScanStateNull   ,
+}ScanState;
 
 @interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, CBCentralManagerDelegate, UIAlertViewDelegate>
 {
     BOOL _blueToothOpen;
     UIButton *_switchButton;
-    BabyBluetooth *baby;
+//    BabyBluetooth *baby;
 }
 // 蓝牙检测
 @property (nonatomic ,strong) CBCentralManager *centralManager;
@@ -34,25 +39,18 @@
 
 @property (nonatomic ,weak) UIView *headView;
 
-@property (nonatomic ,strong) CBPeripheralSingleton *peripheralSing;
-
-@property(nonatomic) AppDelegate *appdelegate;
-
 @end
 
 @implementation BLEConnectContentView
 
 - (void)layoutSubviews
 {
-    self.peripheralSing = [CBPeripheralSingleton sharePeripheral];
     self.BLEListView.frame = self.bounds;
     
     //初始化BabyBluetooth 蓝牙库
 //    baby = [BabyBluetooth shareBabyBluetooth];
     //设置蓝牙委托
 //    [self babyDelegate];
-    self.appdelegate = (AppDelegate*)[[UIApplication sharedApplication]delegate];;
-    [self.appdelegate BleInit];
     
     // 蓝牙检测
     self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
@@ -164,7 +162,6 @@
         NSLog(@"断开了设备:%@",peripheral.name);
     }];
 }
-
 #endif
 
 //插入table数据
@@ -193,29 +190,34 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     BLECell *cell = [tableView dequeueReusableCellWithIdentifier:@"bleCell"];
-    CBPeripheral *peripheral = self.peripheralsArr[indexPath.row];
-    cell.nameLabel.text = peripheral.name;
+    manridyBlePeripheral *peripheral = self.peripheralsArr[indexPath.row];
+    cell.nameLabel.text = peripheral.deviceName;
     
     __weak typeof(cell) weakCell = cell;
     cell.connectActionCallBack = ^void {
         
         //先停止扫描和断开其他链接
-        [baby cancelScan];
-        [baby cancelAllPeripheralsConnection];
+//        [baby cancelScan];
+//        [baby cancelAllPeripheralsConnection];
+        [[CBPeripheralSingleton sharePeripheral] stopScan];
+        [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
         
-        self.currPeripheral = peripheral;
+        self.currPeripheral = peripheral.cbDevice;
         //显示等待菊花
         [MBProgressHUD showHUDAddedTo:self animated:YES];
         
-        baby.having(self.currPeripheral).connectToPeripherals().discoverServices().discoverCharacteristics().begin();
+//        baby.having(self.currPeripheral).connectToPeripherals().discoverServices().discoverCharacteristics().begin();
+        [[CBPeripheralSingleton sharePeripheral] connectDevice:peripheral];
         [weakCell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
         [weakCell.connectButton setBackgroundColor:[UIColor grayColor]];
     };
     
     cell.cancelActionCallBack = ^void {
         //先停止扫描和断开其他链接
-        [baby cancelScan];
-        [baby cancelAllPeripheralsConnection];
+//        [baby cancelScan];
+//        [baby cancelAllPeripheralsConnection];
+        [[CBPeripheralSingleton sharePeripheral] stopScan];
+        [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
         
         [weakCell.connectButton setTitle:@"连接" forState:UIControlStateNormal];
         weakCell.connectButton.backgroundColor = UIColorFromRGBWithAlpha(0x2c91F4, 1);
@@ -250,10 +252,10 @@
         case 102:
         {
             //取消扫描
-            [baby cancelScan];
-            [[self findViewController:self].navigationController popViewControllerAnimated:YES];
-            BLEConnectViewController *bleVC = (BLEConnectViewController *)[self findViewController:self];
-            bleVC.hiddenSearchBleViewCallBack();
+//            [baby cancelScan];
+//            [[self findViewController:self].navigationController popViewControllerAnimated:YES];
+//            BLEConnectViewController *bleVC = (BLEConnectViewController *)[self findViewController:self];
+//            bleVC.hiddenSearchBleViewCallBack();
         }
             break;
             
@@ -271,10 +273,10 @@
         [_switchButton setSelected:NO];
         
         //断开所有peripheral的连
-//        [baby cancelAllPeripheralsConnection];
-        [self.appdelegate StartScan];
+        [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
+        
         //取消扫描
-//        [baby cancelScan];
+        [[CBPeripheralSingleton sharePeripheral] stopScan];
         
         //移除cell
         NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
@@ -299,8 +301,67 @@
             [_switchButton setSelected:YES];
             
             //设置委托后直接可以使用，无需等待CBCentralManagerStatePoweredOn状态
-            baby.scanForPeripherals().begin();
+            [[CBPeripheralSingleton sharePeripheral] scanDevice];
+            [self setScanState:ScanStateScaning];
         }
+    }
+}
+
+#pragma mark - scan && stopScan
+- (void)setScanState:(ScanState)state{
+    switch (state) {
+        case ScanStateScaning:
+        {
+            //正在扫描中
+            NSLog(@"searching your device");
+            [self scanAnimation];
+        }
+            break;
+        case ScanStateScaned:
+        {
+            //找到设备，更新列表
+            NSLog(@"already find device for you, double click to re-scan");
+            [_BLEListView reloadData];
+            
+        }
+            break;
+        case ScanStateNull:
+        {
+            //什么也没有扫描到
+            NSLog(@"sorry, not find available device");
+            
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)scanAnimation
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self stopScan];
+        //十秒后停止搜索
+    });
+}
+
+- (void)stopScan
+{
+    [self.peripheralsArr removeAllObjects];
+    NSArray *dataArray = [[CBPeripheralSingleton sharePeripheral] getDevices];
+    [[CBPeripheralSingleton sharePeripheral] stopScan];
+    NSString *regewx        = [NSString stringWithFormat:@"%@",_deviceFilter] ;
+    NSPredicate * predwx    = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regewx];
+    for (manridyBlePeripheral *device in dataArray) {
+        BOOL isMatchDevice = [predwx evaluateWithObject:device.deviceName];
+        if (isMatchDevice) {
+            [self.peripheralsArr addObject:device];
+        }
+    }
+    if (self.peripheralsArr.count != 0) {
+        [self setScanState:ScanStateScaned];
+    }else{
+        [self setScanState:ScanStateNull];
     }
 }
 

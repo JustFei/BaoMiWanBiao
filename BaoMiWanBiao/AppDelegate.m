@@ -27,7 +27,7 @@
 @interface AppDelegate ()
 {
     NSMutableArray *peripherals;
-    BabyBluetooth *baby;
+//    BabyBluetooth *baby;
 }
 
 @property (nonatomic ,strong) CBPeripheralSingleton *peripheralSing;
@@ -41,9 +41,9 @@
     // Override point for customization after application launch.
     
     //初始化BabyBluetooth 蓝牙库
-    baby = [BabyBluetooth shareBabyBluetooth];
+//    baby = [BabyBluetooth shareBabyBluetooth];
     //设置蓝牙委托
-    [self babyDelegate];
+//    [self babyDelegate];
     
     //云服务器的配置id
     [Bmob registerWithAppKey:@"8c426dee71396d48334853c72d431074"];
@@ -86,9 +86,6 @@
             UIViewController *vc = [[UIViewController alloc] init];
             vc.view.backgroundColor = [UIColor redColor];
             
-            
-            
-            
             PKRevealController *revealController = [PKRevealController revealControllerWithFrontViewController:[[UINavigationController alloc] initWithRootViewController:[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil]]  leftViewController:vc];
             self.window.rootViewController = revealController;
         }
@@ -116,6 +113,7 @@
     }
 }
 
+#if 0
 //蓝牙网关初始化和委托方法设置
 -(void)babyDelegate{
     
@@ -133,10 +131,10 @@
     [baby setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {
         NSLog(@"搜索到了设备:%@",peripheral.name);
         weakSelf.peripheralSing.peripheral=peripheral;
-        if ([peripheral.name isEqualToString:@"YK661DM20A"]) {
-            weakSelf.peripheralSing.peripheral=peripheral;
+//        if ([peripheral.name isEqualToString:@"YK661DM20A"]) {
+//            weakSelf.peripheralSing.peripheral=peripheral;
             [weakSelf StartdiscoverServices:peripheral];
-        }
+//        }
         //[weakSelf insertTableView:peripheral];
     }];
     //设置设备连接成功的委托
@@ -254,6 +252,8 @@
     }
     return data;
 }
+
+#endif
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

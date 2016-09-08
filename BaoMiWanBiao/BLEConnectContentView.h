@@ -10,4 +10,6 @@
 
 @interface BLEConnectContentView : UIView
 
+@property (nonatomic ,copy) NSString *deviceFilter;
+
 @end
