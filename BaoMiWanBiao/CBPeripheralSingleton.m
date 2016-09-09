@@ -9,7 +9,7 @@
 #import "CBPeripheralSingleton.h"
 #import "BLETool.h"
 
-@interface CBPeripheralSingleton () <NSCopying, NSMutableCopying>
+@interface CBPeripheralSingleton () <BleWriteDelegate, BleDiscoverDelegate, BleConnectDelegate, NSCopying, NSMutableCopying>
 {
     NSMutableArray *_deviceArray;
 }
@@ -25,6 +25,8 @@ static CBPeripheralSingleton *peripheral = nil;
     self = [super init];
     if (self) {
         [BLETool shareInstance].discoverDelegate = self;
+        [BLETool shareInstance].connectDelegate = self;
+        [BLETool shareInstance].writeDelegate = self;
         _deviceArray = [[NSMutableArray alloc] initWithCapacity:0];
     }
     return self;
@@ -64,24 +66,24 @@ static CBPeripheralSingleton *peripheral = nil;
 //设置重连
 - (void)setAutoReconnect:(BOOL)isNeed andReconnectCheckTime:(NSTimeInterval)timeSec
 {
-    __block CBPeripheralSingleton *__safe_self = self;
-    
-    dispatch_queue_t queue = dispatch_queue_create("auto-reconnect-queue", 0);
-    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, timeSec *NSEC_PER_SEC, 0.1 *   timeSec *NSEC_PER_SEC);
-    dispatch_source_set_event_handler(timer, ^{
-        if ([__safe_self auto_reconnect_cancel] ) {
-            dispatch_source_cancel(timer);
-        }
-        __safe_self.state = [__safe_self currentState];
-        
-        //        NSLog(@"_state :=================== %d",__safe_self.state);
-        
-        if (__safe_self.state == kBLEstateBindUnConnected) {
-            [[BLETool shareInstance] reConnectDevice];
-        }
-    });
-    dispatch_resume(timer);
+//    __block CBPeripheralSingleton *__safe_self = self;
+//    
+//    dispatch_queue_t queue = dispatch_queue_create("auto-reconnect-queue", 0);
+//    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+//    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, timeSec *NSEC_PER_SEC, 0.1 *   timeSec *NSEC_PER_SEC);
+//    dispatch_source_set_event_handler(timer, ^{
+//        if ([__safe_self auto_reconnect_cancel] ) {
+//            dispatch_source_cancel(timer);
+//        }
+//        __safe_self.state = [__safe_self currentState];
+//        
+//        //        NSLog(@"_state :=================== %d",__safe_self.state);
+//        
+//        if (__safe_self.state == kBLEstateBindUnConnected) {
+//            [[BLETool shareInstance] reConnectDevice];
+//        }
+//    });
+//    dispatch_resume(timer);
 }
 
 #pragma mark - device&&state
@@ -140,12 +142,13 @@ static CBPeripheralSingleton *peripheral = nil;
 }
 
 #pragma mark -blelib3Delegate
-
 - (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device{
-    
-    if (![_deviceArray containsObject:device]) {
-        [_deviceArray addObject:device];
-    }
+    [_deviceArray addObject:device];
+}
+
+- (void)manridyBLEDidConnectDevice:(manridyBleDevice *)device
+{
+    NSLog(@"走这里");
 }
 
 @end

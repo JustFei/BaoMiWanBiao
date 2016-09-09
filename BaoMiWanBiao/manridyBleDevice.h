@@ -8,12 +8,15 @@
 
 @class CBPeripheral;
 #import <Foundation/Foundation.h>
+#import <CoreBluetooth/CoreBluetooth.h>
 
 @interface manridyBleDevice : NSObject
 
 @property (nonatomic ,strong) CBPeripheral *peripheral;
 //@property (nonatomic ,strong) NSString *mediaAC;
 //@property (nonatomic ,strong) NSNumber *RSSI;
+@property (nonatomic ,strong) CBCharacteristic *notifyCharacteristic;
+@property (nonatomic ,strong) CBCharacteristic *writeCharacteristic;
 @property (nonatomic ,strong) NSString *uuidString;
 @property (nonatomic ,strong) NSString *deviceName;
 

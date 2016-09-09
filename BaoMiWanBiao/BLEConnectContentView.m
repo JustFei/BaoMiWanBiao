@@ -22,11 +22,12 @@ typedef enum{
     ScanStateNull   ,
 }ScanState;
 
-@interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, CBCentralManagerDelegate, UIAlertViewDelegate>
+@interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, CBCentralManagerDelegate, UIAlertViewDelegate, BleConnectDelegate, BleDiscoverDelegate>
 {
     BOOL _blueToothOpen;
     UIButton *_switchButton;
-//    BabyBluetooth *baby;
+    BOOL _bleSwitchState;
+    BOOL _bleConnectState;
 }
 // 蓝牙检测
 @property (nonatomic ,strong) CBCentralManager *centralManager;
@@ -39,19 +40,42 @@ typedef enum{
 
 @property (nonatomic ,weak) UIView *headView;
 
+@property (nonatomic ,strong) NSTimer *scanDeviceTimer;
+
 @end
 
 @implementation BLEConnectContentView
 
 - (void)layoutSubviews
 {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] == nil) {
+        
+        [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleConnectState"];
+        _bleConnectState = 0;
+    }else{
+        
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] isEqualToString:@"0"]) {
+            _bleConnectState = 0;
+            _bleSwitchState = 0;
+        }else {
+            _bleConnectState = 1;
+            _bleSwitchState = 1;
+        }
+    }
+    
+    NSLog(@"开关 = %d，连接 = %d",_bleSwitchState ,_bleConnectState);
+    
+    if (_bleConnectState) {
+        
+        if ([CBPeripheralSingleton sharePeripheral].device) {
+            [self.peripheralsArr addObject:[CBPeripheralSingleton sharePeripheral].device];
+        }
+    }
+    
     self.BLEListView.frame = self.bounds;
     
-    //初始化BabyBluetooth 蓝牙库
-//    baby = [BabyBluetooth shareBabyBluetooth];
-    //设置蓝牙委托
-//    [self babyDelegate];
-    
+    [BLETool shareInstance].connectDelegate = self;
+    [BLETool shareInstance].discoverDelegate = self;
     // 蓝牙检测
     self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
 }
@@ -72,110 +96,6 @@ typedef enum{
     }
 }
 
-#if 0
-#pragma mark - babyDelegate
-//设置蓝牙委托
--(void)babyDelegate{
-    
-    __weak typeof(self) weakSelf = self;
-    
-    //设置扫描到设备的委托
-    [baby setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {
-        NSLog(@"搜索到了设备:%@",peripheral.name);
-    }];
-    
-#warning this is choose what peripheral we want
-    //过滤器
-    //设置查找设备的过滤器
-    [baby setFilterOnDiscoverPeripherals:^BOOL(NSString *peripheralName, NSDictionary *advertisementData, NSNumber *RSSI) {
-        //最常用的场景是查找某一个前缀开头的设备
-        //if ([peripheralName hasPrefix:@"Pxxxx"] ) {
-        //    return YES;
-        //}
-        //return NO;
-        //设置查找规则是名称大于1 ， the search rule is peripheral.name length > 1
-        if (peripheralName.length >1) {
-            return YES;
-        }
-        return NO;
-    }];
-    
-    //设置扫描到设备的委托
-    [baby setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {
-        NSLog(@"搜索到了设备:%@",peripheral.name);
-        [weakSelf insertTableView:peripheral advertisementData:advertisementData];
-    }];
-    
-    //设置设备连接成功的委托,同一个baby对象，使用不同的channel切换委托回调
-    [baby setBlockOnConnected:^(CBCentralManager *central, CBPeripheral *peripheral) {
-        NSLog(@"连接到了设备:%@",peripheral.name);
-        
-        //currPeripheral指向我们点击的cell的peripheral
-        weakSelf.currPeripheral = peripheral;
-        weakSelf.peripheralSing.peripheral = peripheral;
-        
-        //指定返回我们需要的服务
-        [peripheral discoverServices:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]]];
-        
-        [MBProgressHUD hideHUDForView:weakSelf animated:YES];
-    }];
-    
-    //设置发现设备的Services的委托
-    [baby setBlockOnDiscoverServices:^(CBPeripheral *peripheral, NSError *error) {
-        //        [peripheral discoverServices:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]]];
-        
-        for (CBService *s in peripheral.services) {
-            
-            NSLog(@"service name = %@",s);
-            //每个service
-            [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:@"F000EFE0-0000-4000-0000-00000000B000"]] forService:s];
-            
-        }
-    }];
-    //设置发现设service的Characteristics的委托
-    [baby setBlockOnDiscoverCharacteristics:^(CBPeripheral *peripheral, CBService *service, NSError *error) {
-        
-        
-        for (CBCharacteristic *characteristic in service.characteristics) {
-            
-            //保存订阅的特征
-            if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"F000EFE2-0451-4000-0000-00000000B000"]]) {
-                weakSelf.peripheralSing.notifyCharacteristic = characteristic;
-            }
-            
-            //保存写入的特征
-            if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"F000EFE1-0451-4000-0000-00000000B000"]]) {
-                weakSelf.peripheralSing.writeCharacteristic = characteristic;
-            }
-        }
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",peripheral.name] delegate:weakSelf cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
-            view.tag = 102;
-            [view show];
-        });
-        
-    }];
-    
-    //断开Peripherals的连接的block
-    [baby setBlockOnDisconnect:^(CBCentralManager *central, CBPeripheral *peripheral, NSError *error) {
-        NSLog(@"断开了设备:%@",peripheral.name);
-    }];
-}
-#endif
-
-//插入table数据
--(void)insertTableView:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData{
-    if(![self.peripheralsArr containsObject:peripheral]){
-        NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.peripheralsArr.count inSection:0];
-        [indexPaths addObject:indexPath];
-        [self.peripheralsArr addObject:peripheral];
-//        [peripheralsAD addObject:advertisementData];
-        [self.BLEListView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-}
-
 #pragma mark - UITableViewDelegate && UITableDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -193,19 +113,30 @@ typedef enum{
     manridyBleDevice *device = self.peripheralsArr[indexPath.row];
     cell.nameLabel.text = device.deviceName;
     
+    if (_bleSwitchState) {
+        if (_bleConnectState) {
+            if ([CBPeripheralSingleton sharePeripheral].device != nil) {
+                if ([[CBPeripheralSingleton sharePeripheral].device.peripheral isEqual:device.peripheral]) {
+                    [cell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
+                    [cell.connectButton setBackgroundColor:[UIColor grayColor]];
+                }
+            }
+        }
+    }
+    
     __weak typeof(cell) weakCell = cell;
     //cell上点击连接的block
     cell.connectActionCallBack = ^void {
         
         //先停止扫描和断开其他链接
-        [[CBPeripheralSingleton sharePeripheral] stopScan];
-        [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
+        [[BLETool shareInstance] stopScan];
+        [[BLETool shareInstance] unConnectDevice];
         
         self.currPeripheral = device.peripheral;
         //显示等待菊花
         [MBProgressHUD showHUDAddedTo:self animated:YES];
         
-        [[CBPeripheralSingleton sharePeripheral] connectDevice:device];
+        [[BLETool shareInstance] connectDevice:device];
         [weakCell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
         [weakCell.connectButton setBackgroundColor:[UIColor grayColor]];
     };
@@ -214,8 +145,8 @@ typedef enum{
     cell.cancelActionCallBack = ^void {
         
         //先停止扫描和断开其他链接
-        [[CBPeripheralSingleton sharePeripheral] stopScan];
-        [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
+        [[BLETool shareInstance] stopScan];
+        [[BLETool shareInstance] unConnectDevice];
         
         [weakCell.connectButton setTitle:@"连接" forState:UIControlStateNormal];
         weakCell.connectButton.backgroundColor = UIColorFromRGBWithAlpha(0x2c91F4, 1);
@@ -250,10 +181,11 @@ typedef enum{
         case 102:
         {
             //取消扫描
-//            [baby cancelScan];
-//            [[self findViewController:self].navigationController popViewControllerAnimated:YES];
-//            BLEConnectViewController *bleVC = (BLEConnectViewController *)[self findViewController:self];
-//            bleVC.hiddenSearchBleViewCallBack();
+            [[self findViewController:self].navigationController popViewControllerAnimated:YES];
+            BLEConnectViewController *bleVC = (BLEConnectViewController *)[self findViewController:self];
+            if (bleVC.hiddenSearchBleViewCallBack) {
+                bleVC.hiddenSearchBleViewCallBack();
+            }
         }
             break;
             
@@ -267,14 +199,15 @@ typedef enum{
 - (void)ConnectSwitch
 {
     if (_switchButton.isSelected) {
-        
+        [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleSwitchState"];
+        _bleSwitchState = 0;
         [_switchButton setSelected:NO];
         
         //断开所有peripheral的连
-        [[CBPeripheralSingleton sharePeripheral] unConnectDevice];
+        [[BLETool shareInstance] unConnectDevice];
         
         //取消扫描
-        [[CBPeripheralSingleton sharePeripheral] stopScan];
+        [[BLETool shareInstance] stopScan];
         
         //移除cell
         NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
@@ -285,85 +218,73 @@ typedef enum{
         }
         
         //删除数据源
-        self.peripheralsArr = nil;
+        [self.peripheralsArr removeAllObjects];
         
         [self.BLEListView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         
+        [self.scanDeviceTimer invalidate];
+        self.scanDeviceTimer = nil;
+        
     }else {
         if (!_blueToothOpen) {
+            
             UIAlertView *view = [[UIAlertView alloc ] initWithTitle:@"提示" message:@"请确认设备是否已开启蓝牙" delegate:self cancelButtonTitle:@"去看看！" otherButtonTitles:nil, nil];
             [view setTag:101];
             [view show];
         }else {
-        
-            [_switchButton setSelected:YES];
-            
-            //设置委托后直接可以使用，无需等待CBCentralManagerStatePoweredOn状态
-            [[CBPeripheralSingleton sharePeripheral] scanDevice];
-            [self setScanState:ScanStateScaning];
+            [self scanDevice];
         }
     }
 }
 
-#pragma mark - scan && stopScan
-- (void)setScanState:(ScanState)state{
-    switch (state) {
-        case ScanStateScaning:
-        {
-            //正在扫描中
-            NSLog(@"searching your device");
-            [self scanAnimation];
-        }
-            break;
-        case ScanStateScaned:
-        {
-            //找到设备，更新列表
-            NSLog(@"already find device for you, double click to re-scan");
-            [_BLEListView reloadData];
-            
-        }
-            break;
-        case ScanStateNull:
-        {
-            //什么也没有扫描到
-            NSLog(@"sorry, not find available device");
-            
-        }
-            break;
-        default:
-            break;
-    }
-}
-
-- (void)scanAnimation
+- (void)scanDevice
 {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self stopScan];
-        //十秒后停止搜索
+    [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"bleSwitchState"];
+    _bleSwitchState = 1;
+    [_switchButton setSelected:YES];
+    
+    //设置委托后直接可以使用，无需等待CBCentralManagerStatePoweredOn状态
+    [[BLETool shareInstance] scanDevice];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[BLETool shareInstance] stopScan];
     });
 }
 
-- (void)stopScan
+#pragma mark - blelib3Delegate
+#pragma mark -BleConnectDelegate
+- (void)manridyBLEDidConnectDevice:(manridyBleDevice *)device
 {
-    [self.peripheralsArr removeAllObjects];
-    NSArray *dataArray = [[CBPeripheralSingleton sharePeripheral] getDevices];
-    [[CBPeripheralSingleton sharePeripheral] stopScan];
-    NSString *regewx        = [NSString stringWithFormat:@"%@",_deviceFilter] ;
-    NSPredicate * predwx    = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regewx];
-    for (manridyBleDevice *device in dataArray) {
-        BOOL isMatchDevice = [predwx evaluateWithObject:device.deviceName];
-        if (isMatchDevice) {
-            [self.peripheralsArr addObject:device];
-        }
-    }
-    [self.BLEListView reloadData];
+    [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"bleConnectState"];
+    [CBPeripheralSingleton sharePeripheral].device = device;
     
-    if (self.peripheralsArr.count != 0) {
-        [self setScanState:ScanStateScaned];
-    }else{
-        [self setScanState:ScanStateNull];
+    //显示等待菊花
+    [MBProgressHUD hideHUDForView:self animated:YES];
+    UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",device.deviceName] delegate:self cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
+    view.tag = 102;
+    [view show];
+}
+
+- (void)manridyBLEDidDisconnectDevice:(manridyBleDevice *)device
+{
+    self.peripheralsArr = nil;
+    [CBPeripheralSingleton sharePeripheral].device = nil;
+    
+    [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleConnectState"];
+    _bleConnectState = 0;
+}
+
+#pragma mark -BleDiscoverDelegate
+- (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device
+{
+    
+    if (![self.peripheralsArr containsObject:device]) {
+        [self.peripheralsArr addObject:device];
+        [self.BLEListView reloadData];
     }
 }
+
+
 
 #pragma mark - 懒加载
 - (UIView *)headView
@@ -379,6 +300,9 @@ typedef enum{
         _switchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 40, 11, 30, 21)];
         [_switchButton setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
         [_switchButton setImage:[UIImage imageNamed:@"open"] forState:UIControlStateSelected];
+
+        [_switchButton setSelected:_bleSwitchState];
+        
         [_switchButton addTarget:self action:@selector(ConnectSwitch) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:_switchButton];
         
@@ -419,6 +343,7 @@ typedef enum{
 #pragma mark - 获取当前View的控制器的方法
 - (UIViewController *)findViewController:(UIView *)sourceView
 {
+    
     id target=sourceView;
     while (target) {
         target = ((UIResponder *)target).nextResponder;

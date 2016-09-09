@@ -30,8 +30,6 @@
 //    BabyBluetooth *baby;
 }
 
-@property (nonatomic ,strong) CBPeripheralSingleton *peripheralSing;
-@property (nonatomic ,strong) NSMutableArray *services;
 @end
 
 @implementation AppDelegate

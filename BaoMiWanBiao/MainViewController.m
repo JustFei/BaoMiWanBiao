@@ -47,7 +47,7 @@
 //    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
     
 
-    [self.view bringSubviewToFront:self.connectView];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -64,6 +64,14 @@
     self.connectView.hiddenSelfCallBack = ^void {
         [weakSelf.connectView removeFromSuperview];
     };
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] != nil) {
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] isEqualToString:@"0"]) {
+            [self.view bringSubviewToFront:self.connectView];
+        }else {
+            [self.connectView removeFromSuperview];
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning {

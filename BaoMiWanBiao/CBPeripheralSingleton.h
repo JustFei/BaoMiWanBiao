@@ -11,16 +11,12 @@
 #import "manridyBleDevice.h"
 #import "BLETool.h"
 
+@interface CBPeripheralSingleton : NSObject
 
-@interface CBPeripheralSingleton : NSObject <BleDiscoverDelegate>
+@property (nonatomic ,strong) manridyBleDevice *device;
 
-@property (nonatomic ,strong) CBPeripheral *peripheral;
+//@property (nonatomic ,assign) kBLEstate state;
 
-@property (nonatomic ,strong) CBCharacteristic *notifyCharacteristic;
-
-@property (nonatomic ,strong) CBCharacteristic *writeCharacteristic;
-
-@property (nonatomic ,assign) kBLEstate state;
 @property (nonatomic ,assign) BOOL auto_reconnect_cancel;
 
 + (instancetype)sharePeripheral;
@@ -38,7 +34,7 @@
 - (NSArray *)getDevices;
 
 //当前状态
-- (kBLEstate)currentState;
+//- (kBLEstate)currentState;
 
 //是否绑定
 - (BOOL)isBinded;
