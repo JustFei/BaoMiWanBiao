@@ -158,7 +158,7 @@
     for (NSInteger index = mutArr.count - 1; index >= 0 ; index --) {
         if ([mutArr[index] isEqualToString:@".DS_Store"]) {
             [mutArr removeObjectAtIndex:index];
-            NSLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%ld",index ,mutArr.count);
+            NSLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%ld",(long)index ,(unsigned long)mutArr.count);
             
         }
     }

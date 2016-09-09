@@ -41,7 +41,7 @@
         selectPhotoNames=[[NSMutableArray alloc] init];
     }else{
         selectPhotoNames=[[NSMutableArray alloc] init];
-        self.lbAlert.text=[NSString stringWithFormat:@"已经选择%ld张照片",self.selectPhotos.count];
+        self.lbAlert.text=[NSString stringWithFormat:@"已经选择%ld张照片",(unsigned long)self.selectPhotos.count];
     }
     
     self.collection.backgroundColor = [UIColor whiteColor];

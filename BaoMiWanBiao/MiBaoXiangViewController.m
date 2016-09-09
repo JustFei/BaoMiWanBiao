@@ -22,7 +22,7 @@
 #define WIDTH self.view.frame.size.width
 #define HEIGHT self.view.frame.size.height
 
-@interface MiBaoXiangViewController ()<UITableViewDelegate,UITableViewDataSource,SelectPhotoDelegate,FolderSelectPhotoDelegate,ASProgressPopUpViewDataSource>
+@interface MiBaoXiangViewController ()<UITableViewDelegate,UITableViewDataSource,FolderSelectPhotoDelegate,ASProgressPopUpViewDataSource>
 {
     //选中图片数组，也是TableView的数据源
     NSMutableArray *_selectPhotos;
@@ -254,7 +254,7 @@
 //删除图片按钮
 - (void)deleteImages
 {
-    NSLog(@"总共有%ld个数据",self.dataDic.count);
+    NSLog(@"总共有%ld个数据",(unsigned long)self.dataDic.count);
     //以下代码是处理数据的删除的操作。
     if (self.dataDic.count != 0) {
         
@@ -479,7 +479,7 @@
                 [data getBytes:buffer range:NSMakeRange(offset, read)];
                 written = fwrite(buffer, sizeof(char), read, file);
                 offset += read;
-                NSLog(@"%ld",(data.length - offset));
+                NSLog(@"%lu",(data.length - offset));
                 
             } while (!(read < bufferSize) && !err);//没到结尾，没出错，ok继续
         }

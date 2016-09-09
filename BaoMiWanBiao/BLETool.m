@@ -103,11 +103,6 @@ static BLETool *bleTool = nil;
     return nil;
 }
 
-- (void)debindFromSystem
-{
-    
-}
-
 #pragma mark - 写入层操作
 - (void)writeDataToPeripheral:(NSString *)info
 {
@@ -211,6 +206,7 @@ static BLETool *bleTool = nil;
             [weakBaby notify:weakSelf.currentDev.peripheral characteristic:weakSelf.currentDev.notifyCharacteristic block:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
                 NSLog(@"改变后的特征值 = %@",characteristics.value);
                 
+#warning 这里对delegate有没有接收对象作出判断失败，当没有对象接受时，还是会崩溃
                 if (weakSelf.writeDelegate && [weakSelf.writeDelegate respondsToSelector:@selector(receiveData:)]) {
                     [weakSelf.writeDelegate receiveData:characteristics.value];
 
@@ -248,8 +244,7 @@ static BLETool *bleTool = nil;
                         MotionDailyDataModel *motionModel = [MotionDailyDataModel modelWith:currentDateString step:stepStr kCal:kCalStr mileage:mileageStr bpm:nil];
                         
                         
-                        [_fmTool insertModel:motionModel];
-                        
+                        [weakSelf.fmTool insertModel:motionModel];
                     }
                 }
              

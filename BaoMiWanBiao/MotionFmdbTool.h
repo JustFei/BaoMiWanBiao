@@ -16,13 +16,13 @@
 - (BOOL)insertModel:(MotionDailyDataModel *)model;
 
 /** 查询数据,如果 传空 默认会查询表中所有数据 */
-- (NSArray *)queryData:(NSString *)querySql;
+- (NSArray *)queryDate:(NSString *)querySql;
 
 /** 删除数据,如果 传空 默认会删除表中所有数据 */
 //- (BOOL)deleteData:(NSString *)deleteSql;
 
 /** 修改数据 */
-- (BOOL)modifyData:(NSString *)modifySqlDate :(MotionDailyDataModel *)modifySqlModel;
+- (BOOL)modifyData:(NSString *)modifySqlDate model:(MotionDailyDataModel *)modifySqlModel;
 
 - (instancetype)initWithPath: (NSString *)path;
 

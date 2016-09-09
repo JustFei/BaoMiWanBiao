@@ -75,7 +75,7 @@
         
         NSDateComponents *dayComponents = [gregorian components:NSDayCalendarUnit fromDate:lastDate toDate:nowDate options:0];
         
-        NSLog(@"距离上次登录间距min== %ld,day = %ld",dayComponents.minute ,dayComponents.day);
+        NSLog(@"距离上次登录间距min== %ld,day = %ld",(long)dayComponents.minute ,dayComponents.day);
         //超过24小时，就重新登陆
         if (dayComponents.day >= 1) {
             self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:nil];

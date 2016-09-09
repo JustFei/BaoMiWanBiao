@@ -74,7 +74,7 @@ static FMDatabase *_fmdb;
  *
  *  @return 返回所有查找的结果
  */
-- (NSArray *)queryData:(NSString *)querySql {
+- (NSArray *)queryDate:(NSString *)querySql {
     
     NSString *queryString;
     
@@ -120,7 +120,7 @@ static FMDatabase *_fmdb;
  *
  *  @return 是否修改成功
  */
-- (BOOL)modifyData:(NSString *)modifySqlDate :(MotionDailyDataModel *)modifySqlModel
+- (BOOL)modifyData:(NSString *)modifySqlDate model:(MotionDailyDataModel *)modifySqlModel
 {
     if (modifySqlDate == nil) {
         NSLog(@"传入的日期为空，不能修改");

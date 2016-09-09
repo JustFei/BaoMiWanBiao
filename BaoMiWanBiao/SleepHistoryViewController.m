@@ -269,7 +269,7 @@
         
         NSArray *dateArr = [self.fmTool queryData:dateStr];
         
-        NSLog(@"%ld",dateArr.count);
+        NSLog(@"%ld",(unsigned long)dateArr.count);
         if (dateArr) {
             SleepDailyDataModel *model = dateArr.firstObject;
             

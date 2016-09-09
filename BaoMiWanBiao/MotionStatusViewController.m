@@ -103,6 +103,12 @@
     if (self.peripheralSing.device.peripheral) {
         //写入获取运动的信息
         [[BLETool shareInstance] writeDataToPeripheral:kSportString];
+        
+        //写入开启心率的方法
+        [[BLETool shareInstance] writeDataToPeripheral:[NSString stringWithFormat:kHeartRateState, @"01"]];
+        
+        //写入获取心率历史数据
+        [[BLETool shareInstance] writeDataToPeripheral:[NSString stringWithFormat:kHeartRateData,@"01"]];
     }
     
     [self getDataFromDB];
@@ -126,6 +132,7 @@
     if ([data bytes]!=nil) {
         const unsigned char *hexBytesLight = [data bytes];
         
+        //命令字段
         NSString *Str1 = [NSString stringWithFormat:@"%02x", hexBytesLight[0]];
         NSLog(@"标识符 = %@",Str1);
         
@@ -149,16 +156,54 @@
             NSString *kCalStr = [NSString stringWithFormat:@"%d",kcalValue];
             self.kcalNum.text = kCalStr;
             
-            self.MotionModel = [MotionDailyDataModel modelWith:self.dateLabel.text step:stepStr kCal:kCalStr mileage:mileageStr bpm:nil];
+            NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+            [dateformatter setDateFormat:@"YYYY-MM-dd"];
+            NSDate *currentDate = [NSDate date];
+            NSString *currentDateString = [dateformatter stringFromDate:currentDate];
             
+            self.MotionModel = [MotionDailyDataModel modelWith:currentDateString step:stepStr kCal:kCalStr mileage:mileageStr bpm:nil];
             
-            [_fmTool insertModel:self.MotionModel];
+            NSArray *history = [_fmTool queryDate:currentDateString];
+            
+            if (history.count == 0) {
+                [_fmTool insertModel:self.MotionModel];
+            }else {
+                [_fmTool modifyData:currentDateString model:self.MotionModel];
+            }
             
         }
         
-        if ([Str1 isEqualToString:@"0A"]) {
-            
+        //设置运动目标数据解析
+        if ([Str1 isEqualToString:@"07"]) {
+            NSData *stepTargetData = [data subdataWithRange:NSMakeRange(1, 3)];
+            int stepTargetValue = [self parseIntFromData:stepTargetData];
+            NSLog(@"目标步数 = %d",stepTargetValue);
+        }else if([Str1 isEqualToString:@"87"]) {
+            NSLog(@"目标步数设置失败，请重新设置");
         }
+        
+        //心率数据解析
+        if ([Str1 isEqualToString:@"0A"]) {
+            NSString *Str2 = [NSString stringWithFormat:@"%02x", hexBytesLight[1]];
+            
+            if ([Str2 isEqualToString:@"00"]) {
+                NSString *YY = [NSString stringWithFormat:@"%02x", hexBytesLight[6]];
+                NSString *MM = [NSString stringWithFormat:@"%02x", hexBytesLight[7]];
+                NSString *DD = [NSString stringWithFormat:@"%02x", hexBytesLight[8]];
+                NSString *hh = [NSString stringWithFormat:@"%02x", hexBytesLight[9]];
+                NSString *mm = [NSString stringWithFormat:@"%02x", hexBytesLight[10]];
+                NSString *ss = [NSString stringWithFormat:@"%02x", hexBytesLight[11]];
+                
+                NSString *Hr = [NSString stringWithFormat:@"%02x", hexBytesLight[12]];
+                
+                NSLog(@"20%@/%@/%@ %@:%@:%@ = %@",YY ,MM ,DD ,hh ,mm ,ss ,Hr );
+                //这里对获取到的“一次”心率数据进行操作
+            } else if ([Str2 isEqualToString:@"01"]) {
+                
+            }
+        }
+        
+        //
     }
 }
 
@@ -313,9 +358,9 @@
 #pragma mark -搜索操作
 - (void)searchFromDataBaseWithDate:(NSString *)dateStr
 {
-    NSArray *dateArr = [self.fmTool queryData:dateStr];
+    NSArray *dateArr = [self.fmTool queryDate:dateStr];
     
-    NSLog(@"%ld",dateArr.count);
+    NSLog(@"%ld",(unsigned long)dateArr.count);
     if (dateArr.count != 0 ) {
         self.MotionModel = dateArr.firstObject;
         
@@ -339,7 +384,7 @@
 - (void)showSecureTextEntryAlert {
     NSString *title = NSLocalizedString(@"请输入目标步数", nil);
     NSString *message = NSLocalizedString(@"每天适量步数，更益健康~", nil);
-    NSString *cancelButtonTitle = NSLocalizedString(@"Cancel", nil);
+    NSString *cancelButtonTitle = NSLocalizedString(@"取消", nil);
     NSString *otherButtonTitle = NSLocalizedString(@"确定", nil);
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -366,7 +411,11 @@
     //其他按钮事件-确定按钮事件
     UIAlertAction *otherAction = [UIAlertAction actionWithTitle:otherButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         
-        self.targetWalkNum.text = alertController.textFields.firstObject.text;
+        self.targetWalkNum.text = [NSString stringWithFormat:@"目标  %@",alertController.textFields.firstObject.text];
+        
+        NSString *setStepProtocol = [NSString stringWithFormat:kStepTarget,@"01",[self ToHex:alertController.textFields.firstObject.text.intValue] ,@"000000"];
+        NSLog(@"设置目标步数为 = %@",setStepProtocol);
+        [[BLETool shareInstance] writeDataToPeripheral:setStepProtocol];
         
         //退出编辑的两种方式，因为键盘退出有延迟，所以比较一下
         //endEdting有延迟
@@ -389,6 +438,40 @@
     [alertController addAction:otherAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+-(NSString *)ToHex:(long long int)tmpid
+{
+    NSString *nLetterValue;
+    NSString *str =@"";
+    long long int ttmpig;
+    for (int i = 0; i<9; i++) {
+        ttmpig=tmpid%16;
+        tmpid=tmpid/16;
+        switch (ttmpig)
+        {
+            case 10:
+                nLetterValue =@"A";break;
+            case 11:
+                nLetterValue =@"B";break;
+            case 12:
+                nLetterValue =@"C";break;
+            case 13:
+                nLetterValue =@"D";break;
+            case 14:
+                nLetterValue =@"E";break;
+            case 15:
+                nLetterValue =@"F";break;
+            default:nLetterValue=[[NSString alloc]initWithFormat:@"%lli",ttmpig];
+                
+        }
+        str = [nLetterValue stringByAppendingString:str];
+        if (tmpid == 0) {
+            break;
+        }
+        
+    }
+    return str;
 }
 
 - (void)handleTextFieldTextDidChangeNotification:(NSNotification *)notification {

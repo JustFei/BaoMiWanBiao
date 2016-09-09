@@ -51,10 +51,10 @@
     _hArr = [NSMutableArray array];
     _mArr = [NSMutableArray array];
     for (NSInteger h = 0; h < 24; h ++) {
-        [_hArr addObject:[NSString stringWithFormat:@"%02ld",h]];
+        [_hArr addObject:[NSString stringWithFormat:@"%02ld",(long)h]];
     }
     for (NSInteger m = 0; m < 60; m ++) {
-        [_mArr addObject:[NSString stringWithFormat:@"%02ld",m]];
+        [_mArr addObject:[NSString stringWithFormat:@"%02ld",(long)m]];
     }
     
     self.headImageView.frame = CGRectMake(self.center.x - 52.5, 131, 105, 105);

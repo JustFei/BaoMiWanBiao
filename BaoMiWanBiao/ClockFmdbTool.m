@@ -90,7 +90,7 @@ static FMDatabase *_fmdb;
 //        NSString *isopen = [set boolForColumn:@"isopen"];
         model.ID = [set intForColumn:@"id"];
         
-        NSLog(@"闹钟时间 == %@，是否打开 == %d, id == %ld",model.time , model.isOpen , model.ID);
+        NSLog(@"闹钟时间 == %@，是否打开 == %d, id == %ld",model.time , model.isOpen , (long)model.ID);
         
         [arrM addObject:model];
     }

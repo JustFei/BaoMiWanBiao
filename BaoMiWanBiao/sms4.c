@@ -350,7 +350,7 @@ void SMS4Encrypt1M()
 //         }
     }
 
-    printf("0x%08x, 0x%08x, 0x%08x, 0x%08x. \n", 
+    printf("0x%08lx, 0x%08lx, 0x%08lx, 0x%08lx. \n", 
            pData[0], pData[1], pData[2], pData[3]);
 }
 
@@ -361,13 +361,13 @@ int mainSms4()
     SMS4SetKey(NULL, 1);
 
     /* cycle1: common test */
-	printf("0x%08x, 0x%08x, 0x%08x, 0x%08x. \n", 
+	printf("0x%08lx, 0x%08lx, 0x%08lx, 0x%08lx. \n",
            pData[0], pData[1], pData[2], pData[3]);
     SMS4Encrypt(pData, sizeof(pData), ENRK);
-	printf("0x%08x, 0x%08x, 0x%08x, 0x%08x. \n", 
+	printf("0x%08lx, 0x%08lx, 0x%08lx, 0x%08lx. \n",
            pData[0], pData[1], pData[2], pData[3]);
     SMS4Decrypt(pData, sizeof(pData), DERK);
-	printf("0x%08x, 0x%08x, 0x%08x, 0x%08x. \n", 
+	printf("0x%08lx, 0x%08lx, 0x%08lx, 0x%08lx. \n", 
            pData[0], pData[1], pData[2], pData[3]);
 
     /* cycle2: encrypted 1000000 times */

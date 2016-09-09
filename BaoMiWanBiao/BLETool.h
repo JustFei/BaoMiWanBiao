@@ -105,9 +105,6 @@ typedef enum{
 //检索已连接的外接设备
 - (NSArray *)retrieveConnectedPeripherals;
 
-//
-- (void)debindFromSystem;
-
 //写入数据操作
 - (void)writeDataToPeripheral:(NSString *)info;
 
