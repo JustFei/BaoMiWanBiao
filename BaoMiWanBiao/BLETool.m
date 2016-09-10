@@ -124,6 +124,8 @@ static BLETool *bleTool = nil;
         [scanner scanHexInt:&intValue];
         [data appendBytes:&intValue length:1];
     }
+    
+    NSLog(@"data = %@",data);
     return data;
 }
 
@@ -192,6 +194,54 @@ static BLETool *bleTool = nil;
             if ([c.UUID isEqual:[CBUUID UUIDWithString:kNotifyCharacteristicUUID]]) {
                 [CBPeripheralSingleton sharePeripheral].device.notifyCharacteristic = c;
                 weakSelf.currentDev.notifyCharacteristic = c;
+                
+                [weakBaby notify:weakSelf.currentDev.peripheral characteristic:c block:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
+                    NSLog(@"改变后的特征值 = %@",characteristics.value);
+                    
+#warning 这里对delegate有没有接收对象作出判断失败，当没有对象接受时，还是会崩溃
+                    if (weakSelf.writeDelegate && [weakSelf.writeDelegate respondsToSelector:@selector(receiveData:)]) {
+                        [weakSelf.writeDelegate receiveData:characteristics.value];
+                        
+                    }else {
+                        
+                        NSData *data = characteristics.value;
+                        //这里将数据写入运动类数据写入数据库中
+                        const unsigned char *hexBytesLight = [data bytes];
+                        
+                        NSString *Str1 = [NSString stringWithFormat:@"%02x", hexBytesLight[0]];
+                        NSLog(@"标识符 = %@",Str1);
+                        
+                        //运动数据解析
+                        if ([Str1 isEqualToString:@"03"]) {
+                            NSData *stepData = [data subdataWithRange:NSMakeRange(2, 3)];
+                            int stepValue = [weakSelf parseIntFromData:stepData];
+                            NSLog(@"今日步数 = %d",stepValue);
+                            NSString *stepStr = [NSString stringWithFormat:@"%d",stepValue];
+                            
+                            NSData *mileageData = [data subdataWithRange:NSMakeRange(5, 3)];
+                            int mileageValue = [weakSelf parseIntFromData:mileageData];
+                            NSLog(@"今日里程数 = %d",mileageValue);
+                            NSString *mileageStr = [NSString stringWithFormat:@"%d",mileageValue];
+                            
+                            NSData *kcalData = [data subdataWithRange:NSMakeRange(8, 3)];
+                            int kcalValue = [weakSelf parseIntFromData:kcalData];
+                            NSLog(@"卡路里 = %d",kcalValue);
+                            NSString *kCalStr = [NSString stringWithFormat:@"%d",kcalValue];
+                            
+                            NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+                            [dateformatter setDateFormat:@"YYYY-MM-dd"];
+                            NSDate *currentDate = [NSDate date];
+                            NSString *currentDateString = [dateformatter stringFromDate:currentDate];
+                            
+                            MotionDailyDataModel *motionModel = [MotionDailyDataModel modelWith:currentDateString step:stepStr kCal:kCalStr mileage:mileageStr bpm:nil];
+                            
+                            
+                            [weakSelf.fmTool insertModel:motionModel];
+                        }
+                    }
+                    
+                }];
+                
             }
         }
     }];
@@ -201,54 +251,7 @@ static BLETool *bleTool = nil;
     [_baby setBlockOnDidWriteValueForCharacteristic:^(CBCharacteristic *characteristic, NSError *error) {
         
         if (!error) {
-            NSLog(@"写入特征成功 = %@",characteristic.value);
-            
-            [weakBaby notify:weakSelf.currentDev.peripheral characteristic:weakSelf.currentDev.notifyCharacteristic block:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
-                NSLog(@"改变后的特征值 = %@",characteristics.value);
-                
-#warning 这里对delegate有没有接收对象作出判断失败，当没有对象接受时，还是会崩溃
-                if (weakSelf.writeDelegate && [weakSelf.writeDelegate respondsToSelector:@selector(receiveData:)]) {
-                    [weakSelf.writeDelegate receiveData:characteristics.value];
-
-                }else {
-                    
-                    NSData *data = characteristics.value;
-                    //这里将数据写入运动类数据写入数据库中
-                    const unsigned char *hexBytesLight = [data bytes];
-                    
-                    NSString *Str1 = [NSString stringWithFormat:@"%02x", hexBytesLight[0]];
-                    NSLog(@"标识符 = %@",Str1);
-                    
-                    //运动数据解析
-                    if ([Str1 isEqualToString:@"03"]) {
-                        NSData *stepData = [data subdataWithRange:NSMakeRange(2, 3)];
-                        int stepValue = [weakSelf parseIntFromData:stepData];
-                        NSLog(@"今日步数 = %d",stepValue);
-                        NSString *stepStr = [NSString stringWithFormat:@"%d",stepValue];
-                        
-                        NSData *mileageData = [data subdataWithRange:NSMakeRange(5, 3)];
-                        int mileageValue = [weakSelf parseIntFromData:mileageData];
-                        NSLog(@"今日里程数 = %d",mileageValue);
-                        NSString *mileageStr = [NSString stringWithFormat:@"%d",mileageValue];
-                        
-                        NSData *kcalData = [data subdataWithRange:NSMakeRange(8, 3)];
-                        int kcalValue = [weakSelf parseIntFromData:kcalData];
-                        NSLog(@"卡路里 = %d",kcalValue);
-                        NSString *kCalStr = [NSString stringWithFormat:@"%d",kcalValue];
-                        
-                        NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
-                        [dateformatter setDateFormat:@"YYYY-MM-dd"];
-                        NSDate *currentDate = [NSDate date];
-                        NSString *currentDateString = [dateformatter stringFromDate:currentDate];
-                        
-                        MotionDailyDataModel *motionModel = [MotionDailyDataModel modelWith:currentDateString step:stepStr kCal:kCalStr mileage:mileageStr bpm:nil];
-                        
-                        
-                        [weakSelf.fmTool insertModel:motionModel];
-                    }
-                }
-             
-            }];
+            NSLog(@"写入特征成功 = %@,UUID = %@",characteristic.value ,characteristic.UUID);
             
         }else {
             NSLog(@"写入特征失败 = %@",characteristic.UUID);

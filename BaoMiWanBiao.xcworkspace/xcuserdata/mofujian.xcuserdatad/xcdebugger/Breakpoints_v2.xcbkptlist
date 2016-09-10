@@ -138,12 +138,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/BLETool.m"
-            timestampString = "495112689.994212"
+            timestampString = "495165158.766593"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "215"
-            endingLineNumber = "215"
-            landmarkName = "-babyDelegate"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "-hexToBytes:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -154,28 +154,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BaoMiWanBiao/BLETool.m"
-            timestampString = "495112729.529678"
+            timestampString = "495165172.097795"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
-            landmarkName = "-babyDelegate"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BaoMiWanBiao/BLETool.m"
-            timestampString = "495112740.178113"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "219"
-            endingLineNumber = "219"
-            landmarkName = "-babyDelegate"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "-hexToBytes:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

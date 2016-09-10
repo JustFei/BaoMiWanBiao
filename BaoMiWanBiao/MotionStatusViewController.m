@@ -413,7 +413,18 @@
         
         self.targetWalkNum.text = [NSString stringWithFormat:@"目标  %@",alertController.textFields.firstObject.text];
         
-        NSString *setStepProtocol = [NSString stringWithFormat:kStepTarget,@"01",[self ToHex:alertController.textFields.firstObject.text.intValue] ,@"000000"];
+        NSString *targetStr = [self ToHex:alertController.textFields.firstObject.text.intValue];
+        
+        if (targetStr.length < 6) {
+            NSInteger count = 6 - targetStr.length;
+            for (int i = 0; i < count; i ++) {
+                targetStr = [NSString stringWithFormat:@"0%@",targetStr];
+            }
+            NSLog(@"%@",targetStr);
+        }
+        
+        
+        NSString *setStepProtocol = [NSString stringWithFormat:kStepTarget,@"01", targetStr ,@"000000"];
         NSLog(@"设置目标步数为 = %@",setStepProtocol);
         [[BLETool shareInstance] writeDataToPeripheral:setStepProtocol];
         

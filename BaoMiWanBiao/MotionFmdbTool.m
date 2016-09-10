@@ -128,9 +128,15 @@ static FMDatabase *_fmdb;
         return NO;
     }
     
-    NSString *modifySql = [NSString stringWithFormat:@"update MotionData set step = ? kCal = ? mileage = ? where date = ?" ];
+    NSString *modifySql = [NSString stringWithFormat:@"update MotionData set step = ?, kCal = ?, mileage = ? where date = ?" ];
     
-    return [_fmdb executeUpdate:modifySql, modifySqlModel.step, modifySqlModel.kCal, modifySqlModel.mileage, modifySqlDate];
+    BOOL modifyResult = [_fmdb executeUpdate:modifySql, modifySqlModel.step, modifySqlModel.kCal, modifySqlModel.mileage, modifySqlDate];
+    
+    if (modifyResult) {
+        NSLog(@"数据修改成功");
+    }
+    
+    return modifyResult;
 }
 
 @end
