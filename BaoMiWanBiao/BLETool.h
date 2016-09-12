@@ -80,11 +80,11 @@ typedef enum{
 
 @property (nonatomic ,strong) manridyBleDevice *currentDev;
 
-@property (nonatomic ,assign) id <BleDiscoverDelegate>discoverDelegate;
+@property (nonatomic ,weak) id <BleDiscoverDelegate>discoverDelegate;
 
-@property (nonatomic ,assign) id <BleConnectDelegate>connectDelegate;
+@property (nonatomic ,weak) id <BleConnectDelegate>connectDelegate;
 
-@property (nonatomic ,assign) id <BleWriteDelegate>writeDelegate;
+@property (nonatomic ,weak) id <BleWriteDelegate>writeDelegate;
 
 #pragma mark - action of connecting layer -连接层操作
 //扫描设备
