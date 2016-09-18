@@ -29,7 +29,7 @@
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenNavigationBar)];
         imageView.userInteractionEnabled = YES;
         [imageView addGestureRecognizer:tap];
-        NSLog(@"展示图片的imageView的frame == %@",NSStringFromCGRect(imageView.frame));
+        XXFLog(@"展示图片的imageView的frame == %@",NSStringFromCGRect(imageView.frame));
         
         [self addSubview:imageView];
         _selectPhotoView = imageView;

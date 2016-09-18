@@ -10,8 +10,11 @@
 #import "ClockTableViewCell.h"
 #import "ClockModel.h"
 #import "ClockFmdbTool.h"
+#import "BLETool.h"
+#import "manridyBleDevice.h"
+#import "manridyModel.h"
 
-@interface ClockContentView () <UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource>
+@interface ClockContentView () <UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,BleReceiveDelegate>
 {
     NSMutableArray *_hArr;
     NSMutableArray *_mArr;
@@ -38,6 +41,8 @@
 
 @property (weak, nonatomic) UIView *editTimePickView;
 @property (weak, nonatomic) UIPickerView *editTimePicker;
+
+@property (nonatomic ,strong) BLETool *mybleTool;
 
 @end
 
@@ -72,6 +77,15 @@
      _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
     if (_clockDataSource.count >=3) {
         self.closeAddBlock();
+    }
+    
+    self.mybleTool = [BLETool shareInstance];
+    self.mybleTool.receiveDelegate = self;
+    
+    //如果当前有连接的设备，就寻找特征
+    if (self.mybleTool.currentDev.peripheral) {
+        //写入获取运动的信息
+        [self.mybleTool writeClockToPeripheral:ClockDataGetClock withModel:nil];
     }
 }
 
@@ -148,7 +162,7 @@
             
             ClockModel *model = _clockDataSource[indexPath.row];
             [self.fmTool deleteData:model.ID];
-            NSLog(@"%@",model.time);
+            XXFLog(@"%@",model.time);
             
             [_clockDataSource removeObjectAtIndex:indexPath.row];//移除数据源的数据
             
@@ -157,6 +171,18 @@
             }
             
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];//移除tableView中的数据
+        }
+    }
+}
+
+#pragma mark - BleReceiveDelegate
+- (void)receiveDataWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeClockModel) {
+            
+            XXFLog(@"%@",manridyModel.clockModel.clockArr);
+            
         }
     }
 }

@@ -50,7 +50,7 @@
 
 #pragma mark - 点击事件
 - (IBAction)forgetPwdAction:(UIButton *)sender {
-    NSLog(@"forget the password");
+    XXFLog(@"forget the password");
 }
 
 //查询账号密码是否正确
@@ -80,8 +80,8 @@
                 if (!error) {
                     for (BmobObject *obj in array) {
                         //打印playerName
-                        NSLog(@"phone = %@", [obj objectForKey:@"phone"]);
-                        NSLog(@"pwd = %@", [obj objectForKey:@"pwd"]);
+                        XXFLog(@"phone = %@", [obj objectForKey:@"phone"]);
+                        XXFLog(@"pwd = %@", [obj objectForKey:@"pwd"]);
                         //打印objectId,createdAt,updatedAt
                         
                         if (![self.passWordTextField.text isEqualToString:[obj objectForKey:@"pwd"]]) {
@@ -98,7 +98,7 @@
                     }
                 }else
                 {
-                    NSLog(@"%@",error);
+                    XXFLog(@"%@",error);
                 }
                 
             }];
@@ -178,16 +178,16 @@
     int pwdStrong = [self validatePassword];
     switch (pwdStrong) {
         case 1:
-            NSLog(@"弱");
+            XXFLog(@"弱");
             break;
         case 2:
-            NSLog(@"中");
+            XXFLog(@"中");
             break;
         case 3:
-            NSLog(@"中强");
+            XXFLog(@"中强");
             break;
         case 4:
-            NSLog(@"强");
+            XXFLog(@"强");
             
         default:
             break;

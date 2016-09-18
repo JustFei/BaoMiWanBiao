@@ -11,13 +11,10 @@
 #import "MotionLineViewController.h"
 #import "MotionFmdbTool.h"
 #import "MotionDailyDataModel.h"
-#import "BabyBluetooth.h"
-#import "CBPeripheralSingleton.h"
+#import "BLETool.h"
+#import "manridyBleDevice.h"
 
-@interface MotionStatusViewController () <BleWriteDelegate>
-{
-    BabyBluetooth *baby;
-}
+@interface MotionStatusViewController () <BleReceiveDelegate>
 
 @property (nonatomic ,strong) UIAlertAction *secureTextAlertAction;
 
@@ -66,13 +63,15 @@
  */
 @property (weak, nonatomic) IBOutlet UIButton *afterButton;
 
-@property (nonatomic ,strong) NSDate *  senddate;
+@property (nonatomic ,strong) NSDate *senddate;
 
 @property (nonatomic ,strong) MotionFmdbTool *fmTool;
 
 @property (nonatomic ,strong) MotionDailyDataModel *MotionModel;
 
-@property (nonatomic ,strong) CBPeripheralSingleton *peripheralSing;
+@property (nonatomic ,strong) BLETool *mybleTool;
+
+@property (nonatomic ,copy) NSString *currentDateStr;
 
 @end
 
@@ -81,7 +80,10 @@
 - (void)viewDidLoad {
     self.navigationItem.title = @"运动状态";
     
-    [BLETool shareInstance].writeDelegate = self;
+    self.senddate = [NSDate date];
+    
+    self.mybleTool = [BLETool shareInstance];
+    self.mybleTool.receiveDelegate = self;
     
     //右侧运动轨迹按键设置
     UIBarButtonItem *rightLineItem = [[UIBarButtonItem alloc] initWithTitle:@"运动轨迹" style:UIBarButtonItemStylePlain target:self action:@selector(pushToLineVC)];
@@ -91,32 +93,31 @@
     UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
     self.navigationItem.leftBarButtonItem = leftBackItem;
     
-    self.dateLabel.text = @"今天";
-    self.afterButton.enabled = NO;
     
-    self.peripheralSing = [CBPeripheralSingleton sharePeripheral];
-    
-    NSLog(@"存储的\n连接设备 = %@\n write = %@\n notify = %@",self.peripheralSing.device.deviceName ,self.peripheralSing.device.writeCharacteristic.UUID ,self.peripheralSing.device.notifyCharacteristic.UUID);
-    
-    
-    //如果当前有连接的设备，就寻找特征
-    if (self.peripheralSing.device.peripheral) {
-        //写入获取运动的信息
-        [[BLETool shareInstance] writeDataToPeripheral:kSportString];
-        
-        //写入开启心率的方法
-        [[BLETool shareInstance] writeDataToPeripheral:[NSString stringWithFormat:kHeartRateState, @"01"]];
-        
-        //写入获取心率历史数据
-        [[BLETool shareInstance] writeDataToPeripheral:[NSString stringWithFormat:kHeartRateData,@"01"]];
-    }
-    
-    [self getDataFromDB];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    self.dateLabel.text = @"今天";
+    self.afterButton.enabled = NO;
+    
+    [self getDataFromDB];
+    
+    //如果当前有连接的设备，就寻找特征
+    if (self.mybleTool.currentDev.peripheral) {
+        //写入获取运动的信息
+        [self.mybleTool writeMotionRequestToPeripheral];
+        
+        //写入开启心率的方法
+        [self.mybleTool writeHeartRateRequestToPeripheral:HeartRateDataHistoryData];
+    }
+    
+    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *currentDate = [NSDate date];
+    self.currentDateStr = [dateformatter stringFromDate:currentDate];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -126,84 +127,43 @@
     self.senddate = nil;
 }
 
-#pragma mark - BleWriteDelegate
-- (void)receiveData:(NSData *)data
+#pragma mark - BleReceiveDelegate
+- (void)receiveDataWithModel:(manridyModel *)manridyModel
 {
-    if ([data bytes]!=nil) {
-        const unsigned char *hexBytesLight = [data bytes];
-        
-        //命令字段
-        NSString *Str1 = [NSString stringWithFormat:@"%02x", hexBytesLight[0]];
-        NSLog(@"标识符 = %@",Str1);
-        
-        //运动数据解析
-        if ([Str1 isEqualToString:@"03"]) {
-            NSData *stepData = [data subdataWithRange:NSMakeRange(2, 3)];
-            int stepValue = [self parseIntFromData:stepData];
-            NSLog(@"今日步数 = %d",stepValue);
-            NSString *stepStr = [NSString stringWithFormat:@"%d",stepValue];
-            self.currentWalkNum.text = stepStr;
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeSportModel) {
             
-            NSData *mileageData = [data subdataWithRange:NSMakeRange(5, 3)];
-            int mileageValue = [self parseIntFromData:mileageData];
-            NSLog(@"今日里程数 = %d",mileageValue);
-            NSString *mileageStr = [NSString stringWithFormat:@"%d",mileageValue];
-            self.mileageNum.text = mileageStr;
+            if ([self.dateLabel.text isEqualToString:@"今天"]) {
+                self.currentWalkNum.text = manridyModel.sportModel.stepNumber;
+                self.mileageNum.text = manridyModel.sportModel.mileageNumber;
+                self.kcalNum.text = manridyModel.sportModel.kCalNumber;
+                
+                self.MotionModel = [MotionDailyDataModel modelWith:self.currentDateStr step:manridyModel.sportModel.stepNumber kCal:manridyModel.sportModel.kCalNumber mileage:manridyModel.sportModel.mileageNumber bpm:nil];
+                
+                //查询数据库
+                NSArray *dataArr = [self.fmTool queryDate:self.currentDateStr];
+                if (dataArr.count == 0) {
+                    //插入数据
+                    [self.fmTool insertModel:self.MotionModel];
+                }else {
+                    [self.fmTool modifyData:self.currentDateStr model:self.MotionModel];
+                }
+            }
             
-            NSData *kcalData = [data subdataWithRange:NSMakeRange(8, 3)];
-            int kcalValue = [self parseIntFromData:kcalData];
-            NSLog(@"卡路里 = %d",kcalValue);
-            NSString *kCalStr = [NSString stringWithFormat:@"%d",kcalValue];
-            self.kcalNum.text = kCalStr;
+        } else if (manridyModel.receiveDataType == ReturnModelTypeHeartRateModel) {
+            self.bpmNum.text = manridyModel.heartRateModel.heartRate;
             
-            NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
-            [dateformatter setDateFormat:@"YYYY-MM-dd"];
-            NSDate *currentDate = [NSDate date];
-            NSString *currentDateString = [dateformatter stringFromDate:currentDate];
+            self.MotionModel = [MotionDailyDataModel modelWith:self.currentDateStr step:nil kCal:nil mileage:nil bpm:manridyModel.heartRateModel.heartRate];
             
-            self.MotionModel = [MotionDailyDataModel modelWith:currentDateString step:stepStr kCal:kCalStr mileage:mileageStr bpm:nil];
-            
-            NSArray *history = [_fmTool queryDate:currentDateString];
-            
-            if (history.count == 0) {
-                [_fmTool insertModel:self.MotionModel];
+            //查询数据库
+            NSArray *dataArr = [self.fmTool queryDate:self.currentDateStr];
+            if (dataArr.count == 0) {
+                //插入数据
+                [self.fmTool insertModel:self.MotionModel];
             }else {
-                [_fmTool modifyData:currentDateString model:self.MotionModel];
-            }
-            
-        }
-        
-        //设置运动目标数据解析
-        if ([Str1 isEqualToString:@"07"]) {
-            NSData *stepTargetData = [data subdataWithRange:NSMakeRange(1, 3)];
-            int stepTargetValue = [self parseIntFromData:stepTargetData];
-            NSLog(@"目标步数 = %d",stepTargetValue);
-        }else if([Str1 isEqualToString:@"87"]) {
-            NSLog(@"目标步数设置失败，请重新设置");
-        }
-        
-        //心率数据解析
-        if ([Str1 isEqualToString:@"0A"]) {
-            NSString *Str2 = [NSString stringWithFormat:@"%02x", hexBytesLight[1]];
-            
-            if ([Str2 isEqualToString:@"00"]) {
-                NSString *YY = [NSString stringWithFormat:@"%02x", hexBytesLight[6]];
-                NSString *MM = [NSString stringWithFormat:@"%02x", hexBytesLight[7]];
-                NSString *DD = [NSString stringWithFormat:@"%02x", hexBytesLight[8]];
-                NSString *hh = [NSString stringWithFormat:@"%02x", hexBytesLight[9]];
-                NSString *mm = [NSString stringWithFormat:@"%02x", hexBytesLight[10]];
-                NSString *ss = [NSString stringWithFormat:@"%02x", hexBytesLight[11]];
-                
-                NSString *Hr = [NSString stringWithFormat:@"%02x", hexBytesLight[12]];
-                
-                NSLog(@"20%@/%@/%@ %@:%@:%@ = %@",YY ,MM ,DD ,hh ,mm ,ss ,Hr );
-                //这里对获取到的“一次”心率数据进行操作
-            } else if ([Str2 isEqualToString:@"01"]) {
-                
+                [self.fmTool modifyData:self.currentDateStr model:self.MotionModel];
             }
         }
-        
-        //
     }
 }
 
@@ -246,7 +206,7 @@
     
     NSString *todayString = [formatter stringFromDate:todayDate];
     
-    NSLog(@"todayString == %@",todayString);
+    XXFLog(@"todayString == %@",todayString);
     
     [self searchFromDataBaseWithDate:todayString];
 }
@@ -262,7 +222,7 @@
     
     NSString *  locationString=[dateformatter stringFromDate:self.senddate];
     
-    NSLog(@"locationString:%@",locationString);
+    XXFLog(@"locationString:%@",locationString);
     
     return locationString;
 }
@@ -306,12 +266,7 @@
     self.senddate = [NSDate dateWithTimeInterval:24*60*60 sinceDate:self.senddate];//后一天
     NSString *currentDayStr = [self setDateLabelText];
     
-    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
-    [dateformatter setDateFormat:@"YYYY-MM-dd"];
-    NSDate *currentDate = [NSDate date];
-    NSString *currentDateString = [dateformatter stringFromDate:currentDate];
-    
-    if ([currentDayStr isEqualToString:currentDateString]) {
+    if ([currentDayStr isEqualToString:self.currentDateStr]) {
         self.afterButton.enabled = NO;
         self.dateLabel.text = @"今天";
     }else {
@@ -360,7 +315,7 @@
 {
     NSArray *dateArr = [self.fmTool queryDate:dateStr];
     
-    NSLog(@"%ld",(unsigned long)dateArr.count);
+    XXFLog(@"%ld",(unsigned long)dateArr.count);
     if (dateArr.count != 0 ) {
         self.MotionModel = dateArr.firstObject;
         
@@ -369,7 +324,7 @@
         self.kcalNum.text = self.MotionModel.kCal;
         self.bpmNum.text = self.MotionModel.bpm;
     }else {
-        NSLog(@"这天没有数据");
+        XXFLog(@"这天没有数据");
         self.currentWalkNum.text = @"0";
         self.mileageNum.text = @"0";
         self.kcalNum.text = @"0";
@@ -402,7 +357,7 @@
     
     // Create the actions.
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:cancelButtonTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        NSLog(@"The \"Secure Text Entry\" alert's cancel action occured.");
+        XXFLog(@"The \"Secure Text Entry\" alert's cancel action occured.");
         
         // Stop listening for text changed notifications.
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextFieldTextDidChangeNotification object:alertController.textFields.firstObject];
@@ -420,17 +375,12 @@
             for (int i = 0; i < count; i ++) {
                 targetStr = [NSString stringWithFormat:@"0%@",targetStr];
             }
-            NSLog(@"%@",targetStr);
+            XXFLog(@"%@",targetStr);
         }
         
-        
-        NSString *setStepProtocol = [NSString stringWithFormat:kStepTarget,@"01", targetStr ,@"000000"];
-        NSLog(@"设置目标步数为 = %@",setStepProtocol);
-        [[BLETool shareInstance] writeDataToPeripheral:setStepProtocol];
+        [self.mybleTool writeMotionTargetToPeripheral:targetStr];
         
         //退出编辑的两种方式，因为键盘退出有延迟，所以比较一下
-        //endEdting有延迟
-//        [alertController.textFields.firstObject endEditing:YES];
         
         [alertController.textFields.firstObject resignFirstResponder];
         

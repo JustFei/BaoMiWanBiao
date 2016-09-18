@@ -10,13 +10,14 @@
 
 @implementation manridyBleDevice
 
-- (instancetype)initWith:(CBPeripheral *)cbPeripheral andAdvertisementData:(NSDictionary *)advertisementData
+- (instancetype)initWith:(CBPeripheral *)cbPeripheral andAdvertisementData:(NSDictionary *)advertisementData andRSSI:(NSNumber *)RSSI
 {
     manridyBleDevice *per = [[manridyBleDevice alloc] init];
     
     per.peripheral = cbPeripheral;
-    per.deviceName = [advertisementData objectForKey:@"kCBAdvDataLocalName"];
+    per.deviceName = cbPeripheral.name;
     per.uuidString = [advertisementData objectForKey:@"kCBAdvDataServiceUUIDs"];
+    per.RSSI = RSSI;
     
     return per;
 }

@@ -34,10 +34,10 @@ static FMDatabase *_fmdb;
         _fmdb = [FMDatabase databaseWithPath:filepath];
         _username = path;
         
-        NSLog(@"运动信息数据库路径 == %@", filepath);
+        XXFLog(@"运动信息数据库路径 == %@", filepath);
         
         if ([_fmdb open]) {
-            NSLog(@"数据库打开成功");
+            XXFLog(@"数据库打开成功");
         }
         
         //创建表
@@ -60,9 +60,9 @@ static FMDatabase *_fmdb;
     
     BOOL result = [_fmdb executeUpdate:insertSql];
     if (result) {
-        NSLog(@"插入数据成功");
+        XXFLog(@"插入数据成功");
     }else {
-        NSLog(@"插入数据失败");
+        XXFLog(@"插入数据失败");
     }
     return result;
 }
@@ -74,7 +74,7 @@ static FMDatabase *_fmdb;
  *
  *  @return 返回所有查找的结果
  */
-- (NSArray *)queryData:(NSString *)querySql {
+- (NSArray *)queryDate:(NSString *)querySql {
     
     NSString *queryString;
     
@@ -101,12 +101,12 @@ static FMDatabase *_fmdb;
         model.deepSleepTime = deepsleep;
         model.lowSleepTime = lowsleep;
         
-        NSLog(@"%@的数据：总睡眠时间=%@，深度睡眠时间=%@，浅睡眠时间=%@",querySql ,sumsleep ,deepsleep ,lowsleep );
+        XXFLog(@"%@的数据：总睡眠时间=%@，深度睡眠时间=%@，浅睡眠时间=%@",querySql ,sumsleep ,deepsleep ,lowsleep );
         
         [arrM addObject:model];
     }
     
-    NSLog(@"查询成功");
+    XXFLog(@"查询成功");
     return arrM;
 }
 
@@ -118,15 +118,15 @@ static FMDatabase *_fmdb;
  *
  *  @return 是否修改成功
  */
-- (BOOL)modifyData:(NSString *)modifySqlDate :(SleepDailyDataModel *)modifySqlModel
+- (BOOL)modifyData:(NSString *)modifySqlDate model:(SleepDailyDataModel *)modifySqlModel
 {
     if (modifySqlDate == nil) {
-        NSLog(@"传入的日期为空，不能修改");
+        XXFLog(@"传入的日期为空，不能修改");
         
         return NO;
     }
     
-    NSString *modifySql = [NSString stringWithFormat:@"update SleepData set sumsleep = ? deepsleep = ? lowsleep = ? where date = ?" ];
+    NSString *modifySql = [NSString stringWithFormat:@"update SleepData set sumsleep = ?, deepsleep = ?, lowsleep = ? where date = ?" ];
     
     return [_fmdb executeUpdate:modifySql, modifySqlModel.sumSleepTime, modifySqlModel.deepSleepTime, modifySqlModel.lowSleepTime, modifySqlDate];
 }

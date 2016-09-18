@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum : NSUInteger {
+    ClockDataSetClock = 0,
+    ClockDataGetClock,
+} ClockData;
+
 @interface ClockModel : NSObject
 
 @property (assign, nonatomic) NSInteger ID;
@@ -15,5 +20,7 @@
 @property (copy, nonatomic) NSString *time;
 
 @property (assign, nonatomic) BOOL isOpen;
+
+@property (nonatomic ,strong) NSMutableArray *clockArr;
 
 @end

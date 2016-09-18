@@ -7,9 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BabyBluetooth.h"
-#import "CBPeripheralSingleton.h"
+#import "manridyModel.h"
 
+@class manridyModel;
+
+typedef enum : NSUInteger {
+    HeartRateTestStateStop = 0,
+    HeartRateTestStateStart,
+} HeartRateTestState;
 
 typedef enum{
     kBLEstateDisConnected = 0,
@@ -22,24 +27,15 @@ typedef enum{
 //扫描设备协议
 @protocol BleDiscoverDelegate <NSObject>
 
-@required
-
-- (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device;
-
 @optional
-/**
- *
- *
- *  @return the service did protocoled, for bracelet ,you could write @"FF20" ,you also can never implement this method for connect bracelet.
- */
-- (NSString *)serverUUID;
+- (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device;
 
 @end
 
 //连接协议
 @protocol BleConnectDelegate <NSObject>
 
-@required
+@optional
 /**
  *  invoked when the device did connected by the centeral
  *
@@ -47,7 +43,13 @@ typedef enum{
  */
 - (void)manridyBLEDidConnectDevice:(manridyBleDevice *)device;
 
-@optional
+/**
+ *  invoked when the device did fail connected
+ *
+ *  @param connect fail
+ */
+- (void)manridyBLEDidFailConnectDevice:(manridyBleDevice *)device;
+
 /**
  *  invoked when the device did disconnected
  *
@@ -58,17 +60,15 @@ typedef enum{
 @end
 
 //写入协议
-@protocol BleWriteDelegate <NSObject>
+@protocol BleReceiveDelegate <NSObject>
 
 @optional
 
 /**
- *  返回数据
+ *  同一返回数据的接口，所有数据均通过这个接口回调
  *
  */
-- (void)receiveData:(NSData *)data;
-
-- (void)witeClockToPeripheral:(NSString *)clock;
+- (void)receiveDataWithModel:(manridyModel *)manridyModel;
 
 @end
 
@@ -76,15 +76,16 @@ typedef enum{
 
 + (instancetype)shareInstance;
 
-@property (nonatomic ,assign) kBLEstate state; //support add observer ,abandon @readonly ,don't change it anyway.
-
+//当前连接的设备
 @property (nonatomic ,strong) manridyBleDevice *currentDev;
+
+@property (nonatomic ,assign) kBLEstate connectState; //support add observer ,abandon @readonly ,don't change it anyway.
 
 @property (nonatomic ,weak) id <BleDiscoverDelegate>discoverDelegate;
 
 @property (nonatomic ,weak) id <BleConnectDelegate>connectDelegate;
 
-@property (nonatomic ,weak) id <BleWriteDelegate>writeDelegate;
+@property (nonatomic ,weak) id <BleReceiveDelegate>receiveDelegate;
 
 #pragma mark - action of connecting layer -连接层操作
 //扫描设备
@@ -100,12 +101,41 @@ typedef enum{
 - (void)unConnectDevice;
 
 //重连设备
-- (void)reConnectDevice;
+//- (void)reConnectDevice:(BOOL)isConnect;
 
 //检索已连接的外接设备
 - (NSArray *)retrieveConnectedPeripherals;
 
-//写入数据操作
-- (void)writeDataToPeripheral:(NSString *)info;
+#pragma mark - get sdk version -获取SDK版本号
+- (NSString *)getManridyBleSDKVersion;
+
+#pragma mark - data of write -数据层操作
+//set time
+- (void)writeTimeToPeripheral:(NSDate *)currentDate;
+
+//set clock
+- (void)writeClockToPeripheral:(ClockData)state withModel:(manridyModel *)model;
+
+//get motionInfo
+- (void)writeMotionRequestToPeripheral;
+
+//set motionInfo zero
+- (void)writeMotionZeroToPeripheral;
+
+//set userInfo
+- (void)writeUserInfoToPeripheralWeight:(NSString *)weight andHeight:(NSString *)height;
+
+//set motion target
+- (void)writeMotionTargetToPeripheral:(NSString *)target;
+
+//set heart rate test state
+- (void)writeHeartRateTestStateToPeripheral:(HeartRateTestState)state;
+
+//get heart rate data
+- (void)writeHeartRateRequestToPeripheral:(HeartRateData)heartRateData;
+
+//get sleepInfo
+- (void)writeSleepRequestToperipheral:(SleepData)sleepData;
+
 
 @end

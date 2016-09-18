@@ -4,11 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>BabyBluetooth.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>FMDB.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -37,17 +32,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1958ACEBCD9DFAE8B8240D003EB81EA2</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>9F12FB4A63E20F601CFB2E64A65B57C1</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>AC35EBEC392DFBE5B0D378815556F2FA</key>
+		<key>CC29B95C57B0A0491CAD33CE564B22D1</key>
 		<dict>
 			<key>primary</key>
 			<true/>

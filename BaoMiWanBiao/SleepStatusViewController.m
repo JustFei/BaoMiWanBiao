@@ -10,8 +10,10 @@
 #import "SleepHistoryViewController.h"
 #import "SleepDailyDataModel.h"
 #import "SleepFmdbTool.h"
+#import "BLETool.h"
+#import "manridyBleDevice.h"
 
-@interface SleepStatusViewController ()
+@interface SleepStatusViewController () <BleReceiveDelegate>
 /**
  *  前一天按钮
  */
@@ -53,6 +55,10 @@
 
 @property (strong, nonatomic) SleepDailyDataModel *SleepModel;
 
+@property (nonatomic ,strong) BLETool *mybleTool;
+
+@property (nonatomic ,copy) NSString *currentDateStr;
+
 @end
 
 @implementation SleepStatusViewController
@@ -61,23 +67,36 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.mybleTool = [BLETool shareInstance];
+    self.mybleTool.receiveDelegate = self;
+    
     //navigationBar的设置
     self.navigationItem.title = @"睡眠状态";
     //左侧返回按键设置
     UIBarButtonItem *leftBackItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
     self.navigationItem.leftBarButtonItem = leftBackItem;
     
-    //当天label的text设置
-    self.afterDayButton.enabled = NO;
-    self.dateLabel.text = @"今天";
-    
-    [self getDataFromDB];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
     
+    //当天label的text设置
+    self.afterDayButton.enabled = NO;
+    self.dateLabel.text = @"今天";
+    
+    [self getDataFromDB];
+    //如果当前有连接的设备，就寻找特征
+    if (self.mybleTool.currentDev.peripheral) {
+        //写入获取运动的信息
+        [self.mybleTool writeSleepRequestToperipheral:SleepDataHistoryData];
+    }
+    
+    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *currentDate = [NSDate date];
+    self.currentDateStr = [dateformatter stringFromDate:currentDate];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -98,7 +117,7 @@
     
     NSString *todayString = [formatter stringFromDate:todayDate];
     
-    NSLog(@"todayString == %@",todayString);
+    XXFLog(@"todayString == %@",todayString);
     
     [self searchFromDataBaseWithDate:todayString];
 }
@@ -114,7 +133,7 @@
     
     NSString *  locationString=[dateformatter stringFromDate:self.senddate];
     
-    NSLog(@"locationString:%@",locationString);
+    XXFLog(@"locationString:%@",locationString);
     
     return locationString;
 }
@@ -185,13 +204,39 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - BleReceiveDelegate
+- (void)receiveDataWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeSleepModel) {
+            
+            if ([self.dateLabel.text isEqualToString:@"今天"]) {
+                self.sleepTimeSumLabel.text = [NSString stringWithFormat:@"%d",(manridyModel.sleepModel.deepSleep.intValue + manridyModel.sleepModel.lowSleep.intValue)];
+                self.fallSleepTimeLabel.text = manridyModel.sleepModel.deepSleep;
+                self.shallowSleepTimeLabel.text = manridyModel.sleepModel.lowSleep;
+                
+                self.SleepModel = [SleepDailyDataModel modelWithDate:self.currentDateStr sumSleepTime:[NSString stringWithFormat:@"%d",(manridyModel.sleepModel.deepSleep.intValue + manridyModel.sleepModel.lowSleep.intValue)] deepSleepTime:manridyModel.sleepModel.deepSleep lowSleepTime:manridyModel.sleepModel.lowSleep];
+                
+                //查询数据库
+                NSArray *dataArr = [self.fmTool queryDate:self.currentDateStr];
+                if (dataArr.count == 0) {
+                    //插入数据
+                    [self.fmTool insertModel:self.SleepModel];
+                }else {
+                    [self.fmTool modifyData:self.currentDateStr model:self.SleepModel];
+                }
+            }
+        }
+    }
+}
+
 #pragma mark - 数据库操作
 #pragma mark -搜索操作
 - (void)searchFromDataBaseWithDate:(NSString *)dateStr
 {
-    NSArray *dateArr = [self.fmTool queryData:dateStr];
+    NSArray *dateArr = [self.fmTool queryDate:dateStr];
     
-    NSLog(@"%ld",(unsigned long)dateArr.count);
+    XXFLog(@"%ld",(unsigned long)dateArr.count);
     if (dateArr.count != 0 ) {
         self.SleepModel = dateArr.firstObject;
         
@@ -199,7 +244,7 @@
         self.fallSleepTimeLabel.text = self.SleepModel.deepSleepTime;
         self.shallowSleepTimeLabel.text = self.SleepModel.lowSleepTime;
     }else {
-        NSLog(@"这天没有数据");
+        XXFLog(@"这天没有数据");
         self.sleepTimeSumLabel.text = @"0";
         self.fallSleepTimeLabel.text = @"0";
         self.shallowSleepTimeLabel.text = @"0";

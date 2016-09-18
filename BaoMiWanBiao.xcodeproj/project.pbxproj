@@ -46,8 +46,6 @@
 		3B2791F21D6308F200B99320 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F01D6308F200B99320 /* MainViewController.xib */; };
 		3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2791F71D631AC400B99320 /* SleepStatusViewController.m */; };
 		3B2791FA1D631AC400B99320 /* SleepStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */; };
-		3B3762661D811B2500543AF7 /* manridyBleDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3762651D811B2500543AF7 /* manridyBleDevice.m */; };
-		3B3762691D811C8A00543AF7 /* BLETool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3762681D811C8A00543AF7 /* BLETool.m */; };
 		3B4335861D76661700AF2E8F /* UserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4335851D76661700AF2E8F /* UserInfoViewController.m */; };
 		3B4335881D76773D00AF2E8F /* UserInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4335871D76773D00AF2E8F /* UserInfoViewController.xib */; };
 		3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EA0291D75297900E23B63 /* ASPopUpView.m */; };
@@ -62,6 +60,18 @@
 		3B8C1B871D51F9DD00D061C8 /* MotionHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */; };
 		3B8CBF391D758B07007DE127 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8CBF381D758B07007DE127 /* UserModel.m */; };
 		3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */; };
+		3BAD15DC1D8E246E007AE9B1 /* manridyBleDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15D51D8E246E007AE9B1 /* manridyBleDevice.m */; };
+		3BAD15DD1D8E246E007AE9B1 /* BLETool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15D71D8E246E007AE9B1 /* BLETool.m */; };
+		3BAD15DE1D8E246E007AE9B1 /* NSStringTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15D91D8E246E007AE9B1 /* NSStringTool.m */; };
+		3BAD15DF1D8E246E007AE9B1 /* AnalysisProcotolTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15DB1D8E246E007AE9B1 /* AnalysisProcotolTool.m */; };
+		3BAD15F21D8E24B5007AE9B1 /* manridyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15E51D8E24B5007AE9B1 /* manridyModel.m */; };
+		3BAD15F31D8E24B5007AE9B1 /* SetTimeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15E71D8E24B5007AE9B1 /* SetTimeModel.m */; };
+		3BAD15F41D8E24B5007AE9B1 /* SportModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15E91D8E24B5007AE9B1 /* SportModel.m */; };
+		3BAD15F51D8E24B5007AE9B1 /* UserInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15EB1D8E24B5007AE9B1 /* UserInfoModel.m */; };
+		3BAD15F61D8E24B5007AE9B1 /* HeartRateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15ED1D8E24B5007AE9B1 /* HeartRateModel.m */; };
+		3BAD15F71D8E24B5007AE9B1 /* SleepModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15EF1D8E24B5007AE9B1 /* SleepModel.m */; };
+		3BAD15F81D8E24B5007AE9B1 /* SportTargetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15F11D8E24B5007AE9B1 /* SportTargetModel.m */; };
+		3BAD16911D8E7402007AE9B1 /* AllBleFmdb.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD16901D8E7402007AE9B1 /* AllBleFmdb.m */; };
 		3BB518FA1D7E606600ADFC50 /* BLEConnectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB518F91D7E606600ADFC50 /* BLEConnectView.m */; };
 		3BB518FE1D7E6A3800ADFC50 /* BLEConnectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB518FD1D7E6A3800ADFC50 /* BLEConnectViewController.m */; };
 		3BB519011D7E6C1300ADFC50 /* BLEConnectContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB519001D7E6C1300ADFC50 /* BLEConnectContentView.m */; };
@@ -161,7 +171,6 @@
 		3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF1731E1D46F20D008DF4DC /* MiBaoXiangViewController.m */; };
 		3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */; };
 		3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */; };
-		9C36F6CC1D7F2AB90029FC1C /* CBPeripheralSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C36F6CB1D7F2AB90029FC1C /* CBPeripheralSingleton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -235,10 +244,6 @@
 		3B2791F71D631AC400B99320 /* SleepStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepStatusViewController.m; sourceTree = "<group>"; };
 		3B2791F81D631AC400B99320 /* SleepStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SleepStatusViewController.xib; sourceTree = "<group>"; };
 		3B2E164F1D77CAD900DD5716 /* XXFStringConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXFStringConstants.h; sourceTree = "<group>"; };
-		3B3762641D811B2500543AF7 /* manridyBleDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = manridyBleDevice.h; sourceTree = "<group>"; };
-		3B3762651D811B2500543AF7 /* manridyBleDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = manridyBleDevice.m; sourceTree = "<group>"; };
-		3B3762671D811C8A00543AF7 /* BLETool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLETool.h; sourceTree = "<group>"; };
-		3B3762681D811C8A00543AF7 /* BLETool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLETool.m; sourceTree = "<group>"; };
 		3B4335841D76661700AF2E8F /* UserInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoViewController.h; sourceTree = "<group>"; };
 		3B4335851D76661700AF2E8F /* UserInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoViewController.m; sourceTree = "<group>"; };
 		3B4335871D76773D00AF2E8F /* UserInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoViewController.xib; sourceTree = "<group>"; };
@@ -264,6 +269,30 @@
 		3B8CBF381D758B07007DE127 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		3BA27A311D4C374100B4C32F /* SM4-OCMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SM4-OCMethod.h"; sourceTree = "<group>"; };
 		3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SM4-OCMethod.m"; sourceTree = "<group>"; };
+		3BAD15D41D8E246E007AE9B1 /* manridyBleDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = manridyBleDevice.h; sourceTree = "<group>"; };
+		3BAD15D51D8E246E007AE9B1 /* manridyBleDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = manridyBleDevice.m; sourceTree = "<group>"; };
+		3BAD15D61D8E246E007AE9B1 /* BLETool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLETool.h; sourceTree = "<group>"; };
+		3BAD15D71D8E246E007AE9B1 /* BLETool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLETool.m; sourceTree = "<group>"; };
+		3BAD15D81D8E246E007AE9B1 /* NSStringTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSStringTool.h; sourceTree = "<group>"; };
+		3BAD15D91D8E246E007AE9B1 /* NSStringTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSStringTool.m; sourceTree = "<group>"; };
+		3BAD15DA1D8E246E007AE9B1 /* AnalysisProcotolTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalysisProcotolTool.h; sourceTree = "<group>"; };
+		3BAD15DB1D8E246E007AE9B1 /* AnalysisProcotolTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalysisProcotolTool.m; sourceTree = "<group>"; };
+		3BAD15E41D8E24B5007AE9B1 /* manridyModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = manridyModel.h; sourceTree = "<group>"; };
+		3BAD15E51D8E24B5007AE9B1 /* manridyModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = manridyModel.m; sourceTree = "<group>"; };
+		3BAD15E61D8E24B5007AE9B1 /* SetTimeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetTimeModel.h; sourceTree = "<group>"; };
+		3BAD15E71D8E24B5007AE9B1 /* SetTimeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetTimeModel.m; sourceTree = "<group>"; };
+		3BAD15E81D8E24B5007AE9B1 /* SportModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SportModel.h; sourceTree = "<group>"; };
+		3BAD15E91D8E24B5007AE9B1 /* SportModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SportModel.m; sourceTree = "<group>"; };
+		3BAD15EA1D8E24B5007AE9B1 /* UserInfoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoModel.h; sourceTree = "<group>"; };
+		3BAD15EB1D8E24B5007AE9B1 /* UserInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoModel.m; sourceTree = "<group>"; };
+		3BAD15EC1D8E24B5007AE9B1 /* HeartRateModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeartRateModel.h; sourceTree = "<group>"; };
+		3BAD15ED1D8E24B5007AE9B1 /* HeartRateModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeartRateModel.m; sourceTree = "<group>"; };
+		3BAD15EE1D8E24B5007AE9B1 /* SleepModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepModel.h; sourceTree = "<group>"; };
+		3BAD15EF1D8E24B5007AE9B1 /* SleepModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SleepModel.m; sourceTree = "<group>"; };
+		3BAD15F01D8E24B5007AE9B1 /* SportTargetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SportTargetModel.h; sourceTree = "<group>"; };
+		3BAD15F11D8E24B5007AE9B1 /* SportTargetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SportTargetModel.m; sourceTree = "<group>"; };
+		3BAD168F1D8E7402007AE9B1 /* AllBleFmdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllBleFmdb.h; sourceTree = "<group>"; };
+		3BAD16901D8E7402007AE9B1 /* AllBleFmdb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllBleFmdb.m; sourceTree = "<group>"; };
 		3BB518F81D7E606600ADFC50 /* BLEConnectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEConnectView.h; sourceTree = "<group>"; };
 		3BB518F91D7E606600ADFC50 /* BLEConnectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLEConnectView.m; sourceTree = "<group>"; };
 		3BB518FC1D7E6A3800ADFC50 /* BLEConnectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEConnectViewController.h; sourceTree = "<group>"; };
@@ -403,8 +432,6 @@
 		3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteModel.m; sourceTree = "<group>"; };
 		3BF367F21D4C7EC000637BEC /* XxfFmdbTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XxfFmdbTool.h; sourceTree = "<group>"; };
 		3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XxfFmdbTool.m; sourceTree = "<group>"; };
-		9C36F6CA1D7F2AB90029FC1C /* CBPeripheralSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBPeripheralSingleton.h; sourceTree = "<group>"; };
-		9C36F6CB1D7F2AB90029FC1C /* CBPeripheralSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBPeripheralSingleton.m; sourceTree = "<group>"; };
 		DF841635E71B3B3F533987E0 /* Pods-BaoMiWanBiao.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.release.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.release.xcconfig"; sourceTree = "<group>"; };
 		E96962ABACB6ED93478DFEDA /* Pods-BaoMiWanBiao.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BaoMiWanBiao.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BaoMiWanBiao/Pods-BaoMiWanBiao.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -690,6 +717,27 @@
 				3BBEF15D1D4B4E97001BAE66 /* AddMiMaCell.xib */,
 			);
 			name = View;
+			sourceTree = "<group>";
+		};
+		3BAD15E31D8E2498007AE9B1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3BAD15E41D8E24B5007AE9B1 /* manridyModel.h */,
+				3BAD15E51D8E24B5007AE9B1 /* manridyModel.m */,
+				3BAD15E61D8E24B5007AE9B1 /* SetTimeModel.h */,
+				3BAD15E71D8E24B5007AE9B1 /* SetTimeModel.m */,
+				3BAD15E81D8E24B5007AE9B1 /* SportModel.h */,
+				3BAD15E91D8E24B5007AE9B1 /* SportModel.m */,
+				3BAD15EA1D8E24B5007AE9B1 /* UserInfoModel.h */,
+				3BAD15EB1D8E24B5007AE9B1 /* UserInfoModel.m */,
+				3BAD15EC1D8E24B5007AE9B1 /* HeartRateModel.h */,
+				3BAD15ED1D8E24B5007AE9B1 /* HeartRateModel.m */,
+				3BAD15EE1D8E24B5007AE9B1 /* SleepModel.h */,
+				3BAD15EF1D8E24B5007AE9B1 /* SleepModel.m */,
+				3BAD15F01D8E24B5007AE9B1 /* SportTargetModel.h */,
+				3BAD15F11D8E24B5007AE9B1 /* SportTargetModel.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		3BB518FB1D7E6A0A00ADFC50 /* 蓝牙连接 */ = {
@@ -1031,12 +1079,17 @@
 		9C36F6C91D7F2A4F0029FC1C /* 蓝牙单例 */ = {
 			isa = PBXGroup;
 			children = (
-				9C36F6CA1D7F2AB90029FC1C /* CBPeripheralSingleton.h */,
-				9C36F6CB1D7F2AB90029FC1C /* CBPeripheralSingleton.m */,
-				3B3762641D811B2500543AF7 /* manridyBleDevice.h */,
-				3B3762651D811B2500543AF7 /* manridyBleDevice.m */,
-				3B3762671D811C8A00543AF7 /* BLETool.h */,
-				3B3762681D811C8A00543AF7 /* BLETool.m */,
+				3BAD15D41D8E246E007AE9B1 /* manridyBleDevice.h */,
+				3BAD15D51D8E246E007AE9B1 /* manridyBleDevice.m */,
+				3BAD15D61D8E246E007AE9B1 /* BLETool.h */,
+				3BAD15D71D8E246E007AE9B1 /* BLETool.m */,
+				3BAD15D81D8E246E007AE9B1 /* NSStringTool.h */,
+				3BAD15D91D8E246E007AE9B1 /* NSStringTool.m */,
+				3BAD15DA1D8E246E007AE9B1 /* AnalysisProcotolTool.h */,
+				3BAD15DB1D8E246E007AE9B1 /* AnalysisProcotolTool.m */,
+				3BAD168F1D8E7402007AE9B1 /* AllBleFmdb.h */,
+				3BAD16901D8E7402007AE9B1 /* AllBleFmdb.m */,
+				3BAD15E31D8E2498007AE9B1 /* Model */,
 			);
 			name = "蓝牙单例";
 			sourceTree = "<group>";
@@ -1349,9 +1402,9 @@
 			files = (
 				3BD797001D55D34B00DB6821 /* JBBarChartFooterView.m in Sources */,
 				3BBEF1511D4B3B52001BAE66 /* MiMaTableViewCell.m in Sources */,
-				3B3762661D811B2500543AF7 /* manridyBleDevice.m in Sources */,
 				3BCDF4101D6ACF3A00B6D7D5 /* MotionFmdbTool.m in Sources */,
 				3B12AE361D6BE49300C469EF /* SleepFmdbTool.m in Sources */,
+				3BAD15F71D8E24B5007AE9B1 /* SleepModel.m in Sources */,
 				3B0278E21D6E885E0053820A /* FolderViewController.m in Sources */,
 				3BD8242A1D7921360089BBCD /* FolderPhotoViewController.m in Sources */,
 				3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */,
@@ -1362,20 +1415,23 @@
 				3BDD65461D45DF65009EA15F /* RegistAndLoginViewController.m in Sources */,
 				3B8C1B861D51F9DD00D061C8 /* MotionHistoryViewController.m in Sources */,
 				3BD8242E1D795D320089BBCD /* ListView.m in Sources */,
-				9C36F6CC1D7F2AB90029FC1C /* CBPeripheralSingleton.m in Sources */,
 				3BBEF15A1D4B495E001BAE66 /* AddMiMaViewContentView.m in Sources */,
 				3BBEF14D1D4B3A69001BAE66 /* MiMaBenContentView.m in Sources */,
 				3B12AE3D1D6BFD1600C469EF /* ClockContentView.m in Sources */,
 				3BB519011D7E6C1300ADFC50 /* BLEConnectContentView.m in Sources */,
 				3BC0B4921D48520E00616A27 /* AssetHelper.m in Sources */,
+				3BAD15DD1D8E246E007AE9B1 /* BLETool.m in Sources */,
 				3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */,
+				3BAD15DE1D8E246E007AE9B1 /* NSStringTool.m in Sources */,
+				3BAD15DC1D8E246E007AE9B1 /* manridyBleDevice.m in Sources */,
 				3BDD65C41D45F5DC009EA15F /* RegistViewController.m in Sources */,
-				3B3762691D811C8A00543AF7 /* BLETool.m in Sources */,
 				3B12AE3A1D6BFCF100C469EF /* ClockViewController.m in Sources */,
 				3B4335861D76661700AF2E8F /* UserInfoViewController.m in Sources */,
 				3B4EA02D1D75297900E23B63 /* ASProgressPopUpView.m in Sources */,
 				3BDD65121D45DE73009EA15F /* main.m in Sources */,
+				3BAD15F61D8E24B5007AE9B1 /* HeartRateModel.m in Sources */,
 				3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */,
+				3BAD15F51D8E24B5007AE9B1 /* UserInfoModel.m in Sources */,
 				3BEFB4751D4994C5003DABF7 /* sm4test.c in Sources */,
 				3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */,
 				3B0278EA1D6FD5E90053820A /* FolderPhotoCell.m in Sources */,
@@ -1384,18 +1440,23 @@
 				3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */,
 				3BB518FA1D7E606600ADFC50 /* BLEConnectView.m in Sources */,
 				3BB519041D7E6D5E00ADFC50 /* BLECell.m in Sources */,
+				3BAD16911D8E7402007AE9B1 /* AllBleFmdb.m in Sources */,
 				3B0556CC1D654830009B994E /* SleepHistoryViewController.m in Sources */,
 				3BC0B47B1D4847EB00616A27 /* ShouDongJiaMiWenJianJIaTableViewCell.m in Sources */,
 				3BBEF15E1D4B4E97001BAE66 /* AddMiMaCell.m in Sources */,
 				3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */,
+				3BAD15DF1D8E246E007AE9B1 /* AnalysisProcotolTool.m in Sources */,
 				3BC0B4901D48520E00616A27 /* LocalPhotoCell.m in Sources */,
 				3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */,
+				3BAD15F81D8E24B5007AE9B1 /* SportTargetModel.m in Sources */,
 				3B0278E61D6FD0480053820A /* FolderContentView.m in Sources */,
+				3BAD15F31D8E24B5007AE9B1 /* SetTimeModel.m in Sources */,
 				3B12AE411D6C025800C469EF /* ClockTableViewCell.m in Sources */,
 				3B12AE331D6BE47D00C469EF /* SleepDailyDataModel.m in Sources */,
 				3B12AE6F1D6C3D1F00C469EF /* ClockModel.m in Sources */,
 				3B8CBF391D758B07007DE127 /* UserModel.m in Sources */,
 				3B2791F11D6308F200B99320 /* MainViewController.m in Sources */,
+				3BAD15F21D8E24B5007AE9B1 /* manridyModel.m in Sources */,
 				3BBEF1561D4B4691001BAE66 /* AddMiMaViewController.m in Sources */,
 				3B4EA02C1D75297900E23B63 /* ASPopUpView.m in Sources */,
 				3BC0B48E1D48520E00616A27 /* LocalPhotoViewController.m in Sources */,
@@ -1404,6 +1465,7 @@
 				3BEFB4761D4994C5003DABF7 /* sms4.c in Sources */,
 				3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */,
 				3BC0B48C1D48520E00616A27 /* LocalAlbumCell.m in Sources */,
+				3BAD15F41D8E24B5007AE9B1 /* SportModel.m in Sources */,
 				3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -16,21 +16,8 @@
 
 #import "XXFConstants.h"
 
-
-
-#define kServiceUUID              @"F000EFE0-0000-4000-0000-00000000B000"
-#define kWriteCharacteristicUUID  @"F000EFE1-0451-4000-0000-00000000B000"
-#define kNotifyCharacteristicUUID @"F000EFE2-0451-4000-0000-00000000B000"
-
-#warning 目前所有协议最后加了crc = 00 的字节
-#pragma mark - 协议部分
-#define kSetTime     @"FC00%@000000000000000000000000"              //设置时间协议    %@ == YYMMDDhhmmssWe
-#define kSetClock    @"FC01%@%@000000000000000000000000"            //设置闹钟协议    第一个%@：00：闹钟操作，01：查询闹钟；第二个%@：代表5个闹钟，没设置慢五个的用 00
-#define kSetMotor    @"FC02%@0000000000000000000000000000000000"    //设置马达协议    %@ = 00：禁止振动，01：启用振动
-#define kSportString @"FC03070000000000000000000000000000000000"    //获取运动协议
-#define kSportZero   @"FC04000000000000000000000000000000000000"    //清零运动数据协议
-#define kGPSString   @"FC05000000000000000000000000000000000000"    //获取GPS数据协议
-#define kUserInfo    @"FC06WEHE00000000000000000000000000000000"    //用户信息推送（可选）
-#define kStepTarget  @"FC07%@%@%@00000000000000000000"            //目标步数推送    有点复杂，具体看协议
-#define kHeartRateState     @"FC09%@0000000000000000000000000000000000"   //设置心率开关    %@ = 00：停止心率，01：开始心率
-#define kHeartRateData      @"FC0A%@0000000000000000000000000000000000"   //获取心率历史数据  %@ = 00：最近一次心率；01：历史数据
+#ifdef DEBUG
+#define XXFLog(...) NSLog(__VA_ARGS__)
+#else
+#define XXFLog(...)
+#endif

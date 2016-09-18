@@ -28,10 +28,10 @@ static FMDatabase *_fmdb;
         _fmdb = [FMDatabase databaseWithPath:filePath];
         _username = path;
         
-        NSLog(@"filePath == %@",filePath);
+        XXFLog(@"filePath == %@",filePath);
         
         if (![_fmdb open]) {
-            NSLog(@"数据库开启失败");
+            XXFLog(@"数据库开启失败");
         }
         
         //[_fmdb executeUpdate:@"CREATE TABLE IF NOT EXISTS t_modals(id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER NOT NULL, ID_No INTEGER NOT NULL);"];
@@ -89,12 +89,12 @@ static FMDatabase *_fmdb;
         model.name = name;
         model.isEncrypt = isEncrypt.integerValue;
         
-        NSLog(@"%@---%d",name ,model.isEncrypt);
+        XXFLog(@"%@---%d",name ,model.isEncrypt);
         
         [arrM addObject:model];
     }
     
-    NSLog(@"查询成功");
+    XXFLog(@"查询成功");
     return arrM;
 }
 

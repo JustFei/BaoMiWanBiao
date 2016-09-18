@@ -7,20 +7,34 @@
 //
 
 #import "BLETool.h"
-#import "BabyBluetooth.h"
+#import <CoreBluetooth/CoreBluetooth.h>
 #import "manridyBleDevice.h"
-#import "MBProgressHUD.h"
-#import "MotionDailyDataModel.h"
-#import "MotionFmdbTool.h"
+#import "manridyModel.h"
+#import "NSStringTool.h"
+#import "AnalysisProcotolTool.h"
+#import "AllBleFmdb.h"
 
-@interface BLETool ()
+#define kServiceUUID              @"F000EFE0-0000-4000-0000-00000000B000"
+#define kWriteCharacteristicUUID  @"F000EFE1-0451-4000-0000-00000000B000"
+#define kNotifyCharacteristicUUID @"F000EFE3-0451-4000-0000-00000000B000"
+
+#define kCurrentVersion @"1.0"
+
+
+@interface BLETool () <CBCentralManagerDelegate,CBPeripheralDelegate>
 {
-    BabyBluetooth *_baby;
+    BOOL isDisconnect;
+    BOOL isReconnect;
 }
+
+@property (nonatomic ,strong) CBCharacteristic *notifyCharacteristic;
+@property (nonatomic ,strong) CBCharacteristic *writeCharacteristic;
 
 @property (nonatomic ,strong) NSMutableArray *deviceArr;
 
-@property (nonatomic ,weak) MotionFmdbTool *fmTool;
+@property (nonatomic ,strong) CBCentralManager *myCentralManager;
+
+@property (nonatomic ,strong) AllBleFmdb *fmTool;
 
 @end
 
@@ -34,8 +48,8 @@ static BLETool *bleTool = nil;
 {
     self = [super init];
     if (self) {
-        _baby = [BabyBluetooth shareBabyBluetooth];
-        [self babyDelegate];
+        _myCentralManager = [[CBCentralManager alloc]initWithDelegate:self queue:nil options:nil];
+        _fmTool = [[AllBleFmdb alloc] init];
     }
     return self;
 }
@@ -70,278 +84,451 @@ static BLETool *bleTool = nil;
     return self;
 }
 
+#pragma mark - get sdk version -获取SDK版本号
+- (NSString *)getManridyBleSDKVersion
+{
+    return kCurrentVersion;
+}
+
 #pragma mark - action of connecting layer -连接层操作
 - (void)scanDevice
 {
     [self.deviceArr removeAllObjects];
-    _baby.scanForPeripherals().begin();
+    [_myCentralManager scanForPeripheralsWithServices:nil options:nil];
 }
 
 - (void)stopScan
 {
-    [_baby cancelScan];
+    [_myCentralManager stopScan];
 }
 
 - (void)connectDevice:(manridyBleDevice *)device
 {
     self.currentDev = device;
-    _baby.having(device.peripheral).connectToPeripherals().discoverServices().discoverCharacteristics().begin();
+    //请求连接到此外设
+    [_myCentralManager connectPeripheral:device.peripheral options:nil];
 }
 
 - (void)unConnectDevice
 {
-    [_baby cancelAllPeripheralsConnection];
+    isDisconnect = 1;
+    if (self.currentDev.peripheral) {
+        [self.myCentralManager cancelPeripheralConnection:self.currentDev.peripheral];
+    }
 }
 
-- (void)reConnectDevice
+- (void)reConnectDevice:(BOOL)isConnect
 {
-    
+    isReconnect = isConnect;
 }
 
 - (NSArray *)retrieveConnectedPeripherals
 {
-    return nil;
+    return [_myCentralManager retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:kServiceUUID]]];
 }
 
-#pragma mark - 写入层操作
-- (void)writeDataToPeripheral:(NSString *)info
+#pragma mark - data of write -写入数据操作
+//set time
+- (void)writeTimeToPeripheral:(NSDate *)currentDate
 {
+    NSDateFormatter *currentFormatter = [[NSDateFormatter alloc] init];
+    [currentFormatter setDateFormat:@"yyMMddhhmmssEEE"];
+    NSString *currentStr = [currentFormatter stringFromDate:currentDate];
+    
+    //传入时间和头，返回协议字符串
+    NSString *protocolStr = [NSStringTool protocolAddInfo:currentStr head:@"00"];
+    
+    //写入操作
     if (self.currentDev.peripheral) {
-        [self.currentDev.peripheral writeValue:[self hexToBytes:info] forCharacteristic:self.currentDev.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+        [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
     }
 }
 
-//NSString转换为NSdata，这样就省去了一个一个字节去写入
-- (NSData *)hexToBytes:(NSString *)str
+//set clock
+- (void)writeClockToPeripheral:(ClockData)state withModel:(manridyModel *)model
 {
-    NSMutableData* data = [NSMutableData data];
-    int idx;
-    for (idx = 0; idx+2 <= str.length; idx+=2) {
-        NSRange range = NSMakeRange(idx, 2);
-        NSString* hexStr = [str substringWithRange:range];
-        NSScanner* scanner = [NSScanner scannerWithString:hexStr];
-        unsigned int intValue;
-        [scanner scanHexInt:&intValue];
-        [data appendBytes:&intValue length:1];
-    }
-    
-    NSLog(@"data = %@",data);
-    return data;
-}
-
-#pragma mark - BabyDelegate
-- (void)babyDelegate
-{
-    
-    __weak typeof(self) weakSelf = self;
-    __weak typeof(_baby) weakBaby = _baby;
-    
-    [_baby setBlockOnCentralManagerDidUpdateState:^(CBCentralManager *central) {
-        if (central.state == CBCentralManagerStatePoweredOn) {
-            //            [SVProgressHUD showInfoWithStatus:@"设备打开成功，开始扫描设备"];
-            NSLog(@"蓝牙已打开");
-        }else {
-            NSLog(@"蓝牙已关闭");
-        }
-    }];
-    
-    //设置扫描到设备的委托
-    [_baby setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {
-//        NSLog(@"搜索到了设备:%@",peripheral.name);
+    if (state == ClockDataSetClock) {
+        XXFLog(@"设置闹钟");
+    }else {
+        //传入时间和头，返回协议字符串
+        NSString *protocolStr = [NSStringTool protocolAddInfo:@"01" head:@"01"];
         
-        if (![weakSelf.deviceArr containsObject:peripheral]) {
-            [weakSelf.deviceArr addObject:peripheral];
-            manridyBleDevice *device = [[manridyBleDevice alloc] initWith:peripheral andAdvertisementData:advertisementData];
+        //写入操作
+        if (self.currentDev.peripheral) {
+            [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+        }
+    }
+}
+
+//get motionInfo
+- (void)writeMotionRequestToPeripheral
+{
+    NSString *protocolStr = [NSStringTool protocolAddInfo:nil head:@"03"];
+    
+    //写入操作
+    if (self.currentDev.peripheral) {
+        [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type: CBCharacteristicWriteWithResponse];
+    }
+}
+
+//set motionInfo zero
+- (void)writeMotionZeroToPeripheral
+{
+    NSString *protocolStr = [NSStringTool protocolAddInfo:nil head:@"04"];
+    
+    //写入操作
+    if (self.currentDev.peripheral) {
+        [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+    }
+}
+
+//set userInfo
+- (void)writeUserInfoToPeripheralWeight:(NSString *)weight andHeight:(NSString *)height
+{
+    NSString *userInfoStr = [weight stringByAppendingString:[NSString stringWithFormat:@",%@",height]];
+    
+    userInfoStr = [NSStringTool protocolAddInfo:userInfoStr head:@"06"];
+    
+    //写入操作
+    if (self.currentDev.peripheral) {
+        [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:userInfoStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+    }
+}
+
+//set motion target
+- (void)writeMotionTargetToPeripheral:(NSString *)target
+{
+    NSString *targetStr = [NSStringTool protocolAddInfo:target head:@"07"];
+    
+    //写入操作
+    if (self.currentDev.peripheral) {
+        [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:targetStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+    }
+}
+
+//set heart rate test state
+- (void)writeHeartRateTestStateToPeripheral:(HeartRateTestState)state
+{
+    switch (state) {
+        case HeartRateTestStateStop:
+            //stop heart rate test
+        {
+            NSString *stopStr = [NSStringTool protocolAddInfo:@"00" head:@"09"];
             
-            //扫描成功回调
-            [weakSelf.discoverDelegate manridyBLEDidDiscoverDeviceWithMAC:device];
-        }
-    }];
-    
-    //设置设备连接成功的委托
-    [_baby setBlockOnConnected:^(CBCentralManager *central, CBPeripheral *peripheral) {
-        NSLog(@"连接到了设备:%@",peripheral.name);
-        
-        //currPeripheral指向我们点击的cell的peripheral
-        weakSelf.currentDev.peripheral = peripheral;
-        
-        //指定返回我们需要的服务
-        [peripheral discoverServices:@[[CBUUID UUIDWithString:kServiceUUID]]];
-        
-        if (weakSelf.currentDev) {
-            //连接成功回调
-            [weakSelf.connectDelegate manridyBLEDidConnectDevice:weakSelf.currentDev];
-        }
-    }];
-    
-    //设置发现设备的Services的委托
-    [_baby setBlockOnDiscoverServices:^(CBPeripheral *peripheral, NSError *error) {
-        
-        for (CBService *service in peripheral.services) {
-//            NSLog(@"搜索到服务:%@",service.UUID.UUIDString);
-            [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:kWriteCharacteristicUUID]] forService:service];
-            [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:kNotifyCharacteristicUUID]] forService:service];
-        }
-    }];
-    
-    //设置发现设service的Characteristics的委托
-    [_baby setBlockOnDiscoverCharacteristics:^(CBPeripheral *peripheral, CBService *service, NSError *error) {
-        for (CBCharacteristic *c in service.characteristics) {
-            if ([c.UUID isEqual:[CBUUID UUIDWithString:kWriteCharacteristicUUID]]) {
-                [CBPeripheralSingleton sharePeripheral].device.writeCharacteristic = c;
-                weakSelf.currentDev.writeCharacteristic = c;
-            }
-            if ([c.UUID isEqual:[CBUUID UUIDWithString:kNotifyCharacteristicUUID]]) {
-                [CBPeripheralSingleton sharePeripheral].device.notifyCharacteristic = c;
-                weakSelf.currentDev.notifyCharacteristic = c;
-                
-                [weakBaby notify:weakSelf.currentDev.peripheral characteristic:c block:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
-                    NSLog(@"改变后的特征值 = %@",characteristics.value);
-                    
-#warning 这里对delegate有没有接收对象作出判断失败，当没有对象接受时，还是会崩溃
-                    if (weakSelf.writeDelegate && [weakSelf.writeDelegate respondsToSelector:@selector(receiveData:)]) {
-                        [weakSelf.writeDelegate receiveData:characteristics.value];
-                        
-                    }else {
-                        
-                        NSData *data = characteristics.value;
-                        //这里将数据写入运动类数据写入数据库中
-                        const unsigned char *hexBytesLight = [data bytes];
-                        
-                        NSString *Str1 = [NSString stringWithFormat:@"%02x", hexBytesLight[0]];
-                        NSLog(@"标识符 = %@",Str1);
-                        
-                        //运动数据解析
-                        if ([Str1 isEqualToString:@"03"]) {
-                            NSData *stepData = [data subdataWithRange:NSMakeRange(2, 3)];
-                            int stepValue = [weakSelf parseIntFromData:stepData];
-                            NSLog(@"今日步数 = %d",stepValue);
-                            NSString *stepStr = [NSString stringWithFormat:@"%d",stepValue];
-                            
-                            NSData *mileageData = [data subdataWithRange:NSMakeRange(5, 3)];
-                            int mileageValue = [weakSelf parseIntFromData:mileageData];
-                            NSLog(@"今日里程数 = %d",mileageValue);
-                            NSString *mileageStr = [NSString stringWithFormat:@"%d",mileageValue];
-                            
-                            NSData *kcalData = [data subdataWithRange:NSMakeRange(8, 3)];
-                            int kcalValue = [weakSelf parseIntFromData:kcalData];
-                            NSLog(@"卡路里 = %d",kcalValue);
-                            NSString *kCalStr = [NSString stringWithFormat:@"%d",kcalValue];
-                            
-                            NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
-                            [dateformatter setDateFormat:@"YYYY-MM-dd"];
-                            NSDate *currentDate = [NSDate date];
-                            NSString *currentDateString = [dateformatter stringFromDate:currentDate];
-                            
-                            MotionDailyDataModel *motionModel = [MotionDailyDataModel modelWith:currentDateString step:stepStr kCal:kCalStr mileage:mileageStr bpm:nil];
-                            
-                            
-                            [weakSelf.fmTool insertModel:motionModel];
-                        }
-                    }
-                    
-                }];
-                
+            if (self.currentDev.peripheral) {
+                [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:stopStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
             }
         }
-    }];
+            break;
+        case HeartRateTestStateStart:
+            //start heart rate test
+        {
+            NSString *startStr = [NSStringTool protocolAddInfo:@"01" head:@"09"];
+            
+            if (self.currentDev.peripheral) {
+                [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:startStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+            }
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+//get heart rate data
+- (void)writeHeartRateRequestToPeripheral:(HeartRateData)heartRateData
+{
+    switch (heartRateData) {
+        case HeartRateDataLastData:
+            //last data of heart rate
+        {
+            NSString *lastStr = [NSStringTool protocolAddInfo:@"00" head:@"0A"];
+            
+            if (self.currentDev.peripheral) {
+                [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:lastStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+            }
+        }
+            break;
+        case HeartRateDataHistoryData:
+            //history data of heart rate
+        {
+            NSString *historyStr = [NSStringTool protocolAddInfo:@"01" head:@"0A"];
+            
+            if (self.currentDev.peripheral) {
+                [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:historyStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+            }
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+//get sleepInfo
+- (void)writeSleepRequestToperipheral:(SleepData)sleepData
+{
+    NSString *sleepStr;
+    switch (sleepData) {
+        case SleepDataLastData:
+            //last data of sleep
+            sleepStr = [NSStringTool protocolAddInfo:@"00" head:@"0C"];
+            
+            break;
+        case SleepDataHistoryData:
+            //history data of sleep
+            sleepStr = [NSStringTool protocolAddInfo:@"01" head:@"0C"];
+            
+            break;
+            
+        default:
+            break;
+    }
     
-    
-    //写入特征成功block
-    [_baby setBlockOnDidWriteValueForCharacteristic:^(CBCharacteristic *characteristic, NSError *error) {
+    //写入操作
+    if (self.currentDev.peripheral) {
+        [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:sleepStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+    }
+}
+
+#pragma mark - CBCentralManagerDelegate
+//检查设备蓝牙开关的状态
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+{
+    if (central.state == CBCentralManagerStatePoweredOn) {
+        //            [SVProgressHUD showInfoWithStatus:@"设备打开成功，开始扫描设备"];
+//        XXFLog(@"蓝牙已打开");
+        [_myCentralManager scanForPeripheralsWithServices:nil options:nil];
+    }else {
+//        XXFLog(@"蓝牙已关闭");
+    }
+}
+
+//查找到正在广播的指定外设
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
+{
+//    XXFLog(@"Discovered %@", peripheral.name);
+    //...
+    //当你发现你感兴趣的连接外围设备，停止扫描其他设备，以节省电能。
+    if (![peripheral.name isEqualToString:@""]) {
         
+        if (![self.deviceArr containsObject:peripheral]) {
+            [self.deviceArr addObject:peripheral];
+            
+            manridyBleDevice *device = [[manridyBleDevice alloc] initWith:peripheral andAdvertisementData:advertisementData andRSSI:RSSI];
+            
+            //返回扫描到的设备实例
+            if ([self.discoverDelegate respondsToSelector:@selector(manridyBLEDidDiscoverDeviceWithMAC:)]) {
+                
+                [self.discoverDelegate manridyBLEDidDiscoverDeviceWithMAC:device];
+            }
+        }
+    }
+}
+
+//连接成功
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
+{
+//    XXFLog(@"Peripheral connected");
+    
+    peripheral.delegate = self;
+    //传入nil会返回所有服务;一般会传入你想要服务的UUID所组成的数组,就会返回指定的服务
+    [peripheral discoverServices:nil];
+}
+
+//连接失败
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+//    XXFLog(@"连接失败");
+    
+    if ([self.connectDelegate respondsToSelector:@selector(manridyBLEDidFailConnectDevice:)]) {
+        [self.connectDelegate manridyBLEDidFailConnectDevice:self.currentDev];
+    }
+    
+}
+
+//断开连接
+- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    if ([self.connectDelegate respondsToSelector:@selector(manridyBLEDidDisconnectDevice:)]) {
+        self.connectState = kBLEstateDisConnected;
+        [self.connectDelegate manridyBLEDidDisconnectDevice:self.currentDev];
+    }
+#if 0
+    //如果不是主动断开
+    if (!isDisconnect) {
+        
+        if (isReconnect) {
+            [self.myCentralManager connectPeripheral:self.currentDev.peripheral options:nil];
+        }else {
+//            XXFLog(@"不需要断线重连");
+        }
+        
+    }else {
         if (!error) {
-            NSLog(@"写入特征成功 = %@,UUID = %@",characteristic.value ,characteristic.UUID);
+//            XXFLog(@"断开成功");
+            
+            if ([self.connectDelegate respondsToSelector:@selector(manridyBLEDidDisconnectDevice:)]) {
+                [self.connectDelegate manridyBLEDidDisconnectDevice:self.currentDev];
+                
+                self.currentDev = nil;
+            }
             
         }else {
-            NSLog(@"写入特征失败 = %@",characteristic.UUID);
+//            XXFLog(@"断开失败 error = %@", error);
+        }
+    }
+#endif
+}
+
+#pragma mark - CBPeripheralDelegate
+//发现到服务
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error{
+    for (CBService *service in peripheral.services) {
+        
+        //返回特定的写入，订阅的特征即可
+        [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:kWriteCharacteristicUUID],[CBUUID UUIDWithString:kNotifyCharacteristicUUID]] forService:service];
+    }
+}
+
+//获得某服务的特征
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error{
+    for (CBCharacteristic *characteristic in service.characteristics) {
+//        XXFLog(@"Discovered characteristic %@", characteristic.UUID);
+        
+        //保存写入特征
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:kWriteCharacteristicUUID]]) {
+            
+            self.writeCharacteristic = characteristic;
         }
         
-    }];
-    
-    //设置读取characteristics的委托
-    [_baby setBlockOnReadValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
-        NSLog(@"characteristic name:%@ value is:%@",characteristics.UUID,characteristics.value);
-    }];
-    
-    //设置发现characteristics的descriptors的委托
-    [_baby setBlockOnDiscoverDescriptorsForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristic, NSError *error) {
-        NSLog(@"===characteristic name:%@",characteristic.service.UUID);
-        for (CBDescriptor *d in characteristic.descriptors) {
-            NSLog(@"CBDescriptor name is :%@",d.UUID);
+        //保存订阅特征
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:kNotifyCharacteristicUUID]]) {
+            self.notifyCharacteristic = characteristic;
+            
+            if ([self.connectDelegate respondsToSelector:@selector(manridyBLEDidConnectDevice:)]) {
+                if (self.currentDev.peripheral == peripheral) {
+                    self.connectState = kBLEstateDidConnected;
+                    [self.connectDelegate manridyBLEDidConnectDevice:self.currentDev];
+                }
+            }
+            
+            //订阅该特征
+            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
         }
-    }];
+    }
     
-    //设置读取Descriptor的委托
-    [_baby setBlockOnReadValueForDescriptors:^(CBPeripheral *peripheral, CBDescriptor *descriptor, NSError *error) {
-        NSLog(@"Descriptor name:%@ value is:%@",descriptor.characteristic.UUID, descriptor.value);
-    }];
-    
-    //设置设备断开连接的委托
-    [_baby setBlockOnDisconnect:^(CBCentralManager *central, CBPeripheral *peripheral, NSError *error) {
-        NSLog(@"设备：%@--断开连接",peripheral.name);
-        
-        [weakSelf.connectDelegate manridyBLEDidDisconnectDevice:weakSelf.currentDev];
-    }];
-    
-    
-    //设置查找设备的过滤器
-    [_baby setFilterOnDiscoverPeripherals:^BOOL(NSString *peripheralName, NSDictionary *advertisementData, NSNumber *RSSI) {
-        
-        //最常用的场景是查找某一个前缀开头的设备
-        //        if ([peripheralName hasPrefix:@"Pxxxx"] ) {
-        //            return YES;
-        //        }
-        //        return NO;
-        
-        //设置查找规则是名称大于0 ， the search rule is peripheral.name length > 0
-        if (peripheralName.length >0) {
-            return YES;
-        }
-        return NO;
-    }];
-    
-    
-    [_baby setBlockOnCancelAllPeripheralsConnectionBlock:^(CBCentralManager *centralManager) {
-        NSLog(@"setBlockOnCancelAllPeripheralsConnectionBlock");
-    }];
-    
-    [_baby setBlockOnCancelScanBlock:^(CBCentralManager *centralManager) {
-        NSLog(@"setBlockOnCancelScanBlock");
-    }];
-    
-    
-    /*设置babyOptions
-     
-     参数分别使用在下面这几个地方，若不使用参数则传nil
-     - [centralManager scanForPeripheralsWithServices:scanForPeripheralsWithServices options:scanForPeripheralsWithOptions];
-     - [centralManager connectPeripheral:peripheral options:connectPeripheralWithOptions];
-     - [peripheral discoverServices:discoverWithServices];
-     - [peripheral discoverCharacteristics:discoverWithCharacteristics forService:service];
-     
-     该方法支持channel版本:
-     [baby setBabyOptionsAtChannel:<#(NSString *)#> scanForPeripheralsWithOptions:<#(NSDictionary *)#> connectPeripheralWithOptions:<#(NSDictionary *)#> scanForPeripheralsWithServices:<#(NSArray *)#> discoverWithServices:<#(NSArray *)#> discoverWithCharacteristics:<#(NSArray *)#>]
-     */
-    
-    //示例:
-    //扫描选项->CBCentralManagerScanOptionAllowDuplicatesKey:忽略同一个Peripheral端的多个发现事件被聚合成一个发现事件
-    NSDictionary *scanForPeripheralsWithOptions = @{CBCentralManagerScanOptionAllowDuplicatesKey:@YES};
-    //连接设备->
-    [_baby setBabyOptionsWithScanForPeripheralsWithOptions:scanForPeripheralsWithOptions connectPeripheralWithOptions:nil scanForPeripheralsWithServices:nil discoverWithServices:nil discoverWithCharacteristics:nil];
     
 }
 
-//补充内容，因为没有三个字节转int的方法，这里补充一个通用方法,16进制转换成10进制
-- (unsigned)parseIntFromData:(NSData *)data{
-    
-    NSString *dataDescription = [data description];
-    NSString *dataAsString = [dataDescription substringWithRange:NSMakeRange(1, [dataDescription length]-2)];
-    
-    unsigned intData = 0;
-    NSScanner *scanner = [NSScanner scannerWithString:dataAsString];
-    [scanner scanHexInt:&intData];
-    return intData;
+//获得某特征值变化的通知
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
+    if (error) {
+//        XXFLog(@"Error changing notification state: %@",[error localizedDescription]);
+    }else {
+//        XXFLog(@"Success cahnging notification state: %d",characteristic.isNotifying);
+    }
 }
+
+//订阅特征值发送变化的通知，所有获取到的值都将在这里进行处理
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    XXFLog(@"notifyCharacteristic is change = %@",characteristic.value);
+    
+    [self analysisDataWithCharacteristic:characteristic.value];
+    
+}
+
+//写入某特征值后的回调
+- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
+    if (error) {
+//        XXFLog(@"Error writing characteristic value: %@",[error localizedDescription]);
+    }else {
+//        XXFLog(@"Success writing chararcteristic value: %@",characteristic);
+    }
+}
+
+#pragma mark - 数据解析
+- (void)analysisDataWithCharacteristic:(NSData *)value
+{
+    if ([value bytes] != nil) {
+        const unsigned char *hexBytes = [value bytes];
+        
+        //命令字段
+        NSString *headStr = [NSString stringWithFormat:@"%02x", hexBytes[0]];
+        
+        if ([headStr isEqualToString:@"00"] || [headStr isEqualToString:@"80"]) {
+            //解析设置时间数据
+            manridyModel *model = [AnalysisProcotolTool analysisSetTimeData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"01"] || [headStr isEqualToString:@"81"]) {
+            //解析闹钟数据
+            manridyModel *model = [AnalysisProcotolTool analysisClockData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"03"] || [headStr isEqualToString:@"83"]) {
+            //解析获取的步数数据
+            manridyModel *model =  [AnalysisProcotolTool analysisGetSportData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }else {
+                [_fmTool saveMotionToDataBase:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"04"] || [headStr isEqualToString:@"84"]) {
+            //运动清零
+            manridyModel *model = [AnalysisProcotolTool analysisSportZeroData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"06"] || [headStr isEqualToString:@"86"]) {
+            //用户信息推送
+            manridyModel *model = [AnalysisProcotolTool analysisUserInfoData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"07"] || [headStr isEqualToString:@"87"]) {
+            //运动目标推送
+            manridyModel *model = [AnalysisProcotolTool analysisSportTargetData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"09"] || [headStr isEqualToString:@"89"]) {
+            //心率开关
+            manridyModel *model = [AnalysisProcotolTool analysisHeartStateData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"0a"] || [headStr isEqualToString:@"0A"] || [headStr isEqualToString:@"8a"] || [headStr isEqualToString:@"8A"]) {
+            //获取心率数据
+            manridyModel *model = [AnalysisProcotolTool analysisHeartData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }
+            
+        }else if ([headStr isEqualToString:@"0c"] || [headStr isEqualToString:@"0C"] || [headStr isEqualToString:@"8c"] || [headStr isEqualToString:@"8C"]) {
+            //获取睡眠
+            manridyModel *model = [AnalysisProcotolTool analysisSleepData:value WithHeadStr: headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
+            }else {
+                [_fmTool saveSleepToDataBase:model];
+            }
+        }
+    }
+}
+
+
 
 #pragma mark - 懒加载
 - (NSMutableArray *)deviceArr

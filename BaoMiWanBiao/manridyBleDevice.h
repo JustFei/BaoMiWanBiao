@@ -12,14 +12,15 @@
 
 @interface manridyBleDevice : NSObject
 
+//设备
 @property (nonatomic ,strong) CBPeripheral *peripheral;
-//@property (nonatomic ,strong) NSString *mediaAC;
-//@property (nonatomic ,strong) NSNumber *RSSI;
-@property (nonatomic ,strong) CBCharacteristic *notifyCharacteristic;
-@property (nonatomic ,strong) CBCharacteristic *writeCharacteristic;
+//RSSI
+@property (nonatomic ,strong) NSNumber *RSSI;
+//UUID
 @property (nonatomic ,strong) NSString *uuidString;
+//设备名
 @property (nonatomic ,strong) NSString *deviceName;
 
-- (instancetype)initWith:(CBPeripheral *)cbPeripheral andAdvertisementData:(NSDictionary *)advertisementData;
+- (instancetype)initWith:(CBPeripheral *)cbPeripheral andAdvertisementData:(NSDictionary *)advertisementData andRSSI:(NSNumber *)RSSI;
 
 @end

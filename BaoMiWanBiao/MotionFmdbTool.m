@@ -34,10 +34,10 @@ static FMDatabase *_fmdb;
         _fmdb = [FMDatabase databaseWithPath:filepath];
         _username = path;
         
-        NSLog(@"运动信息数据库路径 == %@", filepath);
+        XXFLog(@"运动信息数据库路径 == %@", filepath);
         
         if ([_fmdb open]) {
-            NSLog(@"数据库打开成功");
+            XXFLog(@"数据库打开成功");
         }
         
         //创建表
@@ -60,9 +60,9 @@ static FMDatabase *_fmdb;
     
     BOOL result = [_fmdb executeUpdate:insertSql];
     if (result) {
-        NSLog(@"插入数据成功");
+        XXFLog(@"插入数据成功");
     }else {
-        NSLog(@"插入数据失败");
+        XXFLog(@"插入数据失败");
     }
     return result;
 }
@@ -103,12 +103,12 @@ static FMDatabase *_fmdb;
         model.mileage = mileage;
         model.bpm = bpm;
         
-        NSLog(@"%@的数据：步数=%@，卡路里=%@，里程=%@，心率=%@",querySql ,step ,kCal ,mileage ,bpm);
+        XXFLog(@"%@的数据：步数=%@，卡路里=%@，里程=%@，心率=%@",querySql ,step ,kCal ,mileage ,bpm);
         
         [arrM addObject:model];
     }
     
-    NSLog(@"查询成功");
+    XXFLog(@"查询成功");
     return arrM;
 }
 
@@ -123,17 +123,27 @@ static FMDatabase *_fmdb;
 - (BOOL)modifyData:(NSString *)modifySqlDate model:(MotionDailyDataModel *)modifySqlModel
 {
     if (modifySqlDate == nil) {
-        NSLog(@"传入的日期为空，不能修改");
+        XXFLog(@"传入的日期为空，不能修改");
         
         return NO;
     }
     
-    NSString *modifySql = [NSString stringWithFormat:@"update MotionData set step = ?, kCal = ?, mileage = ? where date = ?" ];
+    BOOL modifyResult;
     
-    BOOL modifyResult = [_fmdb executeUpdate:modifySql, modifySqlModel.step, modifySqlModel.kCal, modifySqlModel.mileage, modifySqlDate];
+    if (modifySqlModel.bpm == nil) {
+        NSString *modifySql = [NSString stringWithFormat:@"update MotionData set step = ?, kCal = ?, mileage = ? where date = ?" ];
+        
+        modifyResult = [_fmdb executeUpdate:modifySql, modifySqlModel.step, modifySqlModel.kCal, modifySqlModel.mileage, modifySqlDate];
+    }else {
+        NSString *modifySql = [NSString stringWithFormat:@"update MotionData set bpm = ? where date = ?" ];
+        
+        modifyResult = [_fmdb executeUpdate:modifySql, modifySqlModel.bpm, modifySqlDate];
+    }
     
     if (modifyResult) {
-        NSLog(@"数据修改成功");
+        XXFLog(@"数据修改成功");
+    }else {
+        XXFLog(@"数据修改失败");
     }
     
     return modifyResult;

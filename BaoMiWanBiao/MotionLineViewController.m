@@ -96,7 +96,7 @@
 // */
 //- (void)didFailToLocateUserWithError:(NSError *)error
 //{
-//    NSLog(@"did failed locate,error is %@",[error localizedDescription]);
+//    XXFLog(@"did failed locate,error is %@",[error localizedDescription]);
 //}
 //
 ///**
@@ -133,7 +133,7 @@
 //        // 计算本次定位数据与上次定位数据之间的距离
 //        CGFloat distance = [userLocation.location distanceFromLocation:self.preLocation];
 //        self.statusView.distanceWithPreLoc.text = [NSString stringWithFormat:@"%.3f",distance];
-//        NSLog(@"与上一位置点的距离为:%f",distance);
+//        XXFLog(@"与上一位置点的距离为:%f",distance);
 //        
 //        // (5米门限值，存储数组画线) 如果距离少于 5 米，则忽略本次数据直接返回方法
 //        if (distance < 5) {

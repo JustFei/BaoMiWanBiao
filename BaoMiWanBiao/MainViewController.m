@@ -14,7 +14,7 @@
 #import "ClockViewController.h"
 #import "FolderViewController.h"
 #import "BLEConnectViewController.h"
-
+#import "BLETool.h"
 #import "BLEConnectView.h"
 #import "ListView.h"
 
@@ -45,16 +45,11 @@
     
     //使用系统自带的返回手势（需要从最左边开始滑动）
 //    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
-    
-
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -65,12 +60,10 @@
         [weakSelf.connectView removeFromSuperview];
     };
     
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] != nil) {
-        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] isEqualToString:@"0"]) {
-            [self.view bringSubviewToFront:self.connectView];
-        }else {
-            [self.connectView removeFromSuperview];
-        }
+    if ([BLETool shareInstance].connectState == kBLEstateDisConnected) {
+        [self.view bringSubviewToFront:self.connectView];
+    }else {
+        [self.connectView removeFromSuperview];
     }
 }
 

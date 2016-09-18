@@ -124,7 +124,7 @@
 //确定按钮
 - (void)sureAction
 {
-    NSLog(@"确定按钮");
+    XXFLog(@"确定按钮");
 
     NSArray * cellArr = [self.textTableView visibleCells];
     
@@ -156,7 +156,7 @@
     
     BOOL result = [self.tool insertModel:self.accountModel];
     
-    NSLog(@"写入数据库状态：%d",result);
+    XXFLog(@"写入数据库状态：%d",result);
     
     UIViewController *vc = [self findViewController:self];
     

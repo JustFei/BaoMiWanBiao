@@ -8,12 +8,11 @@
 
 #import "BLEConnectContentView.h"
 #import "BLECell.h"
-#import <CoreBluetooth/CoreBluetooth.h>
-#import "BabyBluetooth.h"
 #import "MBProgressHUD.h"
 #import "MainViewController.h"
 #import "BLEConnectViewController.h"
-#import "CBPeripheralSingleton.h"
+#import "BLETool.h"
+#import "manridyBleDevice.h"
 
 
 typedef enum{
@@ -22,17 +21,11 @@ typedef enum{
     ScanStateNull   ,
 }ScanState;
 
-@interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, CBCentralManagerDelegate, UIAlertViewDelegate, BleConnectDelegate, BleDiscoverDelegate>
+@interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, BleConnectDelegate, BleDiscoverDelegate>
 {
     BOOL _blueToothOpen;
     UIButton *_switchButton;
-    BOOL _bleSwitchState;
-    BOOL _bleConnectState;
 }
-// 蓝牙检测
-@property (nonatomic ,strong) CBCentralManager *centralManager;
-
-@property (nonatomic ,strong) CBPeripheral *currPeripheral;
 
 @property (nonatomic ,strong) NSMutableArray *peripheralsArr;
 
@@ -48,52 +41,10 @@ typedef enum{
 
 - (void)layoutSubviews
 {
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] == nil) {
-        
-        [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleConnectState"];
-        _bleConnectState = 0;
-    }else{
-        
-        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"bleConnectState"] isEqualToString:@"0"]) {
-            _bleConnectState = 0;
-            _bleSwitchState = 0;
-        }else {
-            _bleConnectState = 1;
-            _bleSwitchState = 1;
-        }
-    }
-    
-    NSLog(@"开关 = %d，连接 = %d",_bleSwitchState ,_bleConnectState);
-    
-    if (_bleConnectState) {
-        
-        if ([CBPeripheralSingleton sharePeripheral].device) {
-            [self.peripheralsArr addObject:[CBPeripheralSingleton sharePeripheral].device];
-        }
-    }
-    
     self.BLEListView.frame = self.bounds;
     
     [BLETool shareInstance].connectDelegate = self;
     [BLETool shareInstance].discoverDelegate = self;
-    // 蓝牙检测
-    self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
-}
-
-#pragma mark - CLLocationManagerDelegate
--(void)centralManagerDidUpdateState:(CBCentralManager *)central
-{
-    //第一次打开或者每次蓝牙状态改变都会调用这个函数
-    if(central.state==CBCentralManagerStatePoweredOn)
-    {
-        NSLog(@"蓝牙设备开着");
-        _blueToothOpen = YES;
-    }
-    else
-    {
-        NSLog(@"蓝牙设备关着");
-        _blueToothOpen = NO;
-    }
 }
 
 #pragma mark - UITableViewDelegate && UITableDataSource
@@ -113,16 +64,16 @@ typedef enum{
     manridyBleDevice *device = self.peripheralsArr[indexPath.row];
     cell.nameLabel.text = device.deviceName;
     
-    if (_bleSwitchState) {
-        if (_bleConnectState) {
-            if ([CBPeripheralSingleton sharePeripheral].device != nil) {
-                if ([[CBPeripheralSingleton sharePeripheral].device.peripheral isEqual:device.peripheral]) {
-                    [cell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
-                    [cell.connectButton setBackgroundColor:[UIColor grayColor]];
-                }
-            }
-        }
-    }
+//    if (_bleSwitchState) {
+//        if (_bleConnectState) {
+//            if ([BLETool shareInstance].currentDev != nil) {
+//                if ([[BLETool shareInstance].currentDev.peripheral isEqual:device.peripheral]) {
+//                    [cell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
+//                    [cell.connectButton setBackgroundColor:[UIColor grayColor]];
+//                }
+//            }
+//        }
+//    }
     
     __weak typeof(cell) weakCell = cell;
     //cell上点击连接的block
@@ -132,7 +83,7 @@ typedef enum{
         [[BLETool shareInstance] stopScan];
         [[BLETool shareInstance] unConnectDevice];
         
-        self.currPeripheral = device.peripheral;
+//        self.currPeripheral = device.peripheral;
         //显示等待菊花
         [MBProgressHUD showHUDAddedTo:self animated:YES];
         
@@ -200,7 +151,6 @@ typedef enum{
 {
     if (_switchButton.isSelected) {
         [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleSwitchState"];
-        _bleSwitchState = 0;
         [_switchButton setSelected:NO];
         
         //断开所有peripheral的连
@@ -226,21 +176,21 @@ typedef enum{
         self.scanDeviceTimer = nil;
         
     }else {
-        if (!_blueToothOpen) {
-            
-            UIAlertView *view = [[UIAlertView alloc ] initWithTitle:@"提示" message:@"请确认设备是否已开启蓝牙" delegate:self cancelButtonTitle:@"去看看！" otherButtonTitles:nil, nil];
-            [view setTag:101];
-            [view show];
-        }else {
-            [self scanDevice];
-        }
+        [self scanDevice];
+        
+//        if (!_blueToothOpen) {
+//        
+//            UIAlertView *view = [[UIAlertView alloc ] initWithTitle:@"提示" message:@"请确认设备是否已开启蓝牙" delegate:self cancelButtonTitle:@"去看看！" otherButtonTitles:nil, nil];
+//            [view setTag:101];
+//            [view show];
+//        }else {
+//            
+//        }
     }
 }
 
 - (void)scanDevice
 {
-    [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"bleSwitchState"];
-    _bleSwitchState = 1;
     [_switchButton setSelected:YES];
     
     //设置委托后直接可以使用，无需等待CBCentralManagerStatePoweredOn状态
@@ -252,11 +202,23 @@ typedef enum{
 }
 
 #pragma mark - blelib3Delegate
+#pragma mark -BleDiscoverDelegate
+- (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device
+{
+    if (![self.peripheralsArr containsObject:device]) {
+        [self.peripheralsArr addObject:device];
+        NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.peripheralsArr.count - 1 inSection:0];
+        [indexPaths addObject: indexPath];
+        [self.BLEListView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+    }
+}
+
 #pragma mark -BleConnectDelegate
 - (void)manridyBLEDidConnectDevice:(manridyBleDevice *)device
 {
-    [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"bleConnectState"];
-    [CBPeripheralSingleton sharePeripheral].device = device;
+    [BLETool shareInstance].currentDev = device;
     
     //显示等待菊花
     [MBProgressHUD hideHUDForView:self animated:YES];
@@ -268,23 +230,10 @@ typedef enum{
 - (void)manridyBLEDidDisconnectDevice:(manridyBleDevice *)device
 {
     self.peripheralsArr = nil;
-    [CBPeripheralSingleton sharePeripheral].device = nil;
+    [BLETool shareInstance].currentDev = nil;
     
     [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleConnectState"];
-    _bleConnectState = 0;
 }
-
-#pragma mark -BleDiscoverDelegate
-- (void)manridyBLEDidDiscoverDeviceWithMAC:(manridyBleDevice *)device
-{
-    
-    if (![self.peripheralsArr containsObject:device]) {
-        [self.peripheralsArr addObject:device];
-        [self.BLEListView reloadData];
-    }
-}
-
-
 
 #pragma mark - 懒加载
 - (UIView *)headView
@@ -300,8 +249,6 @@ typedef enum{
         _switchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 40, 11, 30, 21)];
         [_switchButton setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
         [_switchButton setImage:[UIImage imageNamed:@"open"] forState:UIControlStateSelected];
-
-        [_switchButton setSelected:_bleSwitchState];
         
         [_switchButton addTarget:self action:@selector(ConnectSwitch) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:_switchButton];

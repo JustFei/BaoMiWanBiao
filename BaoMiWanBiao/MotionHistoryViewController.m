@@ -268,12 +268,12 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
     _mileageArr = [NSMutableArray array];
     
     for (NSString *dateStr in weekDateArr) {
-        NSLog(@"%@",dateStr);//08/22(不符合我们存储的2016-08-22的日期格式，所以查询不到数据，此处做剪切)
+        XXFLog(@"%@",dateStr);//08/22(不符合我们存储的2016-08-22的日期格式，所以查询不到数据，此处做剪切)
         
         
             NSArray *dateArr = [self.fmTool queryDate:dateStr];
             
-            NSLog(@"%ld",(unsigned long)dateArr.count);
+            XXFLog(@"%ld",(unsigned long)dateArr.count);
             if (dateArr) {
                 MotionDailyDataModel *model = dateArr.firstObject;
                 
@@ -290,10 +290,10 @@ CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;
                     [_mileageArr addObject:@0];
                 }
             }else {
-                NSLog(@"这天没有数据");
+                XXFLog(@"这天没有数据");
             }
         }
-    NSLog(@"stepCount = %ld,kcalCount = %ld,bpmCount = %ld,mileageCount = %ld", (unsigned long)_stepArr.count, (unsigned long)_kCalArr.count, (unsigned long)_bpmArr.count,(unsigned long)_mileageArr.count);
+    XXFLog(@"stepCount = %ld,kcalCount = %ld,bpmCount = %ld,mileageCount = %ld", (unsigned long)_stepArr.count, (unsigned long)_kCalArr.count, (unsigned long)_bpmArr.count,(unsigned long)_mileageArr.count);
 //    self.chartData = _stepArr;
 //    [self.jbBarView reloadDataAnimated:YES];
 }

@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'A9F211A5D45C55364CEAF644'
+               BlueprintIdentifier = '07E9FEFDA9246EFC8C04A54A'
                BlueprintName = 'PKRevealController'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libPKRevealController.a'>
