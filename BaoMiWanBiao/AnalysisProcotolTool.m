@@ -9,6 +9,7 @@
 #import "AnalysisProcotolTool.h"
 #import "manridyModel.h"
 #import "NSStringTool.h"
+#import "ClockModel.h"
 
 @implementation AnalysisProcotolTool
 
@@ -20,7 +21,7 @@
     
     if ([head isEqualToString:@"00"]) {
         NSData *timeData = [data subdataWithRange:NSMakeRange(1, 7)];
-        NSString *timeStr = [NSString stringWithFormat:@"%@",timeData];
+        NSString *timeStr = [NSStringTool ConvertToNSStringWithNSData:timeData];
         model.setTimeModel.time = timeStr;
         model.isReciveDataRight = ResponsEcorrectnessDataRgith;
         
@@ -43,16 +44,26 @@
         
         for (int index = 1; index <= 5; index ++) {
             //第一个闹钟
-            NSString *clock = [NSString stringWithFormat:@"%02x", hexBytes[index]];
+            NSString *clock = [NSString stringWithFormat:@"%02x", hexBytes[index + 1]];
             if ([clock isEqualToString:@"01"] || [clock isEqualToString:@"02"]) {
                 NSData *timeData = [data subdataWithRange:NSMakeRange(5 + index * 2, 2)];
-                NSString *timeStr = [NSString stringWithFormat:@"%@",timeData];
+                NSString *timeStr = [NSStringTool ConvertToNSStringWithNSData:timeData];
+                NSMutableString *mutTimeStr = [NSMutableString stringWithString:timeStr];
+                [mutTimeStr insertString:@":" atIndex:2];
                 
-                NSDictionary *dic = @{clock:timeStr};
-                [model.clockModel.clockArr addObject:dic];
+//                NSDictionary *dic = @{clock:timeStr};
+                ClockModel *clockModel = [[ClockModel alloc] init];
+                clockModel.ID = index;
+                clockModel.time = mutTimeStr;
+                if ([clock isEqualToString:@"01"]) {
+                    clockModel.isOpen = 1;
+                }else if ([clock isEqualToString:@"02"]) {
+                    clockModel.isOpen = 0;
+                }
+                [model.clockModelArr addObject:clockModel];
             }
         }
-        XXFLog(@"闹钟的数据为 == %@",model.clockModel.clockArr);
+        XXFLog(@"闹钟的数据为 == %@",model.clockModelArr);
         model.isReciveDataRight = ResponsEcorrectnessDataRgith;
     }else if ([head isEqualToString:@"81"]) {
         model.isReciveDataRight = ResponsEcorrectnessDataFail;

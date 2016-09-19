@@ -21,6 +21,4 @@ typedef enum : NSUInteger {
 
 @property (assign, nonatomic) BOOL isOpen;
 
-@property (nonatomic ,strong) NSMutableArray *clockArr;
-
 @end

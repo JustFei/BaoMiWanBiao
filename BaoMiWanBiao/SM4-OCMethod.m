@@ -79,7 +79,6 @@
         //5.定义char类型的变量plainInChar，长度为64字节。
         unsigned char plainInChar[65536];
         
-#warning 这里在拷贝内存的时候，有几张图片就是考不过去，第1，2，3张图片作为代表
         //6.将数据流的内存拷贝到char的内存中去，长度为填充过后的长度
         memcpy(plainInChar, mingwenData.bytes, 65536);
         
@@ -92,7 +91,8 @@
         
         //将明文data从64字节开始剪切到最后，为pinjieData
         NSData *pinjieData = [mingwenData subdataWithRange:NSMakeRange(65536, mingwenData.length - 65536)];
-        
+
+#warning 拼接数据过大时，会导致   unable to allocate memory for length (635932656)'
         //将前64位和最后剪切的数据拼接
         [qian64MiwenData appendData:pinjieData];
         

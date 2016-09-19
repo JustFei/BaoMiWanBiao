@@ -68,7 +68,7 @@ typedef enum : NSUInteger {
 @property (nonatomic ,strong) SleepModel *sleepModel;
 
 //闹钟数据模型
-@property (nonatomic ,strong) ClockModel *clockModel;
+@property (nonatomic ,strong) NSMutableArray *clockModelArr;
 
 @end
 

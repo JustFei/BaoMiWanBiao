@@ -262,4 +262,26 @@
     return nil;
 }
 
+//将data转换为不带<>的字符串
++ (NSString *)ConvertToNSStringWithNSData:(NSData *)data
+{
+    
+    
+    NSMutableString *strTemp = [NSMutableString stringWithCapacity:[data length]*2];
+    
+    
+    const unsigned char *szBuffer = [data bytes];
+    
+    
+    for (NSInteger i=0; i < [data length]; ++i) {
+        
+        [strTemp appendFormat:@"%02lx",(unsigned long)szBuffer[i]];
+        
+    }
+    
+    
+    return strTemp;
+    
+}
+
 @end

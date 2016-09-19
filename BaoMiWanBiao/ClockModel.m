@@ -10,13 +10,4 @@
 
 @implementation ClockModel
 
-- (NSMutableArray *)clockArr
-{
-    if (!_clockArr) {
-        _clockArr = [NSMutableArray array];
-    }
-    
-    return _clockArr;
-}
-
 @end

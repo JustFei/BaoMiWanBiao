@@ -13,6 +13,7 @@
 #import "BLETool.h"
 #import "manridyBleDevice.h"
 #import "manridyModel.h"
+#import "MBProgressHUD.h"
 
 @interface ClockContentView () <UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,BleReceiveDelegate>
 {
@@ -25,7 +26,7 @@
     NSInteger _mInt;
     
     NSInteger indexrow;
-    
+    MBProgressHUD *_hud;
 }
 
 @property (weak, nonatomic) UIImageView *headImageView;
@@ -47,6 +48,36 @@
 @end
 
 @implementation ClockContentView
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+        self.clockTableView.backgroundColor = [UIColor whiteColor];
+        
+        _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
+        if (_clockDataSource.count >=3) {
+            if (self.closeAddBlock) {
+                self.closeAddBlock();
+            }
+        }
+        
+        self.mybleTool = [BLETool shareInstance];
+        self.mybleTool.receiveDelegate = self;
+        
+        //如果当前有连接的设备，就寻找特征
+        if (self.mybleTool.currentDev.peripheral) {
+            //写入获取运动的信息
+            [self.mybleTool writeClockToPeripheral:ClockDataGetClock withModel:nil];
+            
+            _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+            _hud.mode = MBProgressHUDModeIndeterminate;
+            _hud.label.text = @"正在更新数据";
+        }
+    }
+    return self;
+}
 
 - (void)layoutSubviews
 {
@@ -74,19 +105,7 @@
     self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
     self.editTimePicker.frame = CGRectMake(0, 30, self.frame.size.width, self.editTimePickView.frame.size.height - 30);
     
-     _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
-    if (_clockDataSource.count >=3) {
-        self.closeAddBlock();
-    }
     
-    self.mybleTool = [BLETool shareInstance];
-    self.mybleTool.receiveDelegate = self;
-    
-    //如果当前有连接的设备，就寻找特征
-    if (self.mybleTool.currentDev.peripheral) {
-        //写入获取运动的信息
-        [self.mybleTool writeClockToPeripheral:ClockDataGetClock withModel:nil];
-    }
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
@@ -181,8 +200,28 @@
     if (manridyModel.isReciveDataRight) {
         if (manridyModel.receiveDataType == ReturnModelTypeClockModel) {
             
-            XXFLog(@"%@",manridyModel.clockModel.clockArr);
+            [_hud hideAnimated:YES];
             
+            NSMutableArray *indexPaths = [NSMutableArray array];
+            
+            for (int index = 0; index < _clockDataSource.count; index ++) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                [indexPaths addObject:indexPath];
+            }
+            
+            [_clockDataSource removeAllObjects];
+            [self.clockTableView deleteRowsAtIndexPaths:indexPaths  withRowAnimation:UITableViewRowAnimationFade];
+            [indexPaths removeAllObjects];
+            
+            XXFLog(@"%@",manridyModel.clockModelArr);
+            _clockDataSource = manridyModel.clockModelArr;
+            
+            for (int index = 0; index < _clockDataSource.count; index ++) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                [indexPaths addObject:indexPath];
+            }
+            
+            [self.clockTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         }
     }
 }

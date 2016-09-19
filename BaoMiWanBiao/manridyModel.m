@@ -64,13 +64,13 @@
     return _sleepModel;
 }
 
-- (ClockModel *)clockModel
+- (NSMutableArray *)clockModelArr
 {
-    if (!_clockModel) {
-        _clockModel = [[ClockModel alloc] init];
+    if (!_clockModelArr) {
+        _clockModelArr = [NSMutableArray array];
     }
     
-    return _clockModel;
+    return _clockModelArr;
 }
 
 @end
