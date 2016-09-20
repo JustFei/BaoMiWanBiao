@@ -290,4 +290,48 @@
     return model;
 }
 
+//经度
+union LON{
+    float v;
+    unsigned char c[4];
+    unsigned int i;
+}lon;
+
+//纬度
+union LAT{
+    float v;
+    unsigned char c[4];
+    unsigned int i;
+}lat;
+
+//解析GPS的数据（0D|8D）
++ (manridyModel *)analysisGPSData:(NSData *)data WithHeadStr:(NSString *)head
+{
+    manridyModel *model = [[manridyModel alloc] init];
+    //11,12,13,14
+    NSData *a = [data subdataWithRange:NSMakeRange(11, 4)];
+    NSData *c = [data subdataWithRange:NSMakeRange(15, 4)];
+    
+    int index = 0;
+    Byte *b = (Byte *)[a bytes];
+    Byte *d = (Byte *)[c bytes];
+    
+    lat.c[0]=b[index + 3];
+    lat.c[1]=b[index + 2];
+    lat.c[2]=b[index + 1];
+    lat.c[3]=b[index + 0];
+    printf("lat = %f %x\n",lat.v,lat.i);
+    
+    lon.c[0]=d[index + 3];
+    lon.c[1]=d[index + 2];
+    lon.c[2]=d[index + 1];
+    lon.c[3]=d[index + 0];
+    printf("lon = %f %x\n",lon.v,lon.i);
+    
+    model.gpsModel.lon = lon.v;
+    model.gpsModel.lat = lat.v;
+    
+    return model;
+}
+
 @end

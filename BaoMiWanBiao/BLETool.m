@@ -219,6 +219,16 @@ static BLETool *bleTool = nil;
         [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
     }
 }
+//get GPS data
+- (void)writeGPSToPeripheral
+{
+    NSString *protocolStr = [NSStringTool protocolAddInfo:nil head:@"05"];
+    
+    //写入操作
+    if (self.currentDev.peripheral) {
+        [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+    }
+}
 
 //set userInfo
 - (void)writeUserInfoToPeripheralWeight:(NSString *)weight andHeight:(NSString *)height
@@ -561,6 +571,12 @@ static BLETool *bleTool = nil;
                 [self.receiveDelegate receiveDataWithModel:model];
             }else {
                 [_fmTool saveSleepToDataBase:model];
+            }
+        }else if ([headStr isEqualToString:@"0d"] || [headStr isEqualToString:@"0D"] || [headStr isEqualToString:@"8d"] || [headStr isEqualToString:@"8D"]) {
+            //上报GPS数据
+            manridyModel *model = [AnalysisProcotolTool analysisGPSData:value WithHeadStr: headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
+                [self.receiveDelegate receiveDataWithModel:model];
             }
         }
     }

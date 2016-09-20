@@ -122,6 +122,9 @@ typedef enum{
 //set motionInfo zero
 - (void)writeMotionZeroToPeripheral;
 
+//get GPS data
+- (void)writeGPSToPeripheral;
+
 //set userInfo
 - (void)writeUserInfoToPeripheralWeight:(NSString *)weight andHeight:(NSString *)height;
 

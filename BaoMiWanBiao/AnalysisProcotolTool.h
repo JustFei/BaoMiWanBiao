@@ -39,4 +39,7 @@
 //解析睡眠的数据（0C|8C）
 + (manridyModel *)analysisSleepData:(NSData *)data WithHeadStr:(NSString *)head;
 
+//解析GPS的数据（0D|8D）
++ (manridyModel *)analysisGPSData:(NSData *)data WithHeadStr:(NSString *)head;
+
 @end

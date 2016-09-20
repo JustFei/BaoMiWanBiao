@@ -8,21 +8,30 @@
 
 #import "MotionLineViewController.h"
 #import <MapKit/MapKit.h>
+#import "BLETool.h"
 
-@interface MotionLineViewController () <MKMapViewDelegate>
-
+@interface MotionLineViewController () <MKMapViewDelegate, BleReceiveDelegate>
+{
+    CLLocationCoordinate2D _point[2];
+    CLLocationCoordinate2D _pointStart;
+    CLLocationCoordinate2D _pointEnd;
+}
 /**
  *  地图视图
  */
-@property (weak, nonatomic) MKMapView *mapView;
+@property (nonatomic, weak) MKMapView *mapView;
 
 /**
  *  划线
  */
-@property (strong, nonatomic) MKPolyline *myPolyline;
+@property (nonatomic, strong) MKPolyline *myPolyline;
 
 /** 位置数组 */
 @property (nonatomic, strong) NSMutableArray *locationArrayM;
+
+@property (nonatomic, strong) BLETool *mybleTool;
+
+
 
 @end
 
@@ -32,15 +41,25 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.mybleTool = [BLETool shareInstance];
+    self.mybleTool.receiveDelegate = self;
+    
+    [self.mybleTool writeGPSToPeripheral];
+    
+    //纬度：1102401032；经度：1122237700
+    //114.004556,22.666567
+    //22.6665300000,114.0045810000
+    //41b54e62 42e3fcdd
+    //651817898
+    //41b54d8a 42e3fd04
+    
     // 设置代理
     self.mapView.delegate = self;
     
     //自定义的一些地理位置信息
-    NSString *thePath = @"106.73293,10.79871|106.73229,10.79841|106.7318,10.79832|106.73164,10.79847|106.73156,10.7988|106.73106,10.79886|106.73057,10.79877|106.73002,10.79866|106.72959,10.79875|106.72935,10.7992|106.7293,10.79971|106.72925,10.80015|106.72942,10.80046|106.72981,10.80058|106.73037,10.8007|106.73067,10.80072|106.7311,10.80076|106.7315,10.80079|106.73194,10.80082|106.73237,10.80086|106.73265,10.80098|106.73269,10.80153|106.7327,10.80207|106.73257,10.80243|106.73718,10.79941|106.73445,10.79946|106.73144,10.79885|106.72987,10.8005|106.73192,10.79991|106.72383,10.79827|106.71543,10.80086|106.70957,10.80121|106.70507,10.79834|106.70121,10.79432|106.69603,10.79158|106.69322,10.78911|106.69196,10.78785|106.68768,10.78355|106.68539,10.7812|106.68336,10.7791|106.67048,10.78377|106.64864,10.78319|106.6499,10.77949|106.63697,10.77439|106.6447,10.77936|106.65804,10.76279|106.66792,10.76805|106.68191,10.77516|106.68336,10.77241|106.68319,10.77622|106.67482,10.78149|106.67095,10.78193|106.65217,10.78641|";
     
-    NSArray *array = [thePath componentsSeparatedByString:@"|"];
-    CLLocationCoordinate2D pointToUse[2];
     
+#if 0
     for (NSInteger i = 0; i < (array.count - 2); i++) {
         NSString *str = array[i];
         NSArray *temp = [str componentsSeparatedByString:@","];
@@ -60,6 +79,8 @@
         self.myPolyline = [MKPolyline polylineWithCoordinates:pointToUse count:2];
         [self.mapView addOverlay:self.myPolyline];
     }
+#endif
+    
     
 }
 
@@ -77,6 +98,25 @@
     return renderer;
 }
 
+#pragma mark - BleReceiveDelegate
+- (void)receiveDataWithModel:(manridyModel *)manridyModel
+{
+    if (!_pointStart.longitude && !_pointStart.latitude) {
+        _pointStart = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
+    }else {
+        _pointStart = _pointEnd;
+        _pointEnd = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
+    }
+    
+    _point[0] = _pointStart;
+    _point[1] = _pointEnd;
+    
+    self.myPolyline = [MKPolyline polylineWithCoordinates:_point count:2];
+    [self.mapView addOverlay:self.myPolyline];
+}
+
+
+#pragma mark - 懒加载
 - (MKMapView *)mapView
 {
     if (!_mapView) {

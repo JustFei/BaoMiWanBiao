@@ -168,6 +168,7 @@
 		3BEFB4741D4994C5003DABF7 /* sm4.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BEFB46E1D4994C5003DABF7 /* sm4.c */; };
 		3BEFB4751D4994C5003DABF7 /* sm4test.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BEFB4711D4994C5003DABF7 /* sm4test.c */; };
 		3BEFB4761D4994C5003DABF7 /* sms4.c in Sources */ = {isa = PBXBuildFile; fileRef = 3BEFB4731D4994C5003DABF7 /* sms4.c */; };
+		3BF13F831D913F730097C47C /* GPSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF13F821D913F730097C47C /* GPSModel.m */; };
 		3BF1731F1D46F20D008DF4DC /* MiBaoXiangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF1731E1D46F20D008DF4DC /* MiBaoXiangViewController.m */; };
 		3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F01D4C7CAB00637BEC /* PasswordNoteModel.m */; };
 		3BF367F41D4C7EC000637BEC /* XxfFmdbTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF367F31D4C7EC000637BEC /* XxfFmdbTool.m */; };
@@ -426,6 +427,8 @@
 		3BEFB4711D4994C5003DABF7 /* sm4test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sm4test.c; sourceTree = "<group>"; };
 		3BEFB4721D4994C5003DABF7 /* sms4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sms4.h; sourceTree = "<group>"; };
 		3BEFB4731D4994C5003DABF7 /* sms4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sms4.c; sourceTree = "<group>"; };
+		3BF13F811D913F730097C47C /* GPSModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPSModel.h; sourceTree = "<group>"; };
+		3BF13F821D913F730097C47C /* GPSModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPSModel.m; sourceTree = "<group>"; };
 		3BF1731D1D46F20D008DF4DC /* MiBaoXiangViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiBaoXiangViewController.h; sourceTree = "<group>"; };
 		3BF1731E1D46F20D008DF4DC /* MiBaoXiangViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiBaoXiangViewController.m; sourceTree = "<group>"; };
 		3BF367EF1D4C7CAB00637BEC /* PasswordNoteModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordNoteModel.h; sourceTree = "<group>"; };
@@ -736,6 +739,8 @@
 				3BAD15EF1D8E24B5007AE9B1 /* SleepModel.m */,
 				3BAD15F01D8E24B5007AE9B1 /* SportTargetModel.h */,
 				3BAD15F11D8E24B5007AE9B1 /* SportTargetModel.m */,
+				3BF13F811D913F730097C47C /* GPSModel.h */,
+				3BF13F821D913F730097C47C /* GPSModel.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1424,6 +1429,7 @@
 				3BF367F11D4C7CAB00637BEC /* PasswordNoteModel.m in Sources */,
 				3BAD15DE1D8E246E007AE9B1 /* NSStringTool.m in Sources */,
 				3BAD15DC1D8E246E007AE9B1 /* manridyBleDevice.m in Sources */,
+				3BF13F831D913F730097C47C /* GPSModel.m in Sources */,
 				3BDD65C41D45F5DC009EA15F /* RegistViewController.m in Sources */,
 				3B12AE3A1D6BFCF100C469EF /* ClockViewController.m in Sources */,
 				3B4335861D76661700AF2E8F /* UserInfoViewController.m in Sources */,

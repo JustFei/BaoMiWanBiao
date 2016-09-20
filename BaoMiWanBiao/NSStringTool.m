@@ -115,6 +115,7 @@
         NSString *protocolStr = timeStr;
         return protocolStr;
     }else if ([head isEqualToString:@"01"]) {
+        //--------------获取闹钟信息----------------
         
         NSString *protocolStr = [NSString stringWithFormat:@"FC%@%@",head,info];
         
@@ -157,6 +158,20 @@
         }
         
         NSString *protocolStr = motionZeroStr;
+        return protocolStr;
+    }else if ([head isEqualToString:@"05"]) {
+        //-----------------获取GPS数据---------
+        NSString *GPSStr = @"FC05";
+        
+        while (1) {
+            if (GPSStr.length < 40) {
+                GPSStr = [GPSStr stringByAppendingString:@"00"];
+            }else {
+                break;
+            }
+        }
+        
+        NSString *protocolStr = GPSStr;
         return protocolStr;
     }else if ([head isEqualToString:@"06"]) {
         //-----------------设置用户信息----------

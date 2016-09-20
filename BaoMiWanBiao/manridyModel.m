@@ -73,4 +73,13 @@
     return _clockModelArr;
 }
 
+- (GPSModel *)gpsModel
+{
+    if (!_gpsModel) {
+        _gpsModel = [[GPSModel alloc] init];
+    }
+    
+    return _gpsModel;
+}
+
 @end

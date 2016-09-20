@@ -14,6 +14,7 @@
 #import "SleepModel.h"
 #import "SportTargetModel.h"
 #import "ClockModel.h"
+#import "GPSModel.h"
 
 typedef enum : NSUInteger {
     ResponsEcorrectnessDataFail = 0,
@@ -69,6 +70,9 @@ typedef enum : NSUInteger {
 
 //闹钟数据模型
 @property (nonatomic ,strong) NSMutableArray *clockModelArr;
+
+//GPS的数据模型
+@property (nonatomic ,strong) GPSModel *gpsModel;
 
 @end
 
