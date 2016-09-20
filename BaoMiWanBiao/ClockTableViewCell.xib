@@ -16,7 +16,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23:23" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0x0-rD-TPb">
-                        <rect key="frame" x="8" y="11" width="46" height="21"/>
+                        <rect key="frame" x="28" y="11" width="46" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.17254901959999999" green="0.4823529412" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -39,13 +39,14 @@
                     <constraint firstItem="2h0-Uw-oX7" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="lhH-0V-H7N"/>
                     <constraint firstAttribute="bottomMargin" secondItem="2h0-Uw-oX7" secondAttribute="bottom" id="uG6-HZ-i2i"/>
                     <constraint firstItem="2h0-Uw-oX7" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="vvB-Yq-1GO"/>
-                    <constraint firstItem="0x0-rD-TPb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="yzo-wS-82E"/>
+                    <constraint firstItem="0x0-rD-TPb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="20" id="yzo-wS-82E"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="clockButton" destination="2h0-Uw-oX7" id="5dt-CW-vwi"/>
                 <outlet property="clockTime" destination="0x0-rD-TPb" id="ieE-Ns-4Fo"/>
             </connections>
+            <point key="canvasLocation" x="325" y="340"/>
         </tableViewCell>
     </objects>
     <resources>

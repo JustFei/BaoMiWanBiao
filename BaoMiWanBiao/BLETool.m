@@ -149,6 +149,44 @@ static BLETool *bleTool = nil;
 {
     if (state == ClockDataSetClock) {
         XXFLog(@"设置闹钟");
+        
+        NSString *clockStateStr = [[NSString alloc] init];
+        NSString *clockDataStr = [[NSString alloc] init];
+        
+        for (int index = 0; index < 5; index ++) {
+            
+            if (index < model.clockModelArr.count) {
+                ClockModel *clockModel = model.clockModelArr[index];
+                NSString *state;
+                if (clockModel.isOpen) {
+                    state = @"01";
+                }else {
+                    state = @"02";
+                }
+                
+                NSString *clock = [clockModel.time stringByReplacingOccurrencesOfString:@":" withString:@""];
+                
+                clockStateStr = [clockStateStr stringByAppendingString:state];
+                clockDataStr = [clockDataStr stringByAppendingString:clock];
+            }else {
+                clockStateStr = [clockStateStr stringByAppendingString:@"00"];
+                clockDataStr = [clockDataStr stringByAppendingString:@"0000"];
+            }
+        }
+        
+        clockStateStr = [clockStateStr stringByAppendingString:clockDataStr];
+        
+        XXFLog(@"设置闹钟的协议文本部分%@, 长度为%ld",clockStateStr ,clockStateStr.length);
+        
+        //传入时间和头，返回协议字符串
+        NSString *protocolStr = [NSString stringWithFormat:@"FC0100%@0000",clockStateStr];
+        
+        //写入操作
+        if (self.currentDev.peripheral) {
+            [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+        }
+        
+        
     }else {
         //传入时间和头，返回协议字符串
         NSString *protocolStr = [NSStringTool protocolAddInfo:@"01" head:@"01"];

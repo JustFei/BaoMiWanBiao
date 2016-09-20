@@ -120,16 +120,23 @@ static FMDatabase *_fmdb;
     return result;
 }
 
+//删除数据
 - (BOOL)deleteData:(NSInteger )deleteSql
 {
-    NSString *deleteSqlStr = [NSString stringWithFormat:@"DELETE FROM ClockData WHERE id = ?"];
+    BOOL result;
     
-    BOOL result = [_fmdb executeUpdate:deleteSqlStr,[NSNumber numberWithInteger:deleteSql]];
-    
-    if (result) {
-        XXFLog(@"删除成功");
+    if (deleteSql == 4) {
+        result =  [_fmdb executeUpdate:@"DELETE FROM ClockData"];
     }else {
-        XXFLog(@"删除失败");
+        NSString *deleteSqlStr = [NSString stringWithFormat:@"DELETE FROM ClockData WHERE id = ?"];
+        
+        result = [_fmdb executeUpdate:deleteSqlStr,[NSNumber numberWithInteger:deleteSql]];
+        
+        if (result) {
+            XXFLog(@"删除成功");
+        }else {
+            XXFLog(@"删除失败");
+        }
     }
     
     return result;

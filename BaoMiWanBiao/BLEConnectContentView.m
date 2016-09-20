@@ -21,7 +21,7 @@ typedef enum{
     ScanStateNull   ,
 }ScanState;
 
-@interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, BleConnectDelegate, BleDiscoverDelegate>
+@interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, BleConnectDelegate, BleDiscoverDelegate, BleReceiveDelegate>
 {
     BOOL _blueToothOpen;
     UIButton *_switchButton;
@@ -45,6 +45,7 @@ typedef enum{
     
     [BLETool shareInstance].connectDelegate = self;
     [BLETool shareInstance].discoverDelegate = self;
+    [BLETool shareInstance].receiveDelegate = self;
 }
 
 #pragma mark - UITableViewDelegate && UITableDataSource
@@ -220,11 +221,7 @@ typedef enum{
 {
     [BLETool shareInstance].currentDev = device;
     
-    //显示等待菊花
-    [MBProgressHUD hideHUDForView:self animated:YES];
-    UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",device.deviceName] delegate:self cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
-    view.tag = 102;
-    [view show];
+    [[BLETool shareInstance] writeTimeToPeripheral:[NSDate date]];
 }
 
 - (void)manridyBLEDidDisconnectDevice:(manridyBleDevice *)device
@@ -233,6 +230,21 @@ typedef enum{
     [BLETool shareInstance].currentDev = nil;
     
     [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleConnectState"];
+}
+
+#pragma mark -BleReceiveDelegate
+- (void)receiveDataWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
+        if (manridyModel.receiveDataType == ReturnModelTypeSetTimeModel) {
+            
+            //隐藏等待菊花
+            [MBProgressHUD hideHUDForView:self animated:YES];
+            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",[BLETool shareInstance].currentDev.deviceName] delegate:self cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
+            view.tag = 102;
+            [view show];
+        }
+    }
 }
 
 #pragma mark - 懒加载

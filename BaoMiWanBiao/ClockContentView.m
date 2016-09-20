@@ -14,6 +14,7 @@
 #import "manridyBleDevice.h"
 #import "manridyModel.h"
 #import "MBProgressHUD.h"
+#import "NSStringTool.h"
 
 @interface ClockContentView () <UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,BleReceiveDelegate>
 {
@@ -96,7 +97,7 @@
     self.headImageView.frame = CGRectMake(self.center.x - 52.5, 131, 105, 105);
     self.headImageView.image = [UIImage imageNamed:@"clock"];
     
-    self.clockTableView.frame = CGRectMake(0, 294, self.frame.size.width, self.frame.size.height - 230);
+    self.clockTableView.frame = CGRectMake(0, 231, self.frame.size.width, self.frame.size.height - 230);
     self.clockTableView.backgroundColor = [UIColor whiteColor];
     
     self.addTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
@@ -105,7 +106,9 @@
     self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
     self.editTimePicker.frame = CGRectMake(0, 30, self.frame.size.width, self.editTimePickView.frame.size.height - 30);
     
-    
+    XXFLog(@"%@",NSStringFromCGRect(self.clockTableView.frame));
+    //{{0, 294}, {320, 338}}
+    //{{0, 294}, {320, 338}}
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
@@ -128,10 +131,23 @@
     
     cell.modifyOpenButtonBlock = ^void(BOOL isOpen)
     {
-        ClockModel *model = _clockDataSource[indexPath.row];
-
+        
         model.isOpen = isOpen;
-        [self.fmTool modifyData:model.ID model:model];
+        [_clockDataSource replaceObjectAtIndex:indexPath.row withObject:model];
+        
+        manridyModel *manridymodel = [[manridyModel alloc] init];
+        manridymodel.clockModelArr = _clockDataSource;
+        
+        //如果当前有连接的设备，就寻找特征
+        if (self.mybleTool.currentDev.peripheral) {
+            //做推送到腕表的操作
+            [self.mybleTool writeClockToPeripheral:ClockDataSetClock withModel:manridymodel];
+            
+            _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+            //        _hud.mode = MBProgressHUDModeIndeterminate;
+            _hud.label.text = @"正在同步到腕表";
+        }
+        
     };
     
     return cell;
@@ -140,7 +156,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ClockModel *model = _clockDataSource[indexPath.row];
-    indexrow = model.ID;
+    indexrow = indexPath.row;
     NSString *timeStr = model.time;
     
     _hInt = [[timeStr substringToIndex:2] integerValue];
@@ -185,11 +201,25 @@
             
             [_clockDataSource removeObjectAtIndex:indexPath.row];//移除数据源的数据
             
+            
+            
             if (_clockDataSource.count <3) {
                 self.openAddBlock();
             }
             
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];//移除tableView中的数据
+            manridyModel *manridymodel = [[manridyModel alloc] init];
+            manridymodel.clockModelArr = _clockDataSource;
+            
+            //如果当前有连接的设备，就寻找特征
+            if (self.mybleTool.currentDev.peripheral) {
+                //做推送到腕表的操作
+                [self.mybleTool writeClockToPeripheral:ClockDataSetClock withModel:manridymodel];
+                
+                _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+                //        _hud.mode = MBProgressHUDModeIndeterminate;
+                _hud.label.text = @"正在同步到腕表";
+            }
         }
     }
 }
@@ -200,6 +230,7 @@
     if (manridyModel.isReciveDataRight) {
         if (manridyModel.receiveDataType == ReturnModelTypeClockModel) {
             
+            [_fmTool deleteData:4];
             [_hud hideAnimated:YES];
             
             NSMutableArray *indexPaths = [NSMutableArray array];
@@ -219,9 +250,16 @@
             for (int index = 0; index < _clockDataSource.count; index ++) {
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [indexPaths addObject:indexPath];
+                
+                ClockModel *model = _clockDataSource[index];
+                [self.fmTool insertModel:model];
             }
             
             [self.clockTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+            
+            if (_clockDataSource.count >= 3) {
+                self.closeAddBlock();
+            }
         }
     }
 }
@@ -283,9 +321,26 @@
     self.clockModel.isOpen = YES;
     
     //根据id修改当前的cell的数据
-    [self.fmTool modifyData:indexrow model:self.clockModel];
+//    [self.fmTool modifyData:indexrow model:self.clockModel];
+//    _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
+    [_clockDataSource replaceObjectAtIndex:indexrow withObject:self.clockModel];
     
-    _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
+    manridyModel *model = [[manridyModel alloc] init];
+    model.clockModelArr = _clockDataSource;
+    
+    
+    //如果当前有连接的设备，就寻找特征
+    if (self.mybleTool.currentDev.peripheral) {
+        //做推送到腕表的操作
+        [self.mybleTool writeClockToPeripheral:ClockDataSetClock withModel:model];
+        
+        _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+//        _hud.mode = MBProgressHUDModeIndeterminate;
+        _hud.label.text = @"正在同步到腕表";
+    }
+    
+    
+    
     
     [UIView animateWithDuration:0.2 animations:^{
         self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
@@ -309,8 +364,21 @@
     self.clockModel.time = timeStr;
     self.clockModel.isOpen = YES;
     [self.fmTool insertModel:self.clockModel];
+    [_clockDataSource addObject:self.clockModel];
     
-    _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
+    
+    manridyModel *model = [[manridyModel alloc] init];
+    model.clockModelArr = _clockDataSource;
+    
+    //如果当前有连接的设备，就寻找特征
+    if (self.mybleTool.currentDev.peripheral) {
+        //做推送到腕表的操作
+        [self.mybleTool writeClockToPeripheral:ClockDataSetClock withModel:model];
+        
+        _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+        //        _hud.mode = MBProgressHUDModeIndeterminate;
+        _hud.label.text = @"正在同步到腕表";
+    }
     
     if (_clockDataSource.count >= 3) {
         self.closeAddBlock();
