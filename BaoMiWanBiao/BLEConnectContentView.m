@@ -233,7 +233,7 @@ typedef enum{
 }
 
 #pragma mark -BleReceiveDelegate
-- (void)receiveDataWithModel:(manridyModel *)manridyModel
+- (void)receiveSetTimeDataWithModel:(manridyModel *)manridyModel
 {
     if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
         if (manridyModel.receiveDataType == ReturnModelTypeSetTimeModel) {

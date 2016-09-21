@@ -37,7 +37,7 @@
     }else{
         selectPhotoNames=[[NSMutableArray alloc] init];
         for (ALAsset *asset in self.selectPhotos ) {
-            //XXFLog(@"%@",[asset valueForProperty:ALAssetPropertyAssetURL]);
+            //DeBugLog(@"%@",[asset valueForProperty:ALAssetPropertyAssetURL]);
             [selectPhotoNames addObject:[asset valueForProperty:ALAssetPropertyAssetURL]];
         }
         self.lbAlert.text=[NSString stringWithFormat:@"已经选择%ld张照片",(unsigned long)self.selectPhotos.count];
@@ -61,7 +61,7 @@
         }
         else
         {
-            XXFLog(@"读取相册完毕");
+            DeBugLog(@"读取相册完毕");
             //[self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
         }
     };
@@ -84,7 +84,7 @@
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:album];
     album.delegate=self;
     [self.navigationController presentViewController:nvc animated:YES completion:^(void){
-        XXFLog(@"开始");
+        DeBugLog(@"开始");
     }];
     // [self.navigationController pushViewController:album animated:YES];
     //    [self.navigationController popToRootViewControllerAnimated:YES];
@@ -139,7 +139,7 @@
         [cell.btnSelect setHidden:YES];
         ALAsset *asset=self.photos[indexPath.row];
         for (ALAsset *a in self.selectPhotos) {
-            XXFLog(@"%@-----%@",[asset valueForProperty:ALAssetPropertyAssetURL],[a valueForProperty:ALAssetPropertyAssetURL]);
+            DeBugLog(@"%@-----%@",[asset valueForProperty:ALAssetPropertyAssetURL],[a valueForProperty:ALAssetPropertyAssetURL]);
             NSString *str1=[asset valueForProperty:ALAssetPropertyAssetURL];
             NSString *str2=[a valueForProperty:ALAssetPropertyAssetURL];
             if([str1 isEqual:str2])

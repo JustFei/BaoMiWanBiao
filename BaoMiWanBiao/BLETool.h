@@ -70,6 +70,37 @@ typedef enum{
  */
 - (void)receiveDataWithModel:(manridyModel *)manridyModel;
 
+//不同数据类型的回调
+//set time
+- (void)receiveSetTimeDataWithModel:(manridyModel *)manridyModel;
+
+//set clock
+- (void)receiveSetClockDataWithModel:(manridyModel *)manridyModel;
+
+//motion data
+- (void)receiveMotionDataWithModel:(manridyModel *)manridyModel;
+
+//motion zero
+- (void)receiveSetMotionZeroWithModel:(manridyModel *)manridyModel;
+
+//GPS data
+- (void)receiveGPSWithModel:(manridyModel *)manridyModel;
+
+//user info
+- (void)receiveUserInfoWithModel:(manridyModel *)manridyModel;
+
+//set motion target
+- (void)receiveMotionTargetWithModel:(manridyModel *)manridyModel;
+
+//set heart rate test state
+- (void)receiveHeartRateTestWithModel:(manridyModel *)manridyModel;
+
+//get heart rate data
+- (void)receiveHeartRateDataWithModel:(manridyModel *)manridyModel;
+
+//get sleepInfo
+- (void)receiveSleepInfoWithModel:(manridyModel *)manridyModel;
+
 @end
 
 @interface BLETool : NSObject

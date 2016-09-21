@@ -117,7 +117,7 @@
     
     NSString *todayString = [formatter stringFromDate:todayDate];
     
-    XXFLog(@"todayString == %@",todayString);
+    DeBugLog(@"todayString == %@",todayString);
     
     [self searchFromDataBaseWithDate:todayString];
 }
@@ -133,7 +133,7 @@
     
     NSString *  locationString=[dateformatter stringFromDate:self.senddate];
     
-    XXFLog(@"locationString:%@",locationString);
+    DeBugLog(@"locationString:%@",locationString);
     
     return locationString;
 }
@@ -205,7 +205,7 @@
 }
 
 #pragma mark - BleReceiveDelegate
-- (void)receiveDataWithModel:(manridyModel *)manridyModel
+- (void)receiveSleepInfoWithModel:(manridyModel *)manridyModel
 {
     if (manridyModel.isReciveDataRight) {
         if (manridyModel.receiveDataType == ReturnModelTypeSleepModel) {
@@ -236,7 +236,7 @@
 {
     NSArray *dateArr = [self.fmTool queryDate:dateStr];
     
-    XXFLog(@"%ld",(unsigned long)dateArr.count);
+    DeBugLog(@"%ld",(unsigned long)dateArr.count);
     if (dateArr.count != 0 ) {
         self.SleepModel = dateArr.firstObject;
         
@@ -244,7 +244,7 @@
         self.fallSleepTimeLabel.text = self.SleepModel.deepSleepTime;
         self.shallowSleepTimeLabel.text = self.SleepModel.lowSleepTime;
     }else {
-        XXFLog(@"这天没有数据");
+        DeBugLog(@"这天没有数据");
         self.sleepTimeSumLabel.text = @"0";
         self.fallSleepTimeLabel.text = @"0";
         self.shallowSleepTimeLabel.text = @"0";

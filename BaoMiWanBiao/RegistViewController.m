@@ -98,16 +98,16 @@
     int pwdStrong = [self validatePassword];
     switch (pwdStrong) {
         case 1:
-            XXFLog(@"弱");
+            DeBugLog(@"弱");
             break;
         case 2:
-            XXFLog(@"中");
+            DeBugLog(@"中");
             break;
         case 3:
-            XXFLog(@"中强");
+            DeBugLog(@"中强");
             break;
         case 4:
-            XXFLog(@"强");
+            DeBugLog(@"强");
             
         default:
             break;
@@ -135,7 +135,7 @@
         //添加playerName不是小明的约束条件
         [bquery whereKey:@"phone" equalTo:self.phoneNumberTextField.text];
         [bquery countObjectsInBackgroundWithBlock:^(int number,NSError  *error){
-            XXFLog(@"%d",number);
+            DeBugLog(@"%d",number);
             
             //如果存在，提示换号码
             if (number > 0) {
@@ -152,7 +152,7 @@
                 //请求验证码
                 [BmobSMS requestSMSCodeInBackgroundWithPhoneNumber:self.phoneNumberTextField.text andTemplate:@"密保宝" resultBlock:^(int number, NSError *error) {
                     if (error) {
-                        XXFLog(@"%@",error);
+                        DeBugLog(@"%@",error);
                         UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码发送失败，请检查当前网络状态" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                         [view show];
                         
@@ -160,7 +160,7 @@
                         [MBProgressHUD hideHUDForView:self.view animated:YES];
                     } else {
                         //获得smsID
-                        XXFLog(@"sms ID：%d",number);
+                        DeBugLog(@"sms ID：%d",number);
                         UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码已发送，请注意查收" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
                         [view show];
                         
@@ -185,7 +185,7 @@
         //验证
         [BmobSMS verifySMSCodeInBackgroundWithPhoneNumber:self.phoneNumberTextField.text andSMSCode:self.safeCodeTextField.text resultBlock:^(BOOL isSuccessful, NSError *error) {
             if (isSuccessful) {
-                XXFLog(@"%@",@"验证成功，可执行用户请求的操作");
+                DeBugLog(@"%@",@"验证成功，可执行用户请求的操作");
                 //验证码验证成功后，停止定时器
                 [self releaseTImer];
                 
@@ -200,7 +200,7 @@
                 vc.userModel = model;
                 [self.navigationController pushViewController:vc animated:YES];
             } else {
-                XXFLog(@"%@",error);
+                DeBugLog(@"%@",error);
                 UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码输入错误，请重新输入。" delegate:self cancelButtonTitle:@"重新输入" otherButtonTitles:nil, nil];
                 [view show];
                 //隐藏等待菊花

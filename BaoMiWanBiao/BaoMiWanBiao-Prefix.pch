@@ -17,7 +17,7 @@
 #import "XXFConstants.h"
 
 #ifdef DEBUG
-#define XXFLog(...) NSLog(__VA_ARGS__)
+#define DeBugLog(...) NSLog(__VA_ARGS__)
 #else
-#define XXFLog(...)
+#define DeBugLog(...)
 #endif

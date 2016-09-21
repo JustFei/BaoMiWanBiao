@@ -21,11 +21,11 @@
     
     if ([head isEqualToString:@"00"]) {
         NSData *timeData = [data subdataWithRange:NSMakeRange(1, 7)];
-        NSString *timeStr = [NSStringTool ConvertToNSStringWithNSData:timeData];
+        NSString *timeStr = [NSStringTool convertToNSStringWithNSData:timeData];
         model.setTimeModel.time = timeStr;
         model.isReciveDataRight = ResponsEcorrectnessDataRgith;
         
-        //        XXFLog(@"设定了时间为：%@\n%@",timeStr,model.setTimeModel.time);
+        //        DeBugLog(@"设定了时间为：%@\n%@",timeStr,model.setTimeModel.time);
     }else if ([head isEqualToString:@"80"]) {
         model.isReciveDataRight = ResponsEcorrectnessDataFail;
     }
@@ -47,7 +47,7 @@
             NSString *clock = [NSString stringWithFormat:@"%02x", hexBytes[index + 1]];
             if ([clock isEqualToString:@"01"] || [clock isEqualToString:@"02"]) {
                 NSData *timeData = [data subdataWithRange:NSMakeRange(5 + index * 2, 2)];
-                NSString *timeStr = [NSStringTool ConvertToNSStringWithNSData:timeData];
+                NSString *timeStr = [NSStringTool convertToNSStringWithNSData:timeData];
                 NSMutableString *mutTimeStr = [NSMutableString stringWithString:timeStr];
                 [mutTimeStr insertString:@":" atIndex:2];
                 
@@ -63,7 +63,7 @@
                 [model.clockModelArr addObject:clockModel];
             }
         }
-        XXFLog(@"闹钟的数据为 == %@",model.clockModelArr);
+        DeBugLog(@"闹钟的数据为 == %@",model.clockModelArr);
         model.isReciveDataRight = ResponsEcorrectnessDataRgith;
     }else if ([head isEqualToString:@"81"]) {
         model.isReciveDataRight = ResponsEcorrectnessDataFail;
@@ -81,17 +81,17 @@
     if ([head isEqualToString:@"03"]) {
         NSData *stepData = [data subdataWithRange:NSMakeRange(2, 3)];
         int stepValue = [NSStringTool parseIntFromData:stepData];
-        //        XXFLog(@"今日步数 = %d",stepValue);
+        //        DeBugLog(@"今日步数 = %d",stepValue);
         NSString *stepStr = [NSString stringWithFormat:@"%d",stepValue];
         
         NSData *mileageData = [data subdataWithRange:NSMakeRange(5, 3)];
         int mileageValue = [NSStringTool parseIntFromData:mileageData];
-        //        XXFLog(@"今日里程数 = %d",mileageValue);
+        //        DeBugLog(@"今日里程数 = %d",mileageValue);
         NSString *mileageStr = [NSString stringWithFormat:@"%d",mileageValue];
         
         NSData *kcalData = [data subdataWithRange:NSMakeRange(8, 3)];
         int kcalValue = [NSStringTool parseIntFromData:kcalData];
-        //        XXFLog(@"卡路里 = %d",kcalValue);
+        //        DeBugLog(@"卡路里 = %d",kcalValue);
         NSString *kCalStr = [NSString stringWithFormat:@"%d",kcalValue];
         
         model.sportModel.stepNumber = stepStr;
@@ -119,6 +119,63 @@
     }else if ([head isEqualToString:@"84"]) {
         model.isReciveDataRight = ResponsEcorrectnessDataFail;
         model.sportZero = SportZeroFail;
+    }
+    
+    return model;
+}
+
+//解析获取GPS历史的数据（05|85）
++ (manridyModel *)analysisHistoryGPSData:(NSData *)data WithHeadStr:(NSString *)head
+{
+    manridyModel *model = [[manridyModel alloc] init];
+    model.receiveDataType = ReturnModelTypeGPSModel;
+    
+    if ([head isEqualToString:@"05"]) {
+        model.isReciveDataRight = ResponsEcorrectnessDataRgith;
+        
+        //解析经纬度数据:11,12,13,14|15,16,17,18
+        NSData *a = [data subdataWithRange:NSMakeRange(11, 4)];
+        NSData *c = [data subdataWithRange:NSMakeRange(15, 4)];
+        int index = 0;
+        Byte *b = (Byte *)[a bytes];
+        Byte *d = (Byte *)[c bytes];
+        lat.c[0]=b[index + 3];
+        lat.c[1]=b[index + 2];
+        lat.c[2]=b[index + 1];
+        lat.c[3]=b[index + 0];
+        DeBugLog(@"lat = %f %x\n",lat.v,lat.i);
+        lon.c[0]=d[index + 3];
+        lon.c[1]=d[index + 2];
+        lon.c[2]=d[index + 1];
+        lon.c[3]=d[index + 0];
+        DeBugLog(@"lon = %f %x\n",lon.v,lon.i);
+        model.gpsDailyModel.lon = lon.v;
+        model.gpsDailyModel.lat = lat.v;
+        
+        //解析当前包和总包数:1,2|3,4
+        NSData *current = [data subdataWithRange:NSMakeRange(1, 2)];
+        NSData *sum = [data subdataWithRange:NSMakeRange(3, 2)];
+        NSInteger currentPackage = [NSStringTool parseIntFromData:current];
+        NSInteger sumPackage = [NSStringTool parseIntFromData:sum];
+        model.gpsDailyModel.currentPackage = currentPackage;
+        model.gpsDailyModel.sumPackage = sumPackage;
+        
+        //解析gps时间数据:6,7,8,9,10 和日期数据
+        NSString *MMTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(6, 1)]];
+        NSString *DDTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(7, 1)]];
+        NSString *hhTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(8, 1)]];
+        NSString *mmTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(9, 1)]];
+        NSString *ssTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(10, 1)]];
+        model.gpsDailyModel.gpsTime = [NSString stringWithFormat:@"%@/%@ %@:%@:%@",MMTime ,DDTime ,hhTime ,mmTime ,ssTime];
+        model.gpsDailyModel.dayTime = [NSString stringWithFormat:@"%@/%@",MMTime ,DDTime];
+        
+        //解析当前位置的状态:5
+        NSInteger locationState = [NSStringTool parseIntFromData:[data subdataWithRange:NSMakeRange(5, 1)]];
+        model.gpsDailyModel.locationState = locationState;
+        
+        //还有个经纬度方向的数据没有解析，暂时没想到怎么解析
+    }else {
+        model.isReciveDataRight = ResponsEcorrectnessDataFail;
     }
     
     return model;
@@ -304,9 +361,62 @@ union LAT{
     unsigned int i;
 }lat;
 
-//解析GPS的数据（0D|8D）
+//解析自动上报GPS的数据（0D|8D）
 + (manridyModel *)analysisGPSData:(NSData *)data WithHeadStr:(NSString *)head
 {
+    manridyModel *model = [[manridyModel alloc] init];
+    model.receiveDataType = ReturnModelTypeGPSModel;
+    
+    if ([head isEqualToString:@"0d"] || [head isEqualToString:@"0D"]) {
+        model.isReciveDataRight = ResponsEcorrectnessDataRgith;
+        
+        //解析经纬度数据:11,12,13,14|15,16,17,18
+        NSData *a = [data subdataWithRange:NSMakeRange(11, 4)];
+        NSData *c = [data subdataWithRange:NSMakeRange(15, 4)];
+        int index = 0;
+        Byte *b = (Byte *)[a bytes];
+        Byte *d = (Byte *)[c bytes];
+        lat.c[0]=b[index + 3];
+        lat.c[1]=b[index + 2];
+        lat.c[2]=b[index + 1];
+        lat.c[3]=b[index + 0];
+        DeBugLog(@"lat = %f %x\n",lat.v,lat.i);
+        lon.c[0]=d[index + 3];
+        lon.c[1]=d[index + 2];
+        lon.c[2]=d[index + 1];
+        lon.c[3]=d[index + 0];
+        DeBugLog(@"lon = %f %x\n",lon.v,lon.i);
+        model.gpsDailyModel.lon = lon.v;
+        model.gpsDailyModel.lat = lat.v;
+        
+        //解析当前包和总包数:1,2|3,4
+//        NSData *current = [data subdataWithRange:NSMakeRange(1, 2)];
+//        NSData *sum = [data subdataWithRange:NSMakeRange(3, 2)];
+//        NSInteger currentPackage = [NSStringTool parseIntFromData:current];
+//        NSInteger sumPackage = [NSStringTool parseIntFromData:sum];
+//        model.gpsDailyModel.currentPackage = currentPackage;
+//        model.gpsDailyModel.sumPackage = sumPackage;
+        
+        //解析gps时间数据:6,7,8,9,10 和日期数据
+        NSString *MMTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(6, 1)]];
+        NSString *DDTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(7, 1)]];
+        NSString *hhTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(8, 1)]];
+        NSString *mmTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(9, 1)]];
+        NSString *ssTime = [NSStringTool convertToNSStringWithNSData:[data subdataWithRange:NSMakeRange(10, 1)]];
+        model.gpsDailyModel.gpsTime = [NSString stringWithFormat:@"%@/%@ %@:%@:%@",MMTime ,DDTime ,hhTime ,mmTime ,ssTime];
+        model.gpsDailyModel.dayTime = [NSString stringWithFormat:@"%@/%@",MMTime ,DDTime];
+        
+        //解析当前位置的状态:5
+        NSInteger locationState = [NSStringTool parseIntFromData:[data subdataWithRange:NSMakeRange(5, 1)]];
+        model.gpsDailyModel.locationState = locationState;
+        
+        //还有个经纬度方向的数据没有解析，暂时没想到怎么解析
+    }else {
+        model.isReciveDataRight = ResponsEcorrectnessDataFail;
+    }
+    
+#if 0
+    
     manridyModel *model = [[manridyModel alloc] init];
     //11,12,13,14
     NSData *a = [data subdataWithRange:NSMakeRange(11, 4)];
@@ -330,6 +440,7 @@ union LAT{
     
     model.gpsModel.lon = lon.v;
     model.gpsModel.lat = lat.v;
+#endif
     
     return model;
 }

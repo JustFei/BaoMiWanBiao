@@ -264,12 +264,12 @@
     _lowsleepArr = [NSMutableArray array];
     
     for (NSString *dateStr in weekDateArr) {
-        XXFLog(@"%@",dateStr);//08/22(不符合我们存储的2016-08-22的日期格式，所以查询不到数据，此处做剪切)
+        DeBugLog(@"%@",dateStr);//08/22(不符合我们存储的2016-08-22的日期格式，所以查询不到数据，此处做剪切)
         
         
         NSArray *dateArr = [self.fmTool queryDate:dateStr];
         
-        XXFLog(@"%ld",(unsigned long)dateArr.count);
+        DeBugLog(@"%ld",(unsigned long)dateArr.count);
         if (dateArr) {
             SleepDailyDataModel *model = dateArr.firstObject;
             
@@ -285,7 +285,7 @@
                 [_lowsleepArr addObject:@"00h00min"];
             }
         }else {
-            XXFLog(@"这天没有数据");
+            DeBugLog(@"这天没有数据");
         }
     }
 }
@@ -294,7 +294,7 @@
 {
     NSString *sumhStr = [hmFormatterString substringToIndex:2];
     NSString *summStr = [hmFormatterString substringWithRange:NSMakeRange(3, 2)];
-    //XXFLog(@"h == %@,m == %@",hStr ,mStr);
+    //DeBugLog(@"h == %@,m == %@",hStr ,mStr);
     NSString *min =[NSString stringWithFormat:@"%ld", [sumhStr integerValue] * 60 + [summStr integerValue]];
     return min;
     

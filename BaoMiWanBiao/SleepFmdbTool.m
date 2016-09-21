@@ -34,10 +34,10 @@ static FMDatabase *_fmdb;
         _fmdb = [FMDatabase databaseWithPath:filepath];
         _username = path;
         
-        XXFLog(@"运动信息数据库路径 == %@", filepath);
+        DeBugLog(@"运动信息数据库路径 == %@", filepath);
         
         if ([_fmdb open]) {
-            XXFLog(@"数据库打开成功");
+            DeBugLog(@"数据库打开成功");
         }
         
         //创建表
@@ -60,9 +60,9 @@ static FMDatabase *_fmdb;
     
     BOOL result = [_fmdb executeUpdate:insertSql];
     if (result) {
-        XXFLog(@"插入数据成功");
+        DeBugLog(@"插入数据成功");
     }else {
-        XXFLog(@"插入数据失败");
+        DeBugLog(@"插入数据失败");
     }
     return result;
 }
@@ -101,12 +101,12 @@ static FMDatabase *_fmdb;
         model.deepSleepTime = deepsleep;
         model.lowSleepTime = lowsleep;
         
-        XXFLog(@"%@的数据：总睡眠时间=%@，深度睡眠时间=%@，浅睡眠时间=%@",querySql ,sumsleep ,deepsleep ,lowsleep );
+        DeBugLog(@"%@的数据：总睡眠时间=%@，深度睡眠时间=%@，浅睡眠时间=%@",querySql ,sumsleep ,deepsleep ,lowsleep );
         
         [arrM addObject:model];
     }
     
-    XXFLog(@"查询成功");
+    DeBugLog(@"查询成功");
     return arrM;
 }
 
@@ -121,7 +121,7 @@ static FMDatabase *_fmdb;
 - (BOOL)modifyData:(NSString *)modifySqlDate model:(SleepDailyDataModel *)modifySqlModel
 {
     if (modifySqlDate == nil) {
-        XXFLog(@"传入的日期为空，不能修改");
+        DeBugLog(@"传入的日期为空，不能修改");
         
         return NO;
     }

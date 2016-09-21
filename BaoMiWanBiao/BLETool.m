@@ -148,7 +148,7 @@ static BLETool *bleTool = nil;
 - (void)writeClockToPeripheral:(ClockData)state withModel:(manridyModel *)model
 {
     if (state == ClockDataSetClock) {
-        XXFLog(@"设置闹钟");
+        DeBugLog(@"设置闹钟");
         
         NSString *clockStateStr = [[NSString alloc] init];
         NSString *clockDataStr = [[NSString alloc] init];
@@ -176,7 +176,7 @@ static BLETool *bleTool = nil;
         
         clockStateStr = [clockStateStr stringByAppendingString:clockDataStr];
         
-        XXFLog(@"设置闹钟的协议文本部分%@, 长度为%ld",clockStateStr ,clockStateStr.length);
+        DeBugLog(@"设置闹钟的协议文本部分%@, 长度为%ld",clockStateStr ,clockStateStr.length);
         
         //传入时间和头，返回协议字符串
         NSString *protocolStr = [NSString stringWithFormat:@"FC0100%@0000",clockStateStr];
@@ -346,17 +346,17 @@ static BLETool *bleTool = nil;
 {
     if (central.state == CBCentralManagerStatePoweredOn) {
         //            [SVProgressHUD showInfoWithStatus:@"设备打开成功，开始扫描设备"];
-//        XXFLog(@"蓝牙已打开");
+//        DeBugLog(@"蓝牙已打开");
         [_myCentralManager scanForPeripheralsWithServices:nil options:nil];
     }else {
-//        XXFLog(@"蓝牙已关闭");
+//        DeBugLog(@"蓝牙已关闭");
     }
 }
 
 //查找到正在广播的指定外设
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
-//    XXFLog(@"Discovered %@", peripheral.name);
+//    DeBugLog(@"Discovered %@", peripheral.name);
     //...
     //当你发现你感兴趣的连接外围设备，停止扫描其他设备，以节省电能。
     if (![peripheral.name isEqualToString:@""]) {
@@ -378,7 +378,7 @@ static BLETool *bleTool = nil;
 //连接成功
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
-//    XXFLog(@"Peripheral connected");
+//    DeBugLog(@"Peripheral connected");
     
     peripheral.delegate = self;
     //传入nil会返回所有服务;一般会传入你想要服务的UUID所组成的数组,就会返回指定的服务
@@ -388,7 +388,7 @@ static BLETool *bleTool = nil;
 //连接失败
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
-//    XXFLog(@"连接失败");
+//    DeBugLog(@"连接失败");
     
     if ([self.connectDelegate respondsToSelector:@selector(manridyBLEDidFailConnectDevice:)]) {
         [self.connectDelegate manridyBLEDidFailConnectDevice:self.currentDev];
@@ -410,12 +410,12 @@ static BLETool *bleTool = nil;
         if (isReconnect) {
             [self.myCentralManager connectPeripheral:self.currentDev.peripheral options:nil];
         }else {
-//            XXFLog(@"不需要断线重连");
+//            DeBugLog(@"不需要断线重连");
         }
         
     }else {
         if (!error) {
-//            XXFLog(@"断开成功");
+//            DeBugLog(@"断开成功");
             
             if ([self.connectDelegate respondsToSelector:@selector(manridyBLEDidDisconnectDevice:)]) {
                 [self.connectDelegate manridyBLEDidDisconnectDevice:self.currentDev];
@@ -424,7 +424,7 @@ static BLETool *bleTool = nil;
             }
             
         }else {
-//            XXFLog(@"断开失败 error = %@", error);
+//            DeBugLog(@"断开失败 error = %@", error);
         }
     }
 #endif
@@ -443,7 +443,7 @@ static BLETool *bleTool = nil;
 //获得某服务的特征
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error{
     for (CBCharacteristic *characteristic in service.characteristics) {
-//        XXFLog(@"Discovered characteristic %@", characteristic.UUID);
+//        DeBugLog(@"Discovered characteristic %@", characteristic.UUID);
         
         //保存写入特征
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:kWriteCharacteristicUUID]]) {
@@ -473,16 +473,16 @@ static BLETool *bleTool = nil;
 //获得某特征值变化的通知
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     if (error) {
-//        XXFLog(@"Error changing notification state: %@",[error localizedDescription]);
+//        DeBugLog(@"Error changing notification state: %@",[error localizedDescription]);
     }else {
-//        XXFLog(@"Success cahnging notification state: %d",characteristic.isNotifying);
+//        DeBugLog(@"Success cahnging notification state: %d",characteristic.isNotifying);
     }
 }
 
 //订阅特征值发送变化的通知，所有获取到的值都将在这里进行处理
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
-    XXFLog(@"notifyCharacteristic is change = %@",characteristic.value);
+    DeBugLog(@"notifyCharacteristic is change = %@",characteristic.value);
     
     [self analysisDataWithCharacteristic:characteristic.value];
     
@@ -491,9 +491,9 @@ static BLETool *bleTool = nil;
 //写入某特征值后的回调
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     if (error) {
-//        XXFLog(@"Error writing characteristic value: %@",[error localizedDescription]);
+//        DeBugLog(@"Error writing characteristic value: %@",[error localizedDescription]);
     }else {
-//        XXFLog(@"Success writing chararcteristic value: %@",characteristic);
+//        DeBugLog(@"Success writing chararcteristic value: %@",characteristic);
     }
 }
 
@@ -509,26 +509,26 @@ static BLETool *bleTool = nil;
         if ([headStr isEqualToString:@"00"] || [headStr isEqualToString:@"80"]) {
             //解析设置时间数据
             manridyModel *model = [AnalysisProcotolTool analysisSetTimeData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveSetTimeDataWithModel:)]) {
+                [self.receiveDelegate receiveSetTimeDataWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"01"] || [headStr isEqualToString:@"81"]) {
             //解析闹钟数据
             manridyModel *model = [AnalysisProcotolTool analysisClockData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveSetClockDataWithModel:)]) {
+                [self.receiveDelegate receiveSetClockDataWithModel:model];
             }
-            
+
         }else if ([headStr isEqualToString:@"03"] || [headStr isEqualToString:@"83"]) {
             //解析获取的步数数据
             manridyModel *model =  [AnalysisProcotolTool analysisGetSportData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveMotionDataWithModel:)]) {
+                [self.receiveDelegate receiveMotionDataWithModel:model];
             }else {
                 [_fmTool saveMotionToDataBase:model];
             }
-            
+
         }else if ([headStr isEqualToString:@"04"] || [headStr isEqualToString:@"84"]) {
             //运动清零
             manridyModel *model = [AnalysisProcotolTool analysisSportZeroData:value WithHeadStr:headStr];
@@ -536,47 +536,58 @@ static BLETool *bleTool = nil;
                 [self.receiveDelegate receiveDataWithModel:model];
             }
             
+        }else if ([headStr isEqualToString:@"05"] || [headStr isEqualToString:@"85"]) {
+            //获取到历史的GPS数据信息
+            manridyModel *model = [AnalysisProcotolTool analysisHistoryGPSData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)]) {
+                [self.receiveDelegate receiveGPSWithModel:model];
+            }else {
+                [_fmTool saveGPSToDataBase:model];
+            }
+
         }else if ([headStr isEqualToString:@"06"] || [headStr isEqualToString:@"86"]) {
             //用户信息推送
             manridyModel *model = [AnalysisProcotolTool analysisUserInfoData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveUserInfoWithModel:)]) {
+                [self.receiveDelegate receiveUserInfoWithModel:model];
             }
-            
+
         }else if ([headStr isEqualToString:@"07"] || [headStr isEqualToString:@"87"]) {
             //运动目标推送
             manridyModel *model = [AnalysisProcotolTool analysisSportTargetData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveMotionTargetWithModel:)]) {
+                [self.receiveDelegate receiveMotionTargetWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"09"] || [headStr isEqualToString:@"89"]) {
             //心率开关
             manridyModel *model = [AnalysisProcotolTool analysisHeartStateData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveHeartRateTestWithModel:)]) {
+                [self.receiveDelegate receiveHeartRateTestWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"0a"] || [headStr isEqualToString:@"0A"] || [headStr isEqualToString:@"8a"] || [headStr isEqualToString:@"8A"]) {
             //获取心率数据
             manridyModel *model = [AnalysisProcotolTool analysisHeartData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveHeartRateDataWithModel:)]) {
+                [self.receiveDelegate receiveHeartRateDataWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"0c"] || [headStr isEqualToString:@"0C"] || [headStr isEqualToString:@"8c"] || [headStr isEqualToString:@"8C"]) {
             //获取睡眠
             manridyModel *model = [AnalysisProcotolTool analysisSleepData:value WithHeadStr: headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveSleepInfoWithModel:)]) {
+                [self.receiveDelegate receiveSleepInfoWithModel:model];
             }else {
                 [_fmTool saveSleepToDataBase:model];
             }
         }else if ([headStr isEqualToString:@"0d"] || [headStr isEqualToString:@"0D"] || [headStr isEqualToString:@"8d"] || [headStr isEqualToString:@"8D"]) {
             //上报GPS数据
             manridyModel *model = [AnalysisProcotolTool analysisGPSData:value WithHeadStr: headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
-                [self.receiveDelegate receiveDataWithModel:model];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)]) {
+                [self.receiveDelegate receiveGPSWithModel:model];
+            }else {
+                [_fmTool saveGPSToDataBase:model];
             }
         }
     }

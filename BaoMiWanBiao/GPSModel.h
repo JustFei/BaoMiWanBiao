@@ -10,6 +10,12 @@
 
 @interface GPSModel : NSObject
 
+
+
+@property (nonatomic ,assign) NSInteger sumPackage;
+
+@property (nonatomic ,assign) NSInteger currentPackage;
+
 //经度
 @property (nonatomic ,assign) float lon;
 

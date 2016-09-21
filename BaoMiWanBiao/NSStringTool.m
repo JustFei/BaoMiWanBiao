@@ -60,7 +60,7 @@
         [data appendBytes:&intValue length:1];
     }
     
-    //    XXFLog(@"data = %@",data);
+    //    DeBugLog(@"data = %@",data);
     return data;
 }
 
@@ -218,7 +218,7 @@
             for (int i = 0; i < count; i ++) {
                 targetStr = [NSString stringWithFormat:@"0%@",targetStr];
             }
-            //            XXFLog(@"%@",targetStr);
+            //            DeBugLog(@"%@",targetStr);
         }
         
         NSString *protocolStr = [NSString stringWithFormat:@"FC0701%@",targetStr];
@@ -278,7 +278,7 @@
 }
 
 //将data转换为不带<>的字符串
-+ (NSString *)ConvertToNSStringWithNSData:(NSData *)data
++ (NSString *)convertToNSStringWithNSData:(NSData *)data
 {
     
     

@@ -76,7 +76,7 @@
     
     //获取本地图片路径名
     NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-Thumbnail/%@",_userPhone ,self.localPhotos[indexPath.row]]];
-    XXFLog(@"%@",loaclImagePath);
+    DeBugLog(@"%@",loaclImagePath);
     UIImage *localImage = [[UIImage alloc] initWithContentsOfFile:loaclImagePath];
     
     //从本地沙盒获取图片
@@ -158,11 +158,11 @@
     for (NSInteger index = mutArr.count - 1; index >= 0 ; index --) {
         if ([mutArr[index] isEqualToString:@".DS_Store"]) {
             [mutArr removeObjectAtIndex:index];
-            XXFLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%ld",(long)index ,(unsigned long)mutArr.count);
+            DeBugLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%ld",(long)index ,(unsigned long)mutArr.count);
             
         }
     }
-    XXFLog(@"%@",mutArr);
+    DeBugLog(@"%@",mutArr);
     
     return mutArr;
 }
@@ -200,7 +200,7 @@
             [fileManager createDirectoryAtPath:createJieMiDir withIntermediateDirectories:YES attributes:nil error:nil];
             
         }else {
-            XXFLog(@"FileDir is exists");
+            DeBugLog(@"FileDir is exists");
         }
         
         //删除数据源
@@ -220,7 +220,7 @@
                         BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:jiemiFilePath];
                         //如果有就删除，
                         if (!jiemiDirHave) {
-                            XXFLog(@"no  havejiemi");
+                            DeBugLog(@"no  havejiemi");
                             return ;
                         }else {
                             
@@ -228,9 +228,9 @@
                             
                             
                             if (blDele) {
-                                XXFLog(@"delejiami success");
+                                DeBugLog(@"delejiami success");
                             }else {
-                                XXFLog(@"delejiami fail");
+                                DeBugLog(@"delejiami fail");
                             }
                         }
                     });
@@ -255,7 +255,7 @@
     
     //选中的图片存储在_selectPhotos数组中
     _selectPhotos = [NSMutableArray arrayWithArray:photos];
-    XXFLog(@"供选择%lu张照片",(unsigned long)[photos count]);
+    DeBugLog(@"供选择%lu张照片",(unsigned long)[photos count]);
     
     for (NSInteger index = 0; index < _selectPhotos.count; index ++) {
         @autoreleasepool {
@@ -264,7 +264,7 @@
             
             if ([asset thumbnail] != nil) {
 //                if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]){
-//                    XXFLog(@"是照片");
+//                    DeBugLog(@"是照片");
                 
                     //异步执行自定义队列（40张图片的批量写入，内存峰值可以控制在130MB以内）
                     dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -279,7 +279,7 @@
                             [fileManager createDirectoryAtPath:createJiemiDir withIntermediateDirectories:YES attributes:nil error:nil];
                             
                         }else {
-                            XXFLog(@"FileDir is exists");
+                            DeBugLog(@"FileDir is exists");
                         }
                         NSString *jiemiFilePath = [NSString stringWithFormat:@"%@/%@", createJiemiDir, [asset.defaultRepresentation filename]];
                         
@@ -304,7 +304,7 @@
 //                }
 #if 0
                 else if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo] ){
-                    XXFLog(@"是视频");
+                    DeBugLog(@"是视频");
                     
 #warning this is a biiiiiiiiiiiig bug!!!! how to save video
                     
@@ -359,7 +359,7 @@
                 read = [rep getBytes:buffer fromOffset:offset length:bufferSize error:&err];
                 written = fwrite(buffer, sizeof(char), read, file);
                 offset += read;
-                XXFLog(@"%llu",rep.size - offset);
+                DeBugLog(@"%llu",rep.size - offset);
             } while (read != 0 && !err);//没到结尾，没出错，ok继续
         }
         // 释放缓冲区，关闭文件
@@ -397,7 +397,7 @@
         [fileManager createDirectoryAtPath:createThumbnailDir withIntermediateDirectories:YES attributes:nil error:nil];
         
     }else {
-        XXFLog(@"FileDir is exists");
+        DeBugLog(@"FileDir is exists");
     }
     NSString *thumbnailFilePath = [NSString stringWithFormat:@"%@/%@", createThumbnailDir, imageName];
     //只做缩略图
@@ -412,9 +412,9 @@
         
         thumbnailResult = [thumbnailData writeToFile:thumbnailFilePath atomically:YES];
         
-        XXFLog(@"缩略图已经存储到%@，是否成功：%d",thumbnailFilePath ,thumbnailResult);
+        DeBugLog(@"缩略图已经存储到%@，是否成功：%d",thumbnailFilePath ,thumbnailResult);
     }else {
-        XXFLog(@"该缩略图同名或者已经存在了");
+        DeBugLog(@"该缩略图同名或者已经存在了");
     }
     
     return thumbnailResult;
@@ -436,7 +436,7 @@
         [fileManager createDirectoryAtPath:createJiemiDir withIntermediateDirectories:YES attributes:nil error:nil];
         
     }else {
-        XXFLog(@"FileDir is exists");
+        DeBugLog(@"FileDir is exists");
     }
     NSString *jiemiFilePath = [NSString stringWithFormat:@"%@/%@", createJiemiDir, imageName];
     NSData *imageData = UIImagePNGRepresentation([UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage]);
@@ -446,9 +446,9 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:jiemiFilePath]) {
         jiemiResult = [imageData writeToFile:jiemiFilePath atomically:YES];
         
-        XXFLog(@"图片已经存储到%@，是否成功：%d" ,jiemiFilePath ,jiemiResult);
+        DeBugLog(@"图片已经存储到%@，是否成功：%d" ,jiemiFilePath ,jiemiResult);
     }else {
-        XXFLog(@"添加到解密文件夹中的文件名已存在");
+        DeBugLog(@"添加到解密文件夹中的文件名已存在");
     }
     
     return jiemiResult;
@@ -464,7 +464,7 @@
     int a = progress * _selectPhotos.count;
     s = [NSString stringWithFormat:@"正在加密第%d张图片",a];
     //        s = [NSString stringWithFormat:@"哒哒哒哒哒%d",a];
-    XXFLog(@"%@",s);
+    DeBugLog(@"%@",s);
     if (progress >= 1) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [progressView setHidden:YES];
@@ -556,7 +556,7 @@
     
     if(newImage == nil){
         
-        XXFLog(@"scale image fail");
+        DeBugLog(@"scale image fail");
         
     }
     

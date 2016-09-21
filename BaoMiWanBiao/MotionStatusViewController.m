@@ -128,7 +128,7 @@
 }
 
 #pragma mark - BleReceiveDelegate
-- (void)receiveDataWithModel:(manridyModel *)manridyModel
+- (void)receiveMotionDataWithModel:(manridyModel *)manridyModel
 {
     if (manridyModel.isReciveDataRight) {
         if (manridyModel.receiveDataType == ReturnModelTypeSportModel) {
@@ -150,7 +150,19 @@
                 }
             }
             
-        } else if (manridyModel.receiveDataType == ReturnModelTypeHeartRateModel) {
+        }
+    }
+}
+
+- (void)receiveMotionTargetWithModel:(manridyModel *)manridyModel
+{
+#warning motion target is success?
+}
+
+- (void)receiveHeartRateDataWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeHeartRateModel) {
             self.bpmNum.text = manridyModel.heartRateModel.heartRate;
             
             self.MotionModel = [MotionDailyDataModel modelWith:self.currentDateStr step:nil kCal:nil mileage:nil bpm:manridyModel.heartRateModel.heartRate];
@@ -206,7 +218,7 @@
     
     NSString *todayString = [formatter stringFromDate:todayDate];
     
-    XXFLog(@"todayString == %@",todayString);
+    DeBugLog(@"todayString == %@",todayString);
     
     [self searchFromDataBaseWithDate:todayString];
 }
@@ -222,7 +234,7 @@
     
     NSString *  locationString=[dateformatter stringFromDate:self.senddate];
     
-    XXFLog(@"locationString:%@",locationString);
+    DeBugLog(@"locationString:%@",locationString);
     
     return locationString;
 }
@@ -315,7 +327,7 @@
 {
     NSArray *dateArr = [self.fmTool queryDate:dateStr];
     
-    XXFLog(@"%ld",(unsigned long)dateArr.count);
+    DeBugLog(@"%ld",(unsigned long)dateArr.count);
     if (dateArr.count != 0 ) {
         self.MotionModel = dateArr.firstObject;
         
@@ -324,7 +336,7 @@
         self.kcalNum.text = self.MotionModel.kCal;
         self.bpmNum.text = self.MotionModel.bpm;
     }else {
-        XXFLog(@"这天没有数据");
+        DeBugLog(@"这天没有数据");
         self.currentWalkNum.text = @"0";
         self.mileageNum.text = @"0";
         self.kcalNum.text = @"0";
@@ -357,7 +369,7 @@
     
     // Create the actions.
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:cancelButtonTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        XXFLog(@"The \"Secure Text Entry\" alert's cancel action occured.");
+        DeBugLog(@"The \"Secure Text Entry\" alert's cancel action occured.");
         
         // Stop listening for text changed notifications.
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextFieldTextDidChangeNotification object:alertController.textFields.firstObject];
@@ -375,7 +387,7 @@
             for (int i = 0; i < count; i ++) {
                 targetStr = [NSString stringWithFormat:@"0%@",targetStr];
             }
-            XXFLog(@"%@",targetStr);
+            DeBugLog(@"%@",targetStr);
         }
         
         [self.mybleTool writeMotionTargetToPeripheral:targetStr];
@@ -460,7 +472,7 @@
 {
     if (!_fmTool) {
         NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
-        MotionFmdbTool *tool = [[MotionFmdbTool alloc] initWithPath:userPhone];
+        MotionFmdbTool *tool = [[MotionFmdbTool alloc] initWithPath:userPhone withSQLType:SQLTypeMotion];
         
         _fmTool = tool;
     }

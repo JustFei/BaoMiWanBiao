@@ -106,7 +106,7 @@
     self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
     self.editTimePicker.frame = CGRectMake(0, 30, self.frame.size.width, self.editTimePickView.frame.size.height - 30);
     
-    XXFLog(@"%@",NSStringFromCGRect(self.clockTableView.frame));
+    DeBugLog(@"%@",NSStringFromCGRect(self.clockTableView.frame));
     //{{0, 294}, {320, 338}}
     //{{0, 294}, {320, 338}}
 }
@@ -197,7 +197,7 @@
             
             ClockModel *model = _clockDataSource[indexPath.row];
             [self.fmTool deleteData:model.ID];
-            XXFLog(@"%@",model.time);
+            DeBugLog(@"%@",model.time);
             
             [_clockDataSource removeObjectAtIndex:indexPath.row];//移除数据源的数据
             
@@ -225,7 +225,7 @@
 }
 
 #pragma mark - BleReceiveDelegate
-- (void)receiveDataWithModel:(manridyModel *)manridyModel
+- (void)receiveSetClockDataWithModel:(manridyModel *)manridyModel
 {
     if (manridyModel.isReciveDataRight) {
         if (manridyModel.receiveDataType == ReturnModelTypeClockModel) {
@@ -244,7 +244,7 @@
             [self.clockTableView deleteRowsAtIndexPaths:indexPaths  withRowAnimation:UITableViewRowAnimationFade];
             [indexPaths removeAllObjects];
             
-            XXFLog(@"%@",manridyModel.clockModelArr);
+            DeBugLog(@"%@",manridyModel.clockModelArr);
             _clockDataSource = manridyModel.clockModelArr;
             
             for (int index = 0; index < _clockDataSource.count; index ++) {

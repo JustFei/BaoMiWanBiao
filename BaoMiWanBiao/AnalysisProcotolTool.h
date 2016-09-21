@@ -24,6 +24,9 @@
 //解析获取运动信息清零的数据（04|84）
 + (manridyModel *)analysisSportZeroData:(NSData *)data WithHeadStr:(NSString *)head;
 
+//解析获取GPS历史的数据（05|85）
++ (manridyModel *)analysisHistoryGPSData:(NSData *)data WithHeadStr:(NSString *)head;
+
 //解析用户信息的数据（06|86）
 + (manridyModel *)analysisUserInfoData:(NSData *)data WithHeadStr:(NSString *)head;
 

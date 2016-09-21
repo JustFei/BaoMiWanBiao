@@ -27,7 +27,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    XXFLog(@"phont = %@,pwd = %@",self.userModel.phone ,self.userModel.pwd);
+    DeBugLog(@"phont = %@,pwd = %@",self.userModel.phone ,self.userModel.pwd);
     [self motifyUI];
     _dataArr = @[@"您父亲的名字是？",@"你的学号是？",@"您配偶的生日是？",@"您母亲的名字是？",@"对您影响最大的人是？",@"您配偶的名字是？"];
 }
@@ -166,7 +166,7 @@
             [gameScore saveInBackgroundWithResultBlock:^(BOOL isSuccessful, NSError *error) {
                 //进行操作
                 if (isSuccessful) {
-                    XXFLog(@"数据上传成功");
+                    DeBugLog(@"数据上传成功");
                     [MBProgressHUD hideHUDForView:self.view animated:YES];
                     
                     

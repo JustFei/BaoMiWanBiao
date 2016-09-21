@@ -82,4 +82,13 @@
     return _gpsModel;
 }
 
+- (GPSDailyDataModel *)gpsDailyModel
+{
+    if (!_gpsDailyModel) {
+        _gpsDailyModel = [[GPSDailyDataModel alloc] init];
+    }
+    
+    return  _gpsDailyModel;
+}
+
 @end

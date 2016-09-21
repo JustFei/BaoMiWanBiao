@@ -58,7 +58,7 @@
         
         NSDateComponents *dayComponents = [gregorian components:NSDayCalendarUnit fromDate:lastDate toDate:nowDate options:0];
         
-        XXFLog(@"距离上次登录间距min== %ld,day = %ld",(long)dayComponents.minute ,dayComponents.day);
+        DeBugLog(@"距离上次登录间距min== %ld,day = %ld",(long)dayComponents.minute ,dayComponents.day);
         //超过24小时，就重新登陆
         if (dayComponents.day >= 1) {
             self.window.rootViewController = [[RegistAndLoginViewController alloc] initWithNibName:@"RegistAndLoginViewController" bundle:nil];
@@ -79,18 +79,18 @@
 - (void)onGetNetworkState:(int)iError
 {
     if (0 == iError) {
-        XXFLog(@"联网成功");
+        DeBugLog(@"联网成功");
     }else {
-        XXFLog(@"onGetNetworkState %d",iError);
+        DeBugLog(@"onGetNetworkState %d",iError);
     }
 }
 
 - (void)onGetPermissionState:(int)iError
 {
     if (0 == iError) {
-        XXFLog(@"授权成功");
+        DeBugLog(@"授权成功");
     }else {
-        XXFLog(@"onGetPermissionState %d",iError);
+        DeBugLog(@"onGetPermissionState %d",iError);
     }
 }
 

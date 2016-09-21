@@ -28,7 +28,7 @@
         //4.p是需要填充的数据也是填充的位数
         if (plainInDataLength % 16 != 0) {
             p = 16 - plainInDataLength % 16;
-            XXFLog(@"数据流的长度 == %lu，填充的长度 == %d",plainInDataLength , p);
+            DeBugLog(@"数据流的长度 == %lu，填充的长度 == %d",plainInDataLength , p);
         }
         
         //5.定义char类型的变量plainInChar，长度为数据流的长度加上p。
@@ -45,19 +45,19 @@
         //3.验证一下填充后的char[]是不是最开始的明文数据
         
         //plainInData=<74686973 20697320 706c6169 6e207465 7874>
-        XXFLog(@"plainInData=%@",mingwenData);
+        DeBugLog(@"plainInData=%@",mingwenData);
         
-        XXFLog(@"%d",p);
+        DeBugLog(@"%d",p);
         
         //plainInChar == this is plain text
         
         NSData *data = [[NSData alloc]initWithBytes:plainInChar length:sizeof(plainInChar)];
         
         //data=<74686973 20697320 706c6169 6e207465 78740e0e 0e0e0e0e 0e0e0e0e 0e0e0e0e>
-        //XXFLog(@"data=%@",data);
+        //DeBugLog(@"data=%@",data);
         
         //填充后的char[]转成NSString == this is plain text
-        XXFLog(@"填充后的char[]转成NSString == %@",[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding]);
+        DeBugLog(@"填充后的char[]转成NSString == %@",[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding]);
         
         //五、调用刚才添加的方法加密
         //定义输出密文的变量
@@ -69,7 +69,7 @@
         //对加密的数据输出
         NSData *miwenData =  [[NSData alloc]initWithBytes:cipherOutChar length:sizeof(cipherOutChar)];
         
-        XXFLog(@"4加密成功");
+        DeBugLog(@"4加密成功");
         
         return miwenData;
         
@@ -96,7 +96,7 @@
         //将前64位和最后剪切的数据拼接
         [qian64MiwenData appendData:pinjieData];
         
-        XXFLog(@"加密成功");
+        DeBugLog(@"加密成功");
         
         return qian64MiwenData;
     }
@@ -147,7 +147,7 @@
         //明文转成NSData 再转成NSString打印
         NSData *mingwenData = [[NSData alloc]initWithBytes:plainOutWithoutPadding length:sizeof(plainOutWithoutPadding)];
         
-        XXFLog(@"解密成功");
+        DeBugLog(@"解密成功");
         
         return mingwenData;
     }else {
@@ -172,7 +172,7 @@
         //将前64位和最后剪切的数据拼接
         [qian64MingwenData appendData:pinjieData];
         
-        XXFLog(@"解密成功");
+        DeBugLog(@"解密成功");
         
         return qian64MingwenData;
     }

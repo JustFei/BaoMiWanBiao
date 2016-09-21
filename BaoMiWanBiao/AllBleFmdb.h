@@ -16,4 +16,7 @@
 
 - (void)saveSleepToDataBase:(manridyModel *)manridyModel;
 
+//离线保存GPS数据
+- (void)saveGPSToDataBase:(manridyModel *)manridyModel;
+
 @end

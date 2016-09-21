@@ -9,6 +9,7 @@
 #import "MotionLineViewController.h"
 #import <MapKit/MapKit.h>
 #import "BLETool.h"
+#import "MotionFmdbTool.h"
 
 @interface MotionLineViewController () <MKMapViewDelegate, BleReceiveDelegate>
 {
@@ -31,6 +32,8 @@
 
 @property (nonatomic, strong) BLETool *mybleTool;
 
+@property (nonatomic, strong) MotionFmdbTool *myFmTool;
+
 
 
 @end
@@ -52,6 +55,17 @@
     //41b54e62 42e3fcdd
     //651817898
     //41b54d8a 42e3fd04
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSDate *date = [NSDate date];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MM/dd"];
+        NSString *time = [formatter stringFromDate:date];
+        DeBugLog(@"查询时间%@",time);
+        
+        NSArray *arr = [self.myFmTool queryGPSDataWithDayTime:time];
+        DeBugLog(@"%@",arr);
+    });
     
     // 设置代理
     self.mapView.delegate = self;
@@ -99,20 +113,27 @@
 }
 
 #pragma mark - BleReceiveDelegate
-- (void)receiveDataWithModel:(manridyModel *)manridyModel
+- (void)receiveGPSWithModel:(manridyModel *)manridyModel
 {
-    if (!_pointStart.longitude && !_pointStart.latitude) {
-        _pointStart = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
-    }else {
-        _pointStart = _pointEnd;
-        _pointEnd = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
+    if (manridyModel.receiveDataType == ReturnModelTypeGPSModel) {
+        if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
+            [self.myFmTool insertGPSModel:manridyModel.gpsDailyModel];
+            
+            if (!_pointStart.longitude && !_pointStart.latitude) {
+                _pointStart = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
+            }else {
+                _pointStart = _pointEnd;
+                _pointEnd = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
+            }
+            
+            _point[0] = _pointStart;
+            _point[1] = _pointEnd;
+            
+            self.myPolyline = [MKPolyline polylineWithCoordinates:_point count:2];
+            [self.mapView addOverlay:self.myPolyline];
+            
+        }
     }
-    
-    _point[0] = _pointStart;
-    _point[1] = _pointEnd;
-    
-    self.myPolyline = [MKPolyline polylineWithCoordinates:_point count:2];
-    [self.mapView addOverlay:self.myPolyline];
 }
 
 
@@ -129,6 +150,16 @@
     return _mapView;
 }
 
+- (MotionFmdbTool *)myFmTool
+{
+    if (!_myFmTool) {
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        _myFmTool = [[MotionFmdbTool alloc] initWithPath:userPhone withSQLType:SQLTypeGPS];
+    }
+    
+    return  _myFmTool;
+}
+
 ///**
 // *  定位失败会调用该方法
 // *
@@ -136,7 +167,7 @@
 // */
 //- (void)didFailToLocateUserWithError:(NSError *)error
 //{
-//    XXFLog(@"did failed locate,error is %@",[error localizedDescription]);
+//    DeBugLog(@"did failed locate,error is %@",[error localizedDescription]);
 //}
 //
 ///**
@@ -173,7 +204,7 @@
 //        // 计算本次定位数据与上次定位数据之间的距离
 //        CGFloat distance = [userLocation.location distanceFromLocation:self.preLocation];
 //        self.statusView.distanceWithPreLoc.text = [NSString stringWithFormat:@"%.3f",distance];
-//        XXFLog(@"与上一位置点的距离为:%f",distance);
+//        DeBugLog(@"与上一位置点的距离为:%f",distance);
 //        
 //        // (5米门限值，存储数组画线) 如果距离少于 5 米，则忽略本次数据直接返回方法
 //        if (distance < 5) {

@@ -34,10 +34,10 @@ static FMDatabase *_fmdb;
         _fmdb = [FMDatabase databaseWithPath:filepath];
         _username = path;
         
-        XXFLog(@"运动信息数据库路径 == %@", filepath);
+        DeBugLog(@"运动信息数据库路径 == %@", filepath);
         
         if ([_fmdb open]) {
-            XXFLog(@"数据库打开成功");
+            DeBugLog(@"数据库打开成功");
         }
         
         //创建表
@@ -60,9 +60,9 @@ static FMDatabase *_fmdb;
     
     BOOL result = [_fmdb executeUpdate:insertSql];
     if (result) {
-        XXFLog(@"插入数据成功");
+        DeBugLog(@"插入数据成功");
     }else {
-        XXFLog(@"插入数据失败");
+        DeBugLog(@"插入数据失败");
     }
     return result;
 }
@@ -89,12 +89,12 @@ static FMDatabase *_fmdb;
         model.isOpen = [set boolForColumn:@"isopen"];
         model.ID = [set intForColumn:@"id"];
         
-        XXFLog(@"闹钟时间 == %@，是否打开 == %d, id == %ld",model.time , model.isOpen , (long)model.ID);
+        DeBugLog(@"闹钟时间 == %@，是否打开 == %d, id == %ld",model.time , model.isOpen , (long)model.ID);
         
         [arrM addObject:model];
     }
     
-    XXFLog(@"查询成功");
+    DeBugLog(@"查询成功");
     return arrM;
 }
 
@@ -112,9 +112,9 @@ static FMDatabase *_fmdb;
     BOOL result = result = [_fmdb executeUpdate:modifySqlTime, modifySqlModel.time, [NSNumber numberWithBool:modifySqlModel.isOpen], [NSNumber numberWithInteger:modifySqlID]];
     
     if (result) {
-        XXFLog(@"修改成功");
+        DeBugLog(@"修改成功");
     }else {
-        XXFLog(@"修改失败");
+        DeBugLog(@"修改失败");
     }
     
     return result;
@@ -133,9 +133,9 @@ static FMDatabase *_fmdb;
         result = [_fmdb executeUpdate:deleteSqlStr,[NSNumber numberWithInteger:deleteSql]];
         
         if (result) {
-            XXFLog(@"删除成功");
+            DeBugLog(@"删除成功");
         }else {
-            XXFLog(@"删除失败");
+            DeBugLog(@"删除失败");
         }
     }
     

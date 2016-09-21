@@ -23,5 +23,5 @@
 + (NSString *)protocolAddInfo:(NSString *)info head:(NSString *)head;
 
 //将data转换为不带<>的字符串
-+ (NSString *)ConvertToNSStringWithNSData:(NSData *)data;
++ (NSString *)convertToNSStringWithNSData:(NSData *)data;
 @end

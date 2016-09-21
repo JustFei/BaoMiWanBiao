@@ -139,11 +139,11 @@
     for (NSInteger index = mutArr.count - 1; index >= 0 ; index --) {
         if ([mutArr[index] isEqualToString:@".DS_Store"]) {
             [mutArr removeObjectAtIndex:index];
-            XXFLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%lu",(long)index ,(unsigned long)mutArr.count);
+            DeBugLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%lu",(long)index ,(unsigned long)mutArr.count);
             
         }
     }
-//    XXFLog(@"%@",mutArr);
+//    DeBugLog(@"%@",mutArr);
     
     return mutArr;
 }
@@ -254,7 +254,7 @@
 //删除图片按钮
 - (void)deleteImages
 {
-    XXFLog(@"总共有%ld个数据",(unsigned long)self.dataDic.count);
+    DeBugLog(@"总共有%ld个数据",(unsigned long)self.dataDic.count);
     //以下代码是处理数据的删除的操作。
     if (self.dataDic.count != 0) {
         
@@ -271,7 +271,7 @@
             [fileManager createDirectoryAtPath:createJieMiDir withIntermediateDirectories:YES attributes:nil error:nil];
             
         }else {
-            XXFLog(@"FileDir is exists");
+            DeBugLog(@"FileDir is exists");
         }
         
         //此处为处理删除时先删除UI上的cell可以让人产生秒删的感觉，实际上后台还在慢慢的move数据。此处用了子线程异步做循环，循环里面子线程在同步做删除，这样可以做到性能和体验的最优解~
@@ -299,7 +299,7 @@
                         BOOL jiemiDirHave = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
                         //如果有就删除，
                         if (!jiamiDirHave) {
-                            XXFLog(@"no  havejiami");
+                            DeBugLog(@"no  havejiami");
                             return ;
                         }else {
                             
@@ -327,9 +327,9 @@
                                 BOOL blDele= [fileManager removeItemAtPath:jiamiFilePath error:nil];
                                 [_jiamiPhotosArr removeObject:dataArr[index]];
                                 if (blDele) {
-                                    XXFLog(@"delejiami success");
+                                    DeBugLog(@"delejiami success");
                                 }else {
-                                    XXFLog(@"delejiami fail");
+                                    DeBugLog(@"delejiami fail");
                                 }
                             }
                         }
@@ -361,7 +361,7 @@
 -(void)getFolderSelectedPhoto:(NSMutableArray *)photos{
     //选中的图片存储在_selectPhotos数组中
     _selectPhotos = [NSMutableArray arrayWithArray:photos];
-    XXFLog(@"供选择%lu张照片",(unsigned long)[photos count]);
+    DeBugLog(@"供选择%lu张照片",(unsigned long)[photos count]);
     
     for (NSInteger index = 0; index < _selectPhotos.count; index ++) {
         @autoreleasepool {
@@ -382,7 +382,7 @@
                     [fileManager createDirectoryAtPath:createJiamiDir withIntermediateDirectories:YES attributes:nil error:nil];
                     
                 }else {
-                    XXFLog(@"3FileDir is exists");
+                    DeBugLog(@"3FileDir is exists");
                 }
                 NSString *jiamiFilePath = [NSString stringWithFormat:@"%@/%@", createJiamiDir, picName];
                 
@@ -443,7 +443,7 @@
     
     //获取本地图片路径名
     NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-Thumbnail/%@",userPhone ,_localPhotos[indexPath.row]]];
-//    XXFLog(@"%@",loaclImagePath);
+//    DeBugLog(@"%@",loaclImagePath);
     UIImage *localImage = [[UIImage alloc] initWithContentsOfFile:loaclImagePath];
     
     //从本地沙盒获取图片
@@ -479,7 +479,7 @@
                 [data getBytes:buffer range:NSMakeRange(offset, read)];
                 written = fwrite(buffer, sizeof(char), read, file);
                 offset += read;
-                XXFLog(@"%lu",(data.length - offset));
+                DeBugLog(@"%lu",(data.length - offset));
                 
             } while (!(read < bufferSize) && !err);//没到结尾，没出错，ok继续
         }
@@ -530,7 +530,7 @@
             [fileManager createDirectoryAtPath:createJieMiDir withIntermediateDirectories:YES attributes:nil error:nil];
             
         }else {
-            XXFLog(@"FileDir is exists");
+            DeBugLog(@"FileDir is exists");
         }
         
         //删除加密文件夹里的文件
@@ -544,7 +544,7 @@
         BOOL blHaveMoveToPath = [[NSFileManager defaultManager] fileExistsAtPath:moveToPath];
         //如果有就删除，
         if (!blHaveAtPath) {
-            XXFLog(@"no  have");
+            DeBugLog(@"no  have");
             return ;
         }else {
             
@@ -552,9 +552,9 @@
             if (blHaveMoveToPath) {
                 BOOL blDele= [fileManager removeItemAtPath:filePath error:nil];
                 if (blDele) {
-                    XXFLog(@"delete success");
+                    DeBugLog(@"delete success");
                 }else {
-                    XXFLog(@"delete fail");
+                    DeBugLog(@"delete fail");
                 }
             }else {
                 //在移除前先进行解密，再移除
@@ -635,7 +635,7 @@
     NSString *s;
         int a = progress * _selectPhotos.count;
         s = [NSString stringWithFormat:@"正在加密第%d张图片",a];
-        XXFLog(@"%@",s);
+        DeBugLog(@"%@",s);
         if (progress >= 1) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [progressView setHidden:YES];
@@ -777,7 +777,7 @@
     
     if(newImage == nil){
         
-        XXFLog(@"scale image fail");
+        DeBugLog(@"scale image fail");
         
     }
     

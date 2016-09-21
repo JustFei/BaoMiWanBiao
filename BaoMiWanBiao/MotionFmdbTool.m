@@ -8,6 +8,8 @@
 
 #import "MotionFmdbTool.h"
 #import "MotionDailyDataModel.h"
+#import "GPSDailyDataModel.h"
+#import "GPSDayGroupModel.h"
 
 @interface MotionFmdbTool ()
 {
@@ -19,13 +21,14 @@
 
 static FMDatabase *_fmdb;
 
+
 /**
  *  创建数据库文件
  *
  *  @param path 数据库名字，以用户名+MotionData命名
  *
  */
-- (instancetype)initWithPath:(NSString *)path
+- (instancetype)initWithPath:(NSString *)path withSQLType:(SQLType)sqlType
 {
     self = [super init];
     
@@ -34,14 +37,21 @@ static FMDatabase *_fmdb;
         _fmdb = [FMDatabase databaseWithPath:filepath];
         _username = path;
         
-        XXFLog(@"运动信息数据库路径 == %@", filepath);
+        DeBugLog(@"运动信息数据库路径 == %@", filepath);
         
         if ([_fmdb open]) {
-            XXFLog(@"数据库打开成功");
+            DeBugLog(@"数据库打开成功");
         }
-        
-        //创建表
-        [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists MotionData(id integer primary key, date text, step text, kCal text, mileage text, bpm text);"]];
+        switch (sqlType) {
+            case SQLTypeMotion:
+                [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists MotionData(id integer primary key, date text, step text, kCal text, mileage text, bpm text);"]];
+                break;
+            case SQLTypeGPS:
+                [_fmdb executeUpdate:[NSString stringWithFormat:@"create table if not exists GPSData(id integer primary key, gpsTime text, dayTime text, locationState integer, currentPackage integer, sumPackage integer, lon float, lat float);"]];
+                break;
+            default:
+                break;
+        }
     }
     
     return self;
@@ -60,9 +70,9 @@ static FMDatabase *_fmdb;
     
     BOOL result = [_fmdb executeUpdate:insertSql];
     if (result) {
-        XXFLog(@"插入数据成功");
+        DeBugLog(@"插入Motion数据成功");
     }else {
-        XXFLog(@"插入数据失败");
+        DeBugLog(@"插入Motion数据失败");
     }
     return result;
 }
@@ -103,12 +113,12 @@ static FMDatabase *_fmdb;
         model.mileage = mileage;
         model.bpm = bpm;
         
-        XXFLog(@"%@的数据：步数=%@，卡路里=%@，里程=%@，心率=%@",querySql ,step ,kCal ,mileage ,bpm);
+        DeBugLog(@"%@的数据：步数=%@，卡路里=%@，里程=%@，心率=%@",querySql ,step ,kCal ,mileage ,bpm);
         
         [arrM addObject:model];
     }
     
-    XXFLog(@"查询成功");
+    DeBugLog(@"Motion查询成功");
     return arrM;
 }
 
@@ -123,7 +133,7 @@ static FMDatabase *_fmdb;
 - (BOOL)modifyData:(NSString *)modifySqlDate model:(MotionDailyDataModel *)modifySqlModel
 {
     if (modifySqlDate == nil) {
-        XXFLog(@"传入的日期为空，不能修改");
+        DeBugLog(@"传入的日期为空，不能修改");
         
         return NO;
     }
@@ -141,12 +151,88 @@ static FMDatabase *_fmdb;
     }
     
     if (modifyResult) {
-        XXFLog(@"数据修改成功");
+        DeBugLog(@"Motion数据修改成功");
     }else {
-        XXFLog(@"数据修改失败");
+        DeBugLog(@"Motion数据修改失败");
     }
     
     return modifyResult;
+}
+
+//gpsTime text, dayTime text, locationState text, currentPackage integer, sumPackage integer, lon float, lat float
+
+#pragma mark - GPS信息数据库操作
+//插入gps模型数据
+- (BOOL)insertGPSModel:(GPSDailyDataModel *)model
+{
+    NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO GPSData(gpsTime, dayTime, locationState, currentPackage, sumPackage, lon, lat) VALUES ('%@', '%@', '%ld', '%ld', '%ld', '%f', '%f');", model.gpsTime, model.dayTime, model.locationState, model.currentPackage, model.sumPackage, model.lon, model.lat];
+    
+    BOOL result = [_fmdb executeUpdate:insertSql];
+    if (result) {
+        DeBugLog(@"插入GPS数据成功");
+    }else {
+        DeBugLog(@"插入GPS数据失败");
+    }
+    return result;
+    
+}
+
+//查询数据
+- (NSArray *)queryGPSDataWithDayTime:(NSString *)dayTime
+{
+    NSString *queryString;
+    
+    if (dayTime == nil) {
+        queryString = [NSString stringWithFormat:@"SELECT * FROM GPSData;"];
+    }else {
+        //这里一定不能将？用需要查询的日期代替掉
+        queryString = [NSString stringWithFormat:@"SELECT * FROM GPSData where dayTime = ?;"];
+    }
+    
+    NSMutableArray *arrM = [NSMutableArray array];
+    FMResultSet *set = [_fmdb executeQuery:queryString ,dayTime];
+    
+    GPSDayGroupModel *model = [[GPSDayGroupModel alloc] init];
+    
+    while ([set next]) {
+        
+        DeBugLog(@"%d",[set intForColumn:@"locationState"]);
+        
+        if ([set intForColumn:@"locationState"] == 0) {
+            
+            
+            model.startTime = [set stringForColumn:@"gpsTime"];
+            NSString *lat = [set stringForColumn:@"lat"];
+            NSString *lon = [set stringForColumn:@"lon"];
+            [model.GPSArr addObject:[NSString stringWithFormat:@"%@,%@",lat ,lon]];
+        }
+        
+        if ([set intForColumn:@"locationState"] == 1) {
+            if (model.startTime != nil) {
+                
+                NSString *lat = [set stringForColumn:@"lat"];
+                NSString *lon = [set stringForColumn:@"lon"];
+                [model.GPSArr addObject:[NSString stringWithFormat:@"%@,%@",lat ,lon]];
+            }
+        }
+        
+        if ([set intForColumn:@"locationState"] == 2) {
+            if (model.startTime != nil) {
+                
+                model.endTime = [set stringForColumn:@"gpsTime"];
+                NSString *lat = [set stringForColumn:@"lat"];
+                NSString *lon = [set stringForColumn:@"lon"];
+                [model.GPSArr addObject:[NSString stringWithFormat:@"%@,%@",lat ,lon]];
+                
+                [arrM addObject:model];
+                model = nil;
+            }
+        }
+    }
+    
+    DeBugLog(@"GPS查询成功");
+    return arrM;
+    
 }
 
 @end

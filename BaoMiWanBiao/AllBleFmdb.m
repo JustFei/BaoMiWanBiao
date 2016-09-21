@@ -73,19 +73,40 @@
     }
 }
 
+//离线保存GPS数据
+- (void)saveGPSToDataBase:(manridyModel *)manridyModel
+{
+    if (manridyModel.receiveDataType == ReturnModelTypeGPSModel) {
+        if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
+            [self.motionFmTool insertGPSModel:manridyModel.gpsDailyModel];
+        }
+    }
+}
 
 
-//数据库操作工具
+#pragma mark - 懒加载
+//运动数据库操作工具
 - (MotionFmdbTool *)motionFmTool
 {
     if (!_motionFmTool) {
         NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
-        MotionFmdbTool *tool = [[MotionFmdbTool alloc] initWithPath:userPhone];
+        MotionFmdbTool *tool = [[MotionFmdbTool alloc] initWithPath:userPhone withSQLType:SQLTypeMotion];
         
         _motionFmTool = tool;
     }
     
     return _motionFmTool;
+}
+
+//睡眠数据库操作工具
+- (SleepFmdbTool *)sleepFmTool
+{
+    if (!_sleepFmTool) {
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        _sleepFmTool = [[SleepFmdbTool alloc] initWithPath:userPhone];
+    }
+    
+    return _sleepFmTool;
 }
 
 //运动数据模型

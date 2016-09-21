@@ -80,7 +80,7 @@
             // load the asset for this cell
             //获取本地图片路径名
             NSString *loaclImagePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:[NSString stringWithFormat:@"/%@-Thumbnail/%@",userPhone ,self.folderFildeNameArr[indexPath.row]]];
-            //    XXFLog(@"%@",loaclImagePath);
+            //    DeBugLog(@"%@",loaclImagePath);
             UIImage *localImage = [[UIImage alloc] initWithContentsOfFile:loaclImagePath];
             
             //回来测试下
@@ -162,11 +162,11 @@
     for (NSInteger index = mutArr.count - 1; index >= 0 ; index --) {
         if ([mutArr[index] isEqualToString:@".DS_Store"]) {
             [mutArr removeObjectAtIndex:index];
-            XXFLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%lu",(long)index ,(unsigned long)mutArr.count);
+            DeBugLog(@"在第%ld次遍历出.DS_Store，删除后数组还剩%lu",(long)index ,(unsigned long)mutArr.count);
             
         }
     }
-    //    XXFLog(@"%@",mutArr);
+    //    DeBugLog(@"%@",mutArr);
     
     return mutArr;
 }

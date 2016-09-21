@@ -59,6 +59,8 @@
 		3B8C1B861D51F9DD00D061C8 /* MotionHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B841D51F9DD00D061C8 /* MotionHistoryViewController.m */; };
 		3B8C1B871D51F9DD00D061C8 /* MotionHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */; };
 		3B8CBF391D758B07007DE127 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8CBF381D758B07007DE127 /* UserModel.m */; };
+		3B94C7561D9222240069E3EA /* GPSDailyDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B94C7551D9222240069E3EA /* GPSDailyDataModel.m */; };
+		3B94C7591D9230A30069E3EA /* GPSDayGroupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B94C7581D9230A30069E3EA /* GPSDayGroupModel.m */; };
 		3BA27A331D4C374100B4C32F /* SM4-OCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */; };
 		3BAD15DC1D8E246E007AE9B1 /* manridyBleDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15D51D8E246E007AE9B1 /* manridyBleDevice.m */; };
 		3BAD15DD1D8E246E007AE9B1 /* BLETool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD15D71D8E246E007AE9B1 /* BLETool.m */; };
@@ -268,6 +270,10 @@
 		3B8C1B851D51F9DD00D061C8 /* MotionHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MotionHistoryViewController.xib; sourceTree = "<group>"; };
 		3B8CBF371D758B07007DE127 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		3B8CBF381D758B07007DE127 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
+		3B94C7541D9222240069E3EA /* GPSDailyDataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPSDailyDataModel.h; sourceTree = "<group>"; };
+		3B94C7551D9222240069E3EA /* GPSDailyDataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPSDailyDataModel.m; sourceTree = "<group>"; };
+		3B94C7571D9230A30069E3EA /* GPSDayGroupModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPSDayGroupModel.h; sourceTree = "<group>"; };
+		3B94C7581D9230A30069E3EA /* GPSDayGroupModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPSDayGroupModel.m; sourceTree = "<group>"; };
 		3BA27A311D4C374100B4C32F /* SM4-OCMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SM4-OCMethod.h"; sourceTree = "<group>"; };
 		3BA27A321D4C374100B4C32F /* SM4-OCMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SM4-OCMethod.m"; sourceTree = "<group>"; };
 		3BAD15D41D8E246E007AE9B1 /* manridyBleDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = manridyBleDevice.h; sourceTree = "<group>"; };
@@ -660,6 +666,19 @@
 			name = "运动历史记录";
 			sourceTree = "<group>";
 		};
+		3B94C75A1D9257250069E3EA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3BCDF4111D6AD02500B6D7D5 /* MotionDailyDataModel.h */,
+				3BCDF4121D6AD02500B6D7D5 /* MotionDailyDataModel.m */,
+				3B94C7541D9222240069E3EA /* GPSDailyDataModel.h */,
+				3B94C7551D9222240069E3EA /* GPSDailyDataModel.m */,
+				3B94C7571D9230A30069E3EA /* GPSDayGroupModel.h */,
+				3B94C7581D9230A30069E3EA /* GPSDayGroupModel.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		3BA27A341D4C51BF00B4C32F /* 密码本主页面 */ = {
 			isa = PBXGroup;
 			children = (
@@ -811,10 +830,9 @@
 		3BCDF40D1D6ACEF100B6D7D5 /* 运动数据操作 */ = {
 			isa = PBXGroup;
 			children = (
-				3BCDF4111D6AD02500B6D7D5 /* MotionDailyDataModel.h */,
-				3BCDF4121D6AD02500B6D7D5 /* MotionDailyDataModel.m */,
 				3BCDF40E1D6ACF3A00B6D7D5 /* MotionFmdbTool.h */,
 				3BCDF40F1D6ACF3A00B6D7D5 /* MotionFmdbTool.m */,
+				3B94C75A1D9257250069E3EA /* Model */,
 			);
 			name = "运动数据操作";
 			sourceTree = "<group>";
@@ -1407,6 +1425,7 @@
 			files = (
 				3BD797001D55D34B00DB6821 /* JBBarChartFooterView.m in Sources */,
 				3BBEF1511D4B3B52001BAE66 /* MiMaTableViewCell.m in Sources */,
+				3B94C7561D9222240069E3EA /* GPSDailyDataModel.m in Sources */,
 				3BCDF4101D6ACF3A00B6D7D5 /* MotionFmdbTool.m in Sources */,
 				3B12AE361D6BE49300C469EF /* SleepFmdbTool.m in Sources */,
 				3BAD15F71D8E24B5007AE9B1 /* SleepModel.m in Sources */,
@@ -1469,6 +1488,7 @@
 				3BB518FE1D7E6A3800ADFC50 /* BLEConnectViewController.m in Sources */,
 				3BC0B48B1D48520E00616A27 /* LocalAlbumTableViewController.m in Sources */,
 				3BEFB4761D4994C5003DABF7 /* sms4.c in Sources */,
+				3B94C7591D9230A30069E3EA /* GPSDayGroupModel.m in Sources */,
 				3BBEF14A1D4B3A3C001BAE66 /* MiMaBenViewController.m in Sources */,
 				3BC0B48C1D48520E00616A27 /* LocalAlbumCell.m in Sources */,
 				3BAD15F41D8E24B5007AE9B1 /* SportModel.m in Sources */,
