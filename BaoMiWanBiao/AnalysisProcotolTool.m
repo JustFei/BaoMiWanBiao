@@ -6,15 +6,106 @@
 //  Copyright © 2016年 Manridy.Bobo.com. All rights reserved.
 //
 
+#import <CoreLocation/CoreLocation.h>
 #import "AnalysisProcotolTool.h"
 #import "manridyModel.h"
 #import "NSStringTool.h"
 #import "ClockModel.h"
 
+@interface AnalysisProcotolTool ()<CLLocationManagerDelegate>
+
+
+@property (nonatomic, strong) CLLocationManager* locationManager;
+
+@end
+
 @implementation AnalysisProcotolTool
 
+#pragma mark - Singleton
+static AnalysisProcotolTool *analysisProcotolTool = nil;
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        
+        /** 由于IOS8中定位的授权机制改变 需要进行手动授权
+         * 获取授权认证，两个方法：
+         */
+        [self.locationManager requestWhenInUseAuthorization];
+//        [self.locationManager requestAlwaysAuthorization];
+        
+        if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+            NSLog(@"requestAlwaysAuthorization");
+            [self.locationManager requestAlwaysAuthorization];
+        }
+        
+        //开始定位，不断调用其代理方法
+        [self.locationManager startUpdatingLocation];
+        NSLog(@"start gps");
+    }
+    return self;
+}
+
++ (instancetype)shareInstance
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        analysisProcotolTool = [[self alloc] init];
+    });
+    
+    return analysisProcotolTool;
+}
+
++ (instancetype)allocWithZone:(struct _NSZone *)zone
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        analysisProcotolTool = [super allocWithZone:zone];
+    });
+    
+    return analysisProcotolTool;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return self;
+}
+
+- (id)mutableCopyWithZone:(NSZone *)zone
+{
+    return self;
+}
+
+#pragma mark - CLLocationManagerDelegate
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations
+{
+    // 1.获取用户位置的对象
+    CLLocation *location = [locations lastObject];
+    CLLocationCoordinate2D coordinate = location.coordinate;
+    NSLog(@"纬度:%f 经度:%f", coordinate.latitude, coordinate.longitude);
+    self.staticLat = coordinate.latitude;
+    self.staticLon = coordinate.longitude;
+    
+    // 2.停止定位
+    [manager stopUpdatingLocation];
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error
+{
+    if (error.code == kCLErrorDenied) {
+        // 提示用户出错原因，可按住Option键点击 KCLErrorDenied的查看更多出错信息，可打印error.code值查找原因所在
+    }
+}
+
+#pragma mark - 解析协议数据
 //解析设置时间数据（00|80）
-+ (manridyModel *)analysisSetTimeData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisSetTimeData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeSetTimeModel;
@@ -34,7 +125,7 @@
 }
 
 //解析闹钟数据 (01|81)
-+ (manridyModel *)analysisClockData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisClockData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeClockModel;
@@ -73,7 +164,7 @@
 }
 
 //解析获取运动信息的数据（03|83）
-+ (manridyModel *)analysisGetSportData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisGetSportData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeSportModel;
@@ -108,7 +199,7 @@
 }
 
 //解析获取运动信息清零的数据（04|84）
-+ (manridyModel *)analysisSportZeroData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisSportZeroData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType =  ReturnModelTypeSportZeroModel;
@@ -125,10 +216,10 @@
 }
 
 //解析获取GPS历史的数据（05|85）
-+ (manridyModel *)analysisHistoryGPSData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisHistoryGPSData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
-    model.receiveDataType = ReturnModelTypeGPSModel;
+    model.receiveDataType = ReturnModelTypeGPSHistoryModel;
     
     if ([head isEqualToString:@"05"]) {
         model.isReciveDataRight = ResponsEcorrectnessDataRgith;
@@ -173,6 +264,19 @@
         NSInteger locationState = [NSStringTool parseIntFromData:[data subdataWithRange:NSMakeRange(5, 1)]];
         model.gpsDailyModel.locationState = locationState;
         
+        //筛选正确数据，当前位置为纬度:22.663294 经度:113.994034
+        if (self.staticLon && self.staticLat) {
+            if ((self.staticLat - lat.v > 0.1 || self.staticLat - lat.v < -0.1) || (self.staticLon -lon.v > 0.1 || self.staticLon - lon.v < -0.1)) {
+                DeBugLog(@"错误的经纬度为 == lon:%f, lat:%f",lon.v ,lat.v);
+                return nil;
+            }else {
+                
+                DeBugLog(@"当前GPS = lon:%f,lat:%f \n上一个GPS = lon:%f,lat:%f",lon.v ,lat.v ,self.staticLon ,self.staticLat);
+                self.staticLon = lon.v;
+                self.staticLat = lat.v;
+            }
+        }
+        
         //还有个经纬度方向的数据没有解析，暂时没想到怎么解析
     }else {
         model.isReciveDataRight = ResponsEcorrectnessDataFail;
@@ -182,7 +286,7 @@
 }
 
 //解析用户信息的数据（06|86）
-+ (manridyModel *)analysisUserInfoData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisUserInfoData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeUserInfoModel;
@@ -208,7 +312,7 @@
 }
 
 //解析运动目标的数据（07|87）
-+ (manridyModel *)analysisSportTargetData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisSportTargetData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeSportTargetModel;
@@ -230,7 +334,7 @@
 }
 
 //解析心率开关的数据（09|89）
-+ (manridyModel *)analysisHeartStateData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisHeartStateData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeHeartRateStateModel;
@@ -245,7 +349,7 @@
 }
 
 //解析心率的数据（0A|8A）
-+ (manridyModel *)analysisHeartData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisHeartData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeHeartRateModel;
@@ -291,7 +395,7 @@
 }
 
 //解析睡眠的数据（0C|8C）
-+ (manridyModel *)analysisSleepData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisSleepData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
     model.receiveDataType = ReturnModelTypeSleepModel;
@@ -362,10 +466,10 @@ union LAT{
 }lat;
 
 //解析自动上报GPS的数据（0D|8D）
-+ (manridyModel *)analysisGPSData:(NSData *)data WithHeadStr:(NSString *)head
+- (manridyModel *)analysisGPSData:(NSData *)data WithHeadStr:(NSString *)head
 {
     manridyModel *model = [[manridyModel alloc] init];
-    model.receiveDataType = ReturnModelTypeGPSModel;
+    model.receiveDataType = ReturnModelTypeGPSCurrentModel;
     
     if ([head isEqualToString:@"0d"] || [head isEqualToString:@"0D"]) {
         model.isReciveDataRight = ResponsEcorrectnessDataRgith;
@@ -410,37 +514,23 @@ union LAT{
         NSInteger locationState = [NSStringTool parseIntFromData:[data subdataWithRange:NSMakeRange(5, 1)]];
         model.gpsDailyModel.locationState = locationState;
         
+        //筛选正确数据，当前位置为纬度:22.663294 经度:113.994034
+        if (self.staticLon && self.staticLat) {
+            if ((self.staticLat - lat.v > 0.1 || self.staticLat - lat.v < -0.1) || (self.staticLon -lon.v > 0.1 || self.staticLon - lon.v < -0.1)) {
+                DeBugLog(@"错误的经纬度为 == lon:%f, lat:%f",lon.v ,lat.v);
+                return nil;
+            }else {
+                
+                DeBugLog(@"当前GPS = lon:%f,lat:%f \n上一个GPS = lon:%f,lat:%f",lon.v ,lat.v ,self.staticLon ,self.staticLat);
+                self.staticLon = lon.v;
+                self.staticLat = lat.v;
+            }
+        }
+        
         //还有个经纬度方向的数据没有解析，暂时没想到怎么解析
     }else {
         model.isReciveDataRight = ResponsEcorrectnessDataFail;
     }
-    
-#if 0
-    
-    manridyModel *model = [[manridyModel alloc] init];
-    //11,12,13,14
-    NSData *a = [data subdataWithRange:NSMakeRange(11, 4)];
-    NSData *c = [data subdataWithRange:NSMakeRange(15, 4)];
-    
-    int index = 0;
-    Byte *b = (Byte *)[a bytes];
-    Byte *d = (Byte *)[c bytes];
-    
-    lat.c[0]=b[index + 3];
-    lat.c[1]=b[index + 2];
-    lat.c[2]=b[index + 1];
-    lat.c[3]=b[index + 0];
-    printf("lat = %f %x\n",lat.v,lat.i);
-    
-    lon.c[0]=d[index + 3];
-    lon.c[1]=d[index + 2];
-    lon.c[2]=d[index + 1];
-    lon.c[3]=d[index + 0];
-    printf("lon = %f %x\n",lon.v,lon.i);
-    
-    model.gpsModel.lon = lon.v;
-    model.gpsModel.lat = lat.v;
-#endif
     
     return model;
 }

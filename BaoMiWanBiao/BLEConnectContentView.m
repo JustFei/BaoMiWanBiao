@@ -221,7 +221,9 @@ typedef enum{
 {
     [BLETool shareInstance].currentDev = device;
     
-    [[BLETool shareInstance] writeTimeToPeripheral:[NSDate date]];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[BLETool shareInstance] writeTimeToPeripheral:[NSDate date]];
+    });
 }
 
 - (void)manridyBLEDidDisconnectDevice:(manridyBleDevice *)device

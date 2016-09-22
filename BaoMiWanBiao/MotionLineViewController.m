@@ -10,6 +10,8 @@
 #import <MapKit/MapKit.h>
 #import "BLETool.h"
 #import "MotionFmdbTool.h"
+#import "AnalysisProcotolTool.h"
+#import "WGS84TOGJ02.h"
 
 @interface MotionLineViewController () <MKMapViewDelegate, BleReceiveDelegate>
 {
@@ -34,7 +36,7 @@
 
 @property (nonatomic, strong) MotionFmdbTool *myFmTool;
 
-
+@property (nonatomic, strong) NSArray *locationArr;
 
 @end
 
@@ -47,53 +49,36 @@
     self.mybleTool = [BLETool shareInstance];
     self.mybleTool.receiveDelegate = self;
     
+    //获取历史数据，应该放在连接刚开始的时候
     [self.mybleTool writeGPSToPeripheral];
     
-    //纬度：1102401032；经度：1122237700
-    //114.004556,22.666567
-    //22.6665300000,114.0045810000
-    //41b54e62 42e3fcdd
-    //651817898
-    //41b54d8a 42e3fd04
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSDate *date = [NSDate date];
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"MM/dd"];
         NSString *time = [formatter stringFromDate:date];
         DeBugLog(@"查询时间%@",time);
         
-        NSArray *arr = [self.myFmTool queryGPSDataWithDayTime:time];
-        DeBugLog(@"%@",arr);
+        self.locationArr = [self.myFmTool queryGPSDataWithDayTime:time];
+        DeBugLog(@"%@",self.locationArr);
     });
     
     // 设置代理
     self.mapView.delegate = self;
     
-    //自定义的一些地理位置信息
+    //经纬度
+    CLLocationCoordinate2D coordinate2D = {[AnalysisProcotolTool shareInstance].staticLat, [AnalysisProcotolTool shareInstance].staticLon};
+    _pointStart = coordinate2D;
     
+    //比例尺,比例值越小越精确
+    MKCoordinateSpan span = {0.05, 0.05};
+    //范围
+    MKCoordinateRegion region = {coordinate2D, span};
     
-#if 0
-    for (NSInteger i = 0; i < (array.count - 2); i++) {
-        NSString *str = array[i];
-        NSArray *temp = [str componentsSeparatedByString:@","];
-        
-        NSString *lon = temp[0];
-        NSString *lat = temp[1];
-        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake([lat doubleValue], [lon doubleValue]);
-        pointToUse[0] = coordinate;
-        
-        NSString *str2 = array[i + 1];
-        NSArray *temp2 = [str2 componentsSeparatedByString:@","];
-        NSString *lon2 = temp2[0];
-        NSString *lat2 = temp2[1];
-        CLLocationCoordinate2D coordinate2 = CLLocationCoordinate2DMake([lat2 doubleValue], [lon2 doubleValue]);
-        pointToUse[1] = coordinate2;
-        
-        self.myPolyline = [MKPolyline polylineWithCoordinates:pointToUse count:2];
-        [self.mapView addOverlay:self.myPolyline];
-    }
-#endif
+    //设置范围
+    [self.mapView setRegion:region animated:YES];
+    //标注自身位置
+    [self.mapView setShowsUserLocation:YES];
     
     
 }
@@ -115,23 +100,52 @@
 #pragma mark - BleReceiveDelegate
 - (void)receiveGPSWithModel:(manridyModel *)manridyModel
 {
-    if (manridyModel.receiveDataType == ReturnModelTypeGPSModel) {
-        if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
-            [self.myFmTool insertGPSModel:manridyModel.gpsDailyModel];
-            
-            if (!_pointStart.longitude && !_pointStart.latitude) {
-                _pointStart = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
-            }else {
+    if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
+       if (manridyModel.receiveDataType == ReturnModelTypeGPSCurrentModel) {
+//            [self.myFmTool insertGPSModel:manridyModel.gpsDailyModel];
+           
+            if (_pointStart.longitude && _pointStart.latitude) {
+                _pointEnd = CLLocationCoordinate2DMake(manridyModel.gpsDailyModel.lat, manridyModel.gpsDailyModel.lon);
+                
+                CLLocation *start = [[CLLocation alloc] initWithLatitude:_pointStart.latitude longitude:_pointStart.longitude];
+                CLLocation *end = [[CLLocation alloc] initWithLatitude:_pointEnd.latitude longitude:_pointEnd.longitude];
+                
+                //把真实坐标加密
+                if (![WGS84TOGJ02 outOfChina:start])
+                {
+                    //转换火星坐标
+                    start = [WGS84TOGJ02 transformToMars:start];
+                }
+                
+                //把真实坐标加密
+                if (![WGS84TOGJ02 outOfChina:end])
+                {
+                    //转换火星坐标
+                    end = [WGS84TOGJ02 transformToMars:end];
+                }
+                
+                _point[0] = start.coordinate;
+                _point[1] = end.coordinate;
+                
+                self.myPolyline = [MKPolyline polylineWithCoordinates:_point count:2];
+                [self.mapView addOverlay:self.myPolyline];
+                
+                //比例尺,比例值越小越精确
+                MKCoordinateSpan span = {0.0005, 0.0005};
+                //范围
+                MKCoordinateRegion region = {end.coordinate, span};
+                //设置范围
+                [self.mapView setRegion:region animated:YES];
+                
+                //标注自身位置
+                [self.mapView setShowsUserLocation:NO];
+                
+                
                 _pointStart = _pointEnd;
-                _pointEnd = CLLocationCoordinate2DMake(manridyModel.gpsModel.lat, manridyModel.gpsModel.lon);
+            }else {
+                
+                _pointStart = CLLocationCoordinate2DMake(manridyModel.gpsDailyModel.lat, manridyModel.gpsDailyModel.lon);
             }
-            
-            _point[0] = _pointStart;
-            _point[1] = _pointEnd;
-            
-            self.myPolyline = [MKPolyline polylineWithCoordinates:_point count:2];
-            [self.mapView addOverlay:self.myPolyline];
-            
         }
     }
 }

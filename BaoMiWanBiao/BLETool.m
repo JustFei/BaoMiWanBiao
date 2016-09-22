@@ -176,7 +176,7 @@ static BLETool *bleTool = nil;
         
         clockStateStr = [clockStateStr stringByAppendingString:clockDataStr];
         
-        DeBugLog(@"设置闹钟的协议文本部分%@, 长度为%ld",clockStateStr ,clockStateStr.length);
+        DeBugLog(@"设置闹钟的协议文本部分%@, 长度为%ld",clockStateStr ,(unsigned long)clockStateStr.length);
         
         //传入时间和头，返回协议字符串
         NSString *protocolStr = [NSString stringWithFormat:@"FC0100%@0000",clockStateStr];
@@ -508,21 +508,21 @@ static BLETool *bleTool = nil;
         
         if ([headStr isEqualToString:@"00"] || [headStr isEqualToString:@"80"]) {
             //解析设置时间数据
-            manridyModel *model = [AnalysisProcotolTool analysisSetTimeData:value WithHeadStr:headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisSetTimeData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveSetTimeDataWithModel:)]) {
                 [self.receiveDelegate receiveSetTimeDataWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"01"] || [headStr isEqualToString:@"81"]) {
             //解析闹钟数据
-            manridyModel *model = [AnalysisProcotolTool analysisClockData:value WithHeadStr:headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisClockData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveSetClockDataWithModel:)]) {
                 [self.receiveDelegate receiveSetClockDataWithModel:model];
             }
 
         }else if ([headStr isEqualToString:@"03"] || [headStr isEqualToString:@"83"]) {
             //解析获取的步数数据
-            manridyModel *model =  [AnalysisProcotolTool analysisGetSportData:value WithHeadStr:headStr];
+            manridyModel *model =  [[AnalysisProcotolTool shareInstance] analysisGetSportData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveMotionDataWithModel:)]) {
                 [self.receiveDelegate receiveMotionDataWithModel:model];
             }else {
@@ -531,51 +531,52 @@ static BLETool *bleTool = nil;
 
         }else if ([headStr isEqualToString:@"04"] || [headStr isEqualToString:@"84"]) {
             //运动清零
-            manridyModel *model = [AnalysisProcotolTool analysisSportZeroData:value WithHeadStr:headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisSportZeroData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveDataWithModel:)]) {
                 [self.receiveDelegate receiveDataWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"05"] || [headStr isEqualToString:@"85"]) {
             //获取到历史的GPS数据信息
-            manridyModel *model = [AnalysisProcotolTool analysisHistoryGPSData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)]) {
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisHistoryGPSData:value WithHeadStr:headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)] && model) {
                 [self.receiveDelegate receiveGPSWithModel:model];
+                [_fmTool saveGPSToDataBase:model];
             }else {
                 [_fmTool saveGPSToDataBase:model];
             }
 
         }else if ([headStr isEqualToString:@"06"] || [headStr isEqualToString:@"86"]) {
             //用户信息推送
-            manridyModel *model = [AnalysisProcotolTool analysisUserInfoData:value WithHeadStr:headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisUserInfoData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveUserInfoWithModel:)]) {
                 [self.receiveDelegate receiveUserInfoWithModel:model];
             }
 
         }else if ([headStr isEqualToString:@"07"] || [headStr isEqualToString:@"87"]) {
             //运动目标推送
-            manridyModel *model = [AnalysisProcotolTool analysisSportTargetData:value WithHeadStr:headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisSportTargetData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveMotionTargetWithModel:)]) {
                 [self.receiveDelegate receiveMotionTargetWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"09"] || [headStr isEqualToString:@"89"]) {
             //心率开关
-            manridyModel *model = [AnalysisProcotolTool analysisHeartStateData:value WithHeadStr:headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisHeartStateData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveHeartRateTestWithModel:)]) {
                 [self.receiveDelegate receiveHeartRateTestWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"0a"] || [headStr isEqualToString:@"0A"] || [headStr isEqualToString:@"8a"] || [headStr isEqualToString:@"8A"]) {
             //获取心率数据
-            manridyModel *model = [AnalysisProcotolTool analysisHeartData:value WithHeadStr:headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisHeartData:value WithHeadStr:headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveHeartRateDataWithModel:)]) {
                 [self.receiveDelegate receiveHeartRateDataWithModel:model];
             }
             
         }else if ([headStr isEqualToString:@"0c"] || [headStr isEqualToString:@"0C"] || [headStr isEqualToString:@"8c"] || [headStr isEqualToString:@"8C"]) {
             //获取睡眠
-            manridyModel *model = [AnalysisProcotolTool analysisSleepData:value WithHeadStr: headStr];
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisSleepData:value WithHeadStr: headStr];
             if ([self.receiveDelegate respondsToSelector:@selector(receiveSleepInfoWithModel:)]) {
                 [self.receiveDelegate receiveSleepInfoWithModel:model];
             }else {
@@ -583,9 +584,10 @@ static BLETool *bleTool = nil;
             }
         }else if ([headStr isEqualToString:@"0d"] || [headStr isEqualToString:@"0D"] || [headStr isEqualToString:@"8d"] || [headStr isEqualToString:@"8D"]) {
             //上报GPS数据
-            manridyModel *model = [AnalysisProcotolTool analysisGPSData:value WithHeadStr: headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)]) {
+            manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisGPSData:value WithHeadStr: headStr];
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)] && model) {
                 [self.receiveDelegate receiveGPSWithModel:model];
+                [_fmTool saveGPSToDataBase:model];
             }else {
                 [_fmTool saveGPSToDataBase:model];
             }

@@ -32,7 +32,8 @@ typedef enum : NSUInteger {
     ReturnModelTypeSleepModel,
     ReturnModelTypeSportZeroModel,
     ReturnModelTypeHeartRateStateModel,
-    ReturnModelTypeGPSModel,
+    ReturnModelTypeGPSCurrentModel,
+    ReturnModelTypeGPSHistoryModel,
 } ReturnModelType;
 
 typedef enum : NSUInteger {

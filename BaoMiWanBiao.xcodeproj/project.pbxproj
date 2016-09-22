@@ -52,6 +52,7 @@
 		3B4EA02D1D75297900E23B63 /* ASProgressPopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EA02B1D75297900E23B63 /* ASProgressPopUpView.m */; };
 		3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */; };
 		3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF91D49E46900EC568B /* PhotoShowContentView.m */; };
+		3B6B5D0C1D93C6D700B1965B /* WGS84TOGJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6B5D0B1D93C6D700B1965B /* WGS84TOGJ02.m */; };
 		3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */; };
 		3B8C1B361D4F37A600D061C8 /* MotionStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B351D4F37A600D061C8 /* MotionStatusViewController.m */; };
 		3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B381D4F39B000D061C8 /* MotionLineViewController.m */; };
@@ -258,6 +259,8 @@
 		3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowViewController.m; sourceTree = "<group>"; };
 		3B659DF81D49E46900EC568B /* PhotoShowContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoShowContentView.h; sourceTree = "<group>"; };
 		3B659DF91D49E46900EC568B /* PhotoShowContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowContentView.m; sourceTree = "<group>"; };
+		3B6B5D0A1D93C6D700B1965B /* WGS84TOGJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGS84TOGJ02.h; sourceTree = "<group>"; };
+		3B6B5D0B1D93C6D700B1965B /* WGS84TOGJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGS84TOGJ02.m; sourceTree = "<group>"; };
 		3B8C1B301D4F00E500D061C8 /* PasswordNoteMainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordNoteMainModel.h; sourceTree = "<group>"; };
 		3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteMainModel.m; sourceTree = "<group>"; };
 		3B8C1B341D4F37A600D061C8 /* MotionStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionStatusViewController.h; sourceTree = "<group>"; };
@@ -840,6 +843,8 @@
 		3BD796FC1D55D2E200DB6821 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				3B6B5D0A1D93C6D700B1965B /* WGS84TOGJ02.h */,
+				3B6B5D0B1D93C6D700B1965B /* WGS84TOGJ02.m */,
 				3B4EA0271D75297900E23B63 /* ASProgressPopUpView */,
 				3BD796FD1D55D33400DB6821 /* jbChartView */,
 			);
@@ -1463,6 +1468,7 @@
 				3BEFB4741D4994C5003DABF7 /* sm4.c in Sources */,
 				3BCDF4131D6AD02500B6D7D5 /* MotionDailyDataModel.m in Sources */,
 				3B2791F91D631AC400B99320 /* SleepStatusViewController.m in Sources */,
+				3B6B5D0C1D93C6D700B1965B /* WGS84TOGJ02.m in Sources */,
 				3BB518FA1D7E606600ADFC50 /* BLEConnectView.m in Sources */,
 				3BB519041D7E6D5E00ADFC50 /* BLECell.m in Sources */,
 				3BAD16911D8E7402007AE9B1 /* AllBleFmdb.m in Sources */,
