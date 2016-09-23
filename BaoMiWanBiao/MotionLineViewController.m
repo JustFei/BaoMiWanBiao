@@ -12,17 +12,21 @@
 #import "MotionFmdbTool.h"
 #import "AnalysisProcotolTool.h"
 #import "WGS84TOGJ02.h"
+#import "GPSDayGroupModel.h"
 
-@interface MotionLineViewController () <MKMapViewDelegate, BleReceiveDelegate>
+@interface MotionLineViewController () <MKMapViewDelegate, BleReceiveDelegate, UITableViewDelegate, UITableViewDataSource>
 {
     CLLocationCoordinate2D _point[2];
     CLLocationCoordinate2D _pointStart;
     CLLocationCoordinate2D _pointEnd;
+    BOOL showList;//是否弹出下拉列表
 }
 /**
  *  地图视图
  */
-@property (nonatomic, weak) MKMapView *mapView;
+//@property (nonatomic, weak) MKMapView *;
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+
 
 /**
  *  划线
@@ -36,7 +40,20 @@
 
 @property (nonatomic, strong) MotionFmdbTool *myFmTool;
 
-@property (nonatomic, strong) NSArray *locationArr;
+@property (nonatomic, strong) NSArray *currentLocationArr;
+
+@property (nonatomic, strong) UIButton *switchHistoryButton;
+
+@property (weak, nonatomic) IBOutlet UILabel *currentMotionLineLabel;
+
+@property (weak, nonatomic) IBOutlet UIButton *beforeButton;
+
+@property (weak, nonatomic) IBOutlet UIButton *nextButton;
+
+@property (nonatomic ,weak) UITableView *timeTableView;
+
+@property (nonatomic ,strong) NSDate *senddate;
+@property (nonatomic ,copy) NSString *currentDateStr;
 
 @end
 
@@ -46,42 +63,198 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    [self createUI];
+    
     self.mybleTool = [BLETool shareInstance];
     self.mybleTool.receiveDelegate = self;
+    // 设置代理
+    self.mapView.delegate = self;
     
     //获取历史数据，应该放在连接刚开始的时候
     [self.mybleTool writeGPSToPeripheral];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSDate *date = [NSDate date];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"MM/dd"];
-        NSString *time = [formatter stringFromDate:date];
-        DeBugLog(@"查询时间%@",time);
-        
-        self.locationArr = [self.myFmTool queryGPSDataWithDayTime:time];
-        DeBugLog(@"%@",self.locationArr);
-    });
     
-    // 设置代理
-    self.mapView.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
+    self.currentMotionLineLabel.text = @"今天";
+    self.nextButton.enabled = NO;
+    showList = NO; //默认不显示下拉框
+}
+
+- (void)createUI
+{
+    self.switchHistoryButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 30)];
+    self.switchHistoryButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    [self.switchHistoryButton setTitle:@"查看历史" forState:UIControlStateNormal];
+    [self.switchHistoryButton setTitle:@"查看当前" forState:UIControlStateSelected];
+    [self.switchHistoryButton setTintColor:[UIColor whiteColor]];
+    [self.switchHistoryButton addTarget:self action:@selector(switchHistory:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.switchHistoryButton];
+    
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:self.switchHistoryButton];
+    self.navigationItem.rightBarButtonItem = rightItem;
     
     //经纬度
     CLLocationCoordinate2D coordinate2D = {[AnalysisProcotolTool shareInstance].staticLat, [AnalysisProcotolTool shareInstance].staticLon};
     _pointStart = coordinate2D;
     
     //比例尺,比例值越小越精确
-    MKCoordinateSpan span = {0.05, 0.05};
+    MKCoordinateSpan span = {0.01, 0.01};
     //范围
     MKCoordinateRegion region = {coordinate2D, span};
     
     //设置范围
     [self.mapView setRegion:region animated:YES];
+    
     //标注自身位置
     [self.mapView setShowsUserLocation:YES];
     
-    
+    UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dropdown)];
+    [self.currentMotionLineLabel setUserInteractionEnabled:YES];
+    [self.currentMotionLineLabel addGestureRecognizer:tapGes];
 }
+
+- (void)getDataFromDBWithTime:(NSString *)dateTime
+{
+    NSString *time = [dateTime substringFromIndex:5];
+    time = [time stringByReplacingOccurrencesOfString:@"-" withString:@"/"];
+    DeBugLog(@"查询时间%@",time);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        NSDate *date = [NSDate date];
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        [formatter setDateFormat:@"MM/dd"];
+//        NSString *time = [formatter stringFromDate:date];
+        
+        self.currentLocationArr = [self.myFmTool queryGPSDataWithDayTime:time];
+        DeBugLog(@"%@",self.currentLocationArr);
+        [self.timeTableView reloadData];
+    });
+}
+
+#pragma mark - UITableViewDelegate
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.currentLocationArr.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"motionlinecell"];
+    
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"motionlinecell"];
+    }
+    
+    GPSDayGroupModel *model = self.currentLocationArr[indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@-%@",model.startTime ,model.endTime];
+    
+    return cell;
+}
+
+#pragma mark - 点击事件
+//切换历史|当前
+- (void)switchHistory:(UIButton *)sender
+{
+    if (!sender.selected) {
+        //载入历史数据
+        [sender setSelected:YES];
+        DeBugLog(@"切换到历史数据");
+    }else {
+        //载入当前数据
+        [sender setSelected:NO];
+        DeBugLog(@"切换到当前数据");
+    }
+}
+
+//前一段数据
+- (IBAction)beforeAction:(UIButton *)sender
+{
+    self.senddate = [NSDate dateWithTimeInterval:-24*60*60 sinceDate:self.senddate];//前一天
+    self.currentMotionLineLabel.text = [self setDateLabelText];
+    self.nextButton.enabled = YES;
+    
+    [self getDataFromDBWithTime:self.currentMotionLineLabel.text];
+}
+
+
+//后一段数据
+- (IBAction)nextAction:(UIButton *)sender
+{
+    self.senddate = [NSDate dateWithTimeInterval:24*60*60 sinceDate:self.senddate];//后一天
+    NSString *currentDayStr = [self setDateLabelText];
+    
+    if ([currentDayStr isEqualToString:self.currentDateStr]) {
+        self.nextButton.enabled = NO;
+        self.currentMotionLineLabel.text = @"今天";
+    }else {
+        self.currentMotionLineLabel.text = currentDayStr;
+    }
+    
+    [self getDataFromDBWithTime:currentDayStr];
+}
+
+/**
+ *  获取当前日期
+ */
+- (NSString *)setDateLabelText
+{
+    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+    
+    [dateformatter setDateFormat:@"YYYY-MM-dd"];
+    
+    NSString *  locationString=[dateformatter stringFromDate:self.senddate];
+    
+    DeBugLog(@"locationString:%@",locationString);
+    
+    return locationString;
+}
+
+-(void)dropdown{
+    //    [textField resignFirstResponder];
+    if (showList) {//如果下拉框已显示，什么都不做
+        CGRect sf = self.timeTableView.frame;
+        
+        //把dropdownList放到前面，防止下拉框被别的控件遮住
+        [self.view bringSubviewToFront:self.timeTableView];
+        
+        showList = NO;//显示下拉框
+        self.timeTableView.frame = sf;
+        [UIView beginAnimations:@"ResizeForKeyBoard1" context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+        sf.size.height = 0;
+        self.timeTableView.frame = sf;
+        
+        [UIView commitAnimations];
+        //        self.questionTableView.hidden = YES;
+        
+    }else {//如果下拉框尚未显示，则进行显示
+        
+        CGRect sf = self.timeTableView.frame;
+        
+        //把dropdownList放到前面，防止下拉框被别的控件遮住
+        [self.view bringSubviewToFront:self.timeTableView];
+        self.timeTableView.hidden = NO;
+        showList = YES;//显示下拉框
+        self.timeTableView.frame = sf;
+        [UIView beginAnimations:@"ResizeForKeyBoard" context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+        sf.size.height = 200;
+        self.timeTableView.frame = sf;
+        
+        [UIView commitAnimations];
+    }
+}
+
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
@@ -96,6 +269,8 @@
     
     return renderer;
 }
+
+
 
 #pragma mark - BleReceiveDelegate
 - (void)receiveGPSWithModel:(manridyModel *)manridyModel
@@ -152,16 +327,20 @@
 
 
 #pragma mark - 懒加载
-- (MKMapView *)mapView
+- (UITableView *)timeTableView
 {
-    if (!_mapView) {
-        MKMapView *view = [[MKMapView alloc] initWithFrame:self.view.bounds];
+    if (!_timeTableView) {
+        UITableView *view = [[UITableView alloc] initWithFrame:CGRectMake(0, self.mapView.frame.origin.y, self.view.frame.size.width, 0) style:UITableViewStylePlain];
+        view.backgroundColor = [UIColor whiteColor];
         
-        [self.view addSubview: view];
-        _mapView = view;
+        view.delegate = self;
+        view.dataSource = self;
+        
+        [self.view addSubview:view];
+        _timeTableView = view;
     }
     
-    return _mapView;
+    return _timeTableView;
 }
 
 - (MotionFmdbTool *)myFmTool
@@ -174,119 +353,33 @@
     return  _myFmTool;
 }
 
-///**
-// *  定位失败会调用该方法
-// *
-// *  @param error 错误信息
-// */
-//- (void)didFailToLocateUserWithError:(NSError *)error
-//{
-//    DeBugLog(@"did failed locate,error is %@",[error localizedDescription]);
-//}
-//
-///**
-// *  用户位置更新后，会调用此函数
-// *  @param userLocation 新的用户位置
-// */
-//- (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
-//{
-//    // 如果此时位置更新的水平精准度大于10米，直接返回该方法
-//    // 可以用来简单判断GPS的信号强度
-//    if (userLocation.location.horizontalAccuracy > kCLLocationAccuracyNearestTenMeters) {
-//        return;
-//    }
-//}
-//
-///**
-// *  用户方向更新后，会调用此函数
-// *  @param userLocation 新的用户位置
-// */
-//- (void)didUpdateUserHeading:(BMKUserLocation *)userLocation
-//{
-//    // 动态更新我的位置数据
-//    [self.mapView updateLocationData:userLocation];
-//}
-//
-///**
-// *  开始记录轨迹
-// *
-// *  @param userLocation 实时更新的位置信息
-// */
-//- (void)recordTrackingWithUserLocation:(BMKUserLocation *)userLocation
-//{
-//    if (self.preLocation) {
-//        // 计算本次定位数据与上次定位数据之间的距离
-//        CGFloat distance = [userLocation.location distanceFromLocation:self.preLocation];
-//        self.statusView.distanceWithPreLoc.text = [NSString stringWithFormat:@"%.3f",distance];
-//        DeBugLog(@"与上一位置点的距离为:%f",distance);
-//        
-//        // (5米门限值，存储数组画线) 如果距离少于 5 米，则忽略本次数据直接返回方法
-//        if (distance < 5) {
-//            return;
-//        }
-//    }
-//    
-//    // 2. 将符合的位置点存储到数组中（第一直接来到这里）
-//    [self.locationArrayM addObject:userLocation.location];
-//    self.preLocation = userLocation.location;
-//    
-//    // 3. 绘图
-//    [self drawWalkPolyline];
-//}
-//
-///**
-// *  绘制轨迹路线
-// */
-//- (void)drawWalkPolyline
-//{
-//    // 轨迹点数组个数
-//    NSUInteger count = self.locationArrayM.count;
-//    
-//    // 动态分配存储空间
-//    // BMKMapPoint是个结构体：地理坐标点，用直角地理坐标表示 X：横坐标 Y：纵坐标
-//    BMKMapPoint *tempPoints = new BMKMapPoint[count];
-//    
-//    // 遍历数组
-//    [self.locationArrayM enumerateObjectsUsingBlock:^(CLLocation *location, NSUInteger idx, BOOL *stop) {
-//        BMKMapPoint locationPoint = BMKMapPointForCoordinate(location.coordinate);
-//        tempPoints[idx] = locationPoint;
-//    }
-//     }];
-//    
-//    //移除原有的绘图，避免在原来轨迹上重画
-//    if (self.polyLine) {
-//        [self.mapView removeOverlay:self.polyLine];
-//    }
-//    
-//    // 通过points构建BMKPolyline
-//    self.polyLine = [BMKPolyline polylineWithPoints:tempPoints count:count];
-//    
-//    //添加路线,绘图
-//    if (self.polyLine) {
-//        [self.mapView addOverlay:self.polyLine];
-//    }
-//    
-//    // 清空 tempPoints 临时数组
-//    delete []tempPoints;
-//    
-//    // 根据polyline设置地图范围
-//    [self mapViewFitPolyLine:self.polyLine];
-//}
+//日期中转
+- (NSDate *)senddate
+{
+    if (!_senddate) {
+        NSDate *date = [NSDate date];
+        
+        _senddate = date;
+    }
+    
+    return _senddate;
+}
 
+- (NSString *)currentDateStr
+{
+    if (!_currentDateStr) {
+        NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+        [dateformatter setDateFormat:@"YYYY-MM-dd"];
+        NSDate *currentDate = [NSDate date];
+        _currentDateStr = [dateformatter stringFromDate:currentDate];
+    }
+    
+    return _currentDateStr;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

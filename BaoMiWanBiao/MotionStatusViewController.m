@@ -311,7 +311,7 @@
 //推送到路线图界面
 - (void)pushToLineVC
 {
-    MotionLineViewController *lineVC = [[MotionLineViewController alloc] init];
+    MotionLineViewController *lineVC = [[MotionLineViewController alloc] initWithNibName:@"MotionLineViewController" bundle:nil];
     [self.navigationController pushViewController:lineVC animated:YES];
 }
 

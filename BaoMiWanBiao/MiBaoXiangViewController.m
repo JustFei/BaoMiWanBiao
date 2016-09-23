@@ -66,7 +66,7 @@
 
     _leftButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 55, 30)];
     [_leftButton setTitle:@" 取消" forState:UIControlStateNormal];
-    [_leftButton setFont:[UIFont systemFontOfSize:14]];
+    _leftButton.titleLabel.font = [UIFont systemFontOfSize:14];
     [_leftButton setTitleColor:[UIColor colorWithWhite:1.0 alpha:0] forState:UIControlStateNormal];
     [_leftButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [_leftButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];

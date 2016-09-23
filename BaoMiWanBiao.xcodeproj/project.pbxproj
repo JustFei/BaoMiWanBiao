@@ -53,6 +53,7 @@
 		3B659DF41D49E3ED00EC568B /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF31D49E3ED00EC568B /* PhotoShowViewController.m */; };
 		3B659DFA1D49E46900EC568B /* PhotoShowContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B659DF91D49E46900EC568B /* PhotoShowContentView.m */; };
 		3B6B5D0C1D93C6D700B1965B /* WGS84TOGJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6B5D0B1D93C6D700B1965B /* WGS84TOGJ02.m */; };
+		3B81FBAD1D9500E300EB3255 /* MotionLineViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B81FBAC1D9500E300EB3255 /* MotionLineViewController.xib */; };
 		3B8C1B321D4F00E500D061C8 /* PasswordNoteMainModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */; };
 		3B8C1B361D4F37A600D061C8 /* MotionStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B351D4F37A600D061C8 /* MotionStatusViewController.m */; };
 		3B8C1B391D4F39B000D061C8 /* MotionLineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8C1B381D4F39B000D061C8 /* MotionLineViewController.m */; };
@@ -261,6 +262,7 @@
 		3B659DF91D49E46900EC568B /* PhotoShowContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowContentView.m; sourceTree = "<group>"; };
 		3B6B5D0A1D93C6D700B1965B /* WGS84TOGJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGS84TOGJ02.h; sourceTree = "<group>"; };
 		3B6B5D0B1D93C6D700B1965B /* WGS84TOGJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGS84TOGJ02.m; sourceTree = "<group>"; };
+		3B81FBAC1D9500E300EB3255 /* MotionLineViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MotionLineViewController.xib; sourceTree = "<group>"; };
 		3B8C1B301D4F00E500D061C8 /* PasswordNoteMainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordNoteMainModel.h; sourceTree = "<group>"; };
 		3B8C1B311D4F00E500D061C8 /* PasswordNoteMainModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordNoteMainModel.m; sourceTree = "<group>"; };
 		3B8C1B341D4F37A600D061C8 /* MotionStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionStatusViewController.h; sourceTree = "<group>"; };
@@ -645,6 +647,7 @@
 			children = (
 				3B8C1B371D4F39B000D061C8 /* MotionLineViewController.h */,
 				3B8C1B381D4F39B000D061C8 /* MotionLineViewController.m */,
+				3B81FBAC1D9500E300EB3255 /* MotionLineViewController.xib */,
 			);
 			name = "运动路线视图";
 			sourceTree = "<group>";
@@ -1250,6 +1253,7 @@
 				3B12AE691D6C1CA300C469EF /* open@3x.png in Resources */,
 				3BC0B4911D48520E00616A27 /* LocalPhotoCell.xib in Resources */,
 				3BDD65A01D45E4CA009EA15F /* list@3x.png in Resources */,
+				3B81FBAD1D9500E300EB3255 /* MotionLineViewController.xib in Resources */,
 				3BDD659C1D45E4CA009EA15F /* forward@3x.png in Resources */,
 				3BDD65BD1D45E4CA009EA15F /* unlock@2x.png in Resources */,
 				3BC0B48F1D48520E00616A27 /* LocalPhotoViewController.xib in Resources */,
