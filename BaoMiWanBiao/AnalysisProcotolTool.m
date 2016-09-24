@@ -244,8 +244,8 @@ static AnalysisProcotolTool *analysisProcotolTool = nil;
         model.gpsDailyModel.lat = lat.v;
         
         //解析当前包和总包数:1,2|3,4
-        NSData *current = [data subdataWithRange:NSMakeRange(1, 2)];
-        NSData *sum = [data subdataWithRange:NSMakeRange(3, 2)];
+        NSData *sum = [data subdataWithRange:NSMakeRange(1, 2)];
+        NSData *current = [data subdataWithRange:NSMakeRange(3, 2)];
         NSInteger currentPackage = [NSStringTool parseIntFromData:current];
         NSInteger sumPackage = [NSStringTool parseIntFromData:sum];
         model.gpsDailyModel.currentPackage = currentPackage;
@@ -265,16 +265,20 @@ static AnalysisProcotolTool *analysisProcotolTool = nil;
         model.gpsDailyModel.locationState = locationState;
         
         //筛选正确数据，当前位置为纬度:22.663294 经度:113.994034
-        if (self.staticLon && self.staticLat) {
-            if ((self.staticLat - lat.v > 0.1 || self.staticLat - lat.v < -0.1) || (self.staticLon -lon.v > 0.1 || self.staticLon - lon.v < -0.1)) {
-                DeBugLog(@"错误的经纬度为 == lon:%f, lat:%f",lon.v ,lat.v);
-                return nil;
-            }else {
-                
-                DeBugLog(@"当前GPS = lon:%f,lat:%f \n上一个GPS = lon:%f,lat:%f",lon.v ,lat.v ,self.staticLon ,self.staticLat);
-                self.staticLon = lon.v;
-                self.staticLat = lat.v;
+        if (sumPackage != 0) {
+            if (self.staticLon && self.staticLat) {
+                if ((self.staticLat - lat.v > 0.1 || self.staticLat - lat.v < -0.1) || (self.staticLon -lon.v > 0.1 || self.staticLon - lon.v < -0.1)) {
+                    DeBugLog(@"错误的经纬度为 == lon:%f, lat:%f",lon.v ,lat.v);
+                    return nil;
+                }else {
+                    
+                    DeBugLog(@"当前GPS = lon:%f,lat:%f \n上一个GPS = lon:%f,lat:%f",lon.v ,lat.v ,self.staticLon ,self.staticLat);
+                    self.staticLon = lon.v;
+                    self.staticLat = lat.v;
+                }
             }
+        }else {
+            DeBugLog(@"没有历史数据");
         }
         
         //还有个经纬度方向的数据没有解析，暂时没想到怎么解析

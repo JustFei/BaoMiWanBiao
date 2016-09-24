@@ -13,6 +13,12 @@
 #import "BLEConnectViewController.h"
 #import "BLETool.h"
 #import "manridyBleDevice.h"
+#import "ClockFmdbTool.h"
+#import "ClockModel.h"
+#import "MotionFmdbTool.h"
+#import "MotionDailyDataModel.h"
+#import "SleepDailyDataModel.h"
+#import "SleepFmdbTool.h"
 
 
 typedef enum{
@@ -21,10 +27,14 @@ typedef enum{
     ScanStateNull   ,
 }ScanState;
 
+static dispatch_once_t onceToken;
+
 @interface BLEConnectContentView () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, BleConnectDelegate, BleDiscoverDelegate, BleReceiveDelegate>
 {
     BOOL _blueToothOpen;
     UIButton *_switchButton;
+    MBProgressHUD *_hud;
+    dispatch_queue_t q;
 }
 
 @property (nonatomic ,strong) NSMutableArray *peripheralsArr;
@@ -35,13 +45,37 @@ typedef enum{
 
 @property (nonatomic ,strong) NSTimer *scanDeviceTimer;
 
+@property (nonatomic ,strong) NSString *currentDateStr;
+
+@property (nonatomic ,strong) ClockFmdbTool *clockFmdbTool;
+
+@property (nonatomic ,strong) MotionFmdbTool *motionFmdbTool;
+@property (nonatomic ,strong) MotionDailyDataModel *MotionModel;
+
+@property (strong, nonatomic) SleepFmdbTool *sleepFmdbTool;
+@property (strong, nonatomic) SleepDailyDataModel *SleepModel;
+
 @end
 
 @implementation BLEConnectContentView
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        q = dispatch_queue_create("chuanXing", NULL);
+    }
+    return self;
+}
+
 - (void)layoutSubviews
 {
     self.BLEListView.frame = self.bounds;
+    
+    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *currentDate = [NSDate date];
+    self.currentDateStr = [dateformatter stringFromDate:currentDate];
     
     [BLETool shareInstance].connectDelegate = self;
     [BLETool shareInstance].discoverDelegate = self;
@@ -65,6 +99,7 @@ typedef enum{
     manridyBleDevice *device = self.peripheralsArr[indexPath.row];
     cell.nameLabel.text = device.deviceName;
     
+    onceToken = 0;
 //    if (_bleSwitchState) {
 //        if (_bleConnectState) {
 //            if ([BLETool shareInstance].currentDev != nil) {
@@ -84,11 +119,15 @@ typedef enum{
         [[BLETool shareInstance] stopScan];
         [[BLETool shareInstance] unConnectDevice];
         
-//        self.currPeripheral = device.peripheral;
         //显示等待菊花
-        [MBProgressHUD showHUDAddedTo:self animated:YES];
+        _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+        _hud.mode = MBProgressHUDModeIndeterminate;
+        _hud.label.text = @"正在连接";
         
-        [[BLETool shareInstance] connectDevice:device];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[BLETool shareInstance] connectDevice:device];
+        });
+        
         [weakCell.connectButton setTitle:@"断开连接" forState:UIControlStateNormal];
         [weakCell.connectButton setBackgroundColor:[UIColor grayColor]];
     };
@@ -151,7 +190,6 @@ typedef enum{
 - (void)ConnectSwitch
 {
     if (_switchButton.isSelected) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"bleSwitchState"];
         [_switchButton setSelected:NO];
         
         //断开所有peripheral的连
@@ -220,10 +258,11 @@ typedef enum{
 - (void)manridyBLEDidConnectDevice:(manridyBleDevice *)device
 {
     [BLETool shareInstance].currentDev = device;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), q, ^{
         [[BLETool shareInstance] writeTimeToPeripheral:[NSDate date]];
     });
+        
+    _hud.label.text = @"正在同步时间";
 }
 
 - (void)manridyBLEDidDisconnectDevice:(manridyBleDevice *)device
@@ -235,16 +274,169 @@ typedef enum{
 }
 
 #pragma mark -BleReceiveDelegate
+//时间回调
 - (void)receiveSetTimeDataWithModel:(manridyModel *)manridyModel
 {
     if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
         if (manridyModel.receiveDataType == ReturnModelTypeSetTimeModel) {
             
-            //隐藏等待菊花
-            [MBProgressHUD hideHUDForView:self animated:YES];
-            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",[BLETool shareInstance].currentDev.deviceName] delegate:self cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
-            view.tag = 102;
-            [view show];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), q, ^{
+                [[BLETool shareInstance] writeClockToPeripheral:ClockDataGetClock withModel:nil];
+            });
+
+            _hud.label.text = @"正在同步闹钟";
+        }
+    }
+}
+
+//闹钟回调
+- (void)receiveSetClockDataWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeClockModel) {
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), q, ^{
+                [[BLETool shareInstance] writeMotionRequestToPeripheral];
+            });
+
+            _hud.label.text = @"正在同步运动信息";
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [self.clockFmdbTool deleteData:4];
+                
+                DeBugLog(@"%@",manridyModel.clockModelArr);
+                NSArray *clockDataSource = manridyModel.clockModelArr;
+                
+                for (int index = 0; index < clockDataSource.count; index ++) {
+                    
+                    ClockModel *model = clockDataSource[index];
+                    [self.clockFmdbTool insertModel:model];
+                }
+            });
+            
+        }
+    }
+}
+
+//运动信息回调
+- (void)receiveMotionDataWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeSportModel) {
+            
+            dispatch_once(&onceToken, ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), q, ^{
+                    [[BLETool shareInstance] writeHeartRateRequestToPeripheral:HeartRateDataLastData];
+                });
+            });
+
+            _hud.label.text = @"正在同步心率信息";
+            
+            self.MotionModel = [MotionDailyDataModel modelWith:self.currentDateStr step:manridyModel.sportModel.stepNumber kCal:manridyModel.sportModel.kCalNumber mileage:manridyModel.sportModel.mileageNumber bpm:nil];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                //查询数据库
+                NSArray *dataArr = [self.motionFmdbTool queryDate:self.currentDateStr];
+                if (dataArr.count == 0) {
+                    //插入数据
+                    [self.motionFmdbTool insertModel:self.MotionModel];
+                }else {
+                    [self.motionFmdbTool modifyData:self.currentDateStr model:self.MotionModel];
+                }
+            });
+            
+        }
+    }
+}
+
+//心率信息回调
+- (void)receiveHeartRateDataWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeHeartRateModel) {
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), q, ^{
+                [[BLETool shareInstance] writeSleepRequestToperipheral:SleepDataLastData];
+            });
+            
+            
+            _hud.label.text = @"正在同步睡眠信息";
+            
+            self.MotionModel = [MotionDailyDataModel modelWith:self.currentDateStr step:nil kCal:nil mileage:nil bpm:manridyModel.heartRateModel.heartRate];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                //查询数据库
+                NSArray *dataArr = [self.motionFmdbTool queryDate:self.currentDateStr];
+                if (dataArr.count == 0) {
+                    //插入数据
+                    [self.motionFmdbTool insertModel:self.MotionModel];
+                }else {
+                    [self.motionFmdbTool modifyData:self.currentDateStr model:self.MotionModel];
+                }
+            });
+        }
+    }
+}
+
+//同步睡眠数据
+- (void)receiveSleepInfoWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight) {
+        if (manridyModel.receiveDataType == ReturnModelTypeSleepModel) {
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), q, ^{
+                [[BLETool shareInstance] writeGPSToPeripheral];
+            });
+            
+            _hud.label.text = @"正在同步GPS信息";
+            
+            self.SleepModel = [SleepDailyDataModel modelWithDate:self.currentDateStr sumSleepTime:[NSString stringWithFormat:@"%d",(manridyModel.sleepModel.deepSleep.intValue + manridyModel.sleepModel.lowSleep.intValue)] deepSleepTime:manridyModel.sleepModel.deepSleep lowSleepTime:manridyModel.sleepModel.lowSleep];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                //查询数据库
+                NSArray *dataArr = [self.sleepFmdbTool queryDate:self.currentDateStr];
+                if (dataArr.count == 0) {
+                    //插入数据
+                    [self.sleepFmdbTool insertModel:self.SleepModel];
+                }else {
+                    [self.sleepFmdbTool modifyData:self.currentDateStr model:self.SleepModel];
+                }
+            });
+        }
+    }
+}
+
+//同步GPS数据
+- (void)receiveGPSWithModel:(manridyModel *)manridyModel
+{
+    if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
+        if (manridyModel.receiveDataType == ReturnModelTypeGPSHistoryModel) {
+            
+            if (manridyModel.gpsDailyModel.sumPackage != 0) {
+                if (manridyModel.gpsDailyModel.sumPackage == manridyModel.gpsDailyModel.currentPackage + 1) {
+                    
+                    _hud.label.text = @"数据同步完成";
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                         [self.motionFmdbTool insertGPSModel:manridyModel.gpsDailyModel];
+                    });
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [_hud hideAnimated:YES];
+                        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",[BLETool shareInstance].currentDev.deviceName] delegate:self cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
+                        view.tag = 102;
+                        [view show];
+                    });
+                }
+            }else {
+                _hud.label.text = @"数据同步完成";
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [_hud hideAnimated:YES];
+                    UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"已成功连接设备：%@",[BLETool shareInstance].currentDev.deviceName] delegate:self cancelButtonTitle:@"去主页" otherButtonTitles:nil, nil];
+                    view.tag = 102;
+                    [view show];
+                });
+            }
         }
     }
 }
@@ -299,6 +491,59 @@ typedef enum{
     }
     
     return _peripheralsArr;
+}
+
+- (ClockFmdbTool *)clockFmdbTool
+{
+    if (!_clockFmdbTool) {
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        _clockFmdbTool = [[ClockFmdbTool alloc] initWithPath:userPhone];
+    }
+    
+    return _clockFmdbTool;
+}
+
+- (MotionFmdbTool *)motionFmdbTool
+{
+    if (!_motionFmdbTool) {
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        _motionFmdbTool = [[MotionFmdbTool alloc] initWithPath:userPhone withSQLType:SQLTypeMotion];
+    }
+    
+    return _motionFmdbTool;
+}
+
+//运动数据模型
+- (MotionDailyDataModel *)MotionModel
+{
+    if (!_MotionModel) {
+        _MotionModel = [[MotionDailyDataModel alloc] init];
+    }
+    
+    return _MotionModel;
+}
+
+//数据库操作工具
+- (SleepFmdbTool *)sleepFmdbTool
+{
+    if (!_sleepFmdbTool) {
+        NSString *userPhone = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        SleepFmdbTool *tool = [[SleepFmdbTool alloc] initWithPath:userPhone];
+        
+        _sleepFmdbTool = tool;
+    }
+    
+    return _sleepFmdbTool;
+}
+
+//运动数据模型
+- (SleepDailyDataModel *)SleepModel
+{
+    if (!_SleepModel) {
+        _SleepModel = [[SleepDailyDataModel alloc] init];
+    }
+    
+    return _SleepModel;
 }
 
 #pragma mark - 获取当前View的控制器的方法

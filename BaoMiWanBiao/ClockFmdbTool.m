@@ -131,12 +131,12 @@ static FMDatabase *_fmdb;
         NSString *deleteSqlStr = [NSString stringWithFormat:@"DELETE FROM ClockData WHERE id = ?"];
         
         result = [_fmdb executeUpdate:deleteSqlStr,[NSNumber numberWithInteger:deleteSql]];
-        
-        if (result) {
-            DeBugLog(@"删除成功");
-        }else {
-            DeBugLog(@"删除失败");
-        }
+    }
+    
+    if (result) {
+        DeBugLog(@"删除成功");
+    }else {
+        DeBugLog(@"删除失败");
     }
     
     return result;

@@ -141,6 +141,7 @@ static BLETool *bleTool = nil;
     //写入操作
     if (self.currentDev.peripheral) {
         [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+        DeBugLog(@"time success");
     }
 }
 
@@ -194,6 +195,7 @@ static BLETool *bleTool = nil;
         //写入操作
         if (self.currentDev.peripheral) {
             [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+            DeBugLog(@"clock success");
         }
     }
 }
@@ -206,6 +208,7 @@ static BLETool *bleTool = nil;
     //写入操作
     if (self.currentDev.peripheral) {
         [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type: CBCharacteristicWriteWithResponse];
+        DeBugLog(@"motion success");
     }
 }
 
@@ -227,6 +230,7 @@ static BLETool *bleTool = nil;
     //写入操作
     if (self.currentDev.peripheral) {
         [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:protocolStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+        DeBugLog(@"gps success");
     }
 }
 
@@ -295,6 +299,7 @@ static BLETool *bleTool = nil;
             
             if (self.currentDev.peripheral) {
                 [self.currentDev.peripheral writeValue:[NSStringTool hexToBytes:lastStr] forCharacteristic:self.writeCharacteristic type:CBCharacteristicWriteWithResponse];
+                DeBugLog(@"heartRate success");
             }
         }
             break;
@@ -322,6 +327,7 @@ static BLETool *bleTool = nil;
         case SleepDataLastData:
             //last data of sleep
             sleepStr = [NSStringTool protocolAddInfo:@"00" head:@"0C"];
+            DeBugLog(@"sleep success");
             
             break;
         case SleepDataHistoryData:
@@ -473,9 +479,9 @@ static BLETool *bleTool = nil;
 //获得某特征值变化的通知
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     if (error) {
-//        DeBugLog(@"Error changing notification state: %@",[error localizedDescription]);
+        DeBugLog(@"Error changing notification state: %@",[error localizedDescription]);
     }else {
-//        DeBugLog(@"Success cahnging notification state: %d",characteristic.isNotifying);
+        DeBugLog(@"Success cahnging notification state: %d;value = %@",characteristic.isNotifying ,characteristic.value);
     }
 }
 
@@ -491,9 +497,9 @@ static BLETool *bleTool = nil;
 //写入某特征值后的回调
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     if (error) {
-//        DeBugLog(@"Error writing characteristic value: %@",[error localizedDescription]);
+        DeBugLog(@"Error writing characteristic value: %@",[error localizedDescription]);
     }else {
-//        DeBugLog(@"Success writing chararcteristic value: %@",characteristic);
+        DeBugLog(@"Success writing chararcteristic value: %@",characteristic);
     }
 }
 
@@ -539,7 +545,7 @@ static BLETool *bleTool = nil;
         }else if ([headStr isEqualToString:@"05"] || [headStr isEqualToString:@"85"]) {
             //获取到历史的GPS数据信息
             manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisHistoryGPSData:value WithHeadStr:headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)] && model) {
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)]) {
                 [self.receiveDelegate receiveGPSWithModel:model];
                 [_fmTool saveGPSToDataBase:model];
             }else {
@@ -585,7 +591,7 @@ static BLETool *bleTool = nil;
         }else if ([headStr isEqualToString:@"0d"] || [headStr isEqualToString:@"0D"] || [headStr isEqualToString:@"8d"] || [headStr isEqualToString:@"8D"]) {
             //上报GPS数据
             manridyModel *model = [[AnalysisProcotolTool shareInstance] analysisGPSData:value WithHeadStr: headStr];
-            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)] && model) {
+            if ([self.receiveDelegate respondsToSelector:@selector(receiveGPSWithModel:)]) {
                 [self.receiveDelegate receiveGPSWithModel:model];
                 [_fmTool saveGPSToDataBase:model];
             }else {

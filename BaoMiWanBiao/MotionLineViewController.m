@@ -70,10 +70,7 @@
     // 设置代理
     self.mapView.delegate = self;
     
-    //获取历史数据，应该放在连接刚开始的时候
-    [self.mybleTool writeGPSToPeripheral];
-    
-    
+    [self getDataFromDBWithTime:self.currentDateStr];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -132,7 +129,10 @@
         
         self.currentLocationArr = [self.myFmTool queryGPSDataWithDayTime:time];
         DeBugLog(@"%@",self.currentLocationArr);
-        [self.timeTableView reloadData];
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self.timeTableView reloadData];
+        });
     });
 }
 

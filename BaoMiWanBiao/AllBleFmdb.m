@@ -76,8 +76,13 @@
 //离线保存GPS数据
 - (void)saveGPSToDataBase:(manridyModel *)manridyModel
 {
-    if (manridyModel.receiveDataType == ReturnModelTypeGPSHistoryModel || manridyModel.receiveDataType == ReturnModelTypeGPSCurrentModel) {
-        if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
+    if (manridyModel.isReciveDataRight == ResponsEcorrectnessDataRgith) {
+        if (manridyModel.receiveDataType == ReturnModelTypeGPSHistoryModel) {
+            if (manridyModel.gpsDailyModel.sumPackage != 0) {
+                [self.motionFmTool insertGPSModel:manridyModel.gpsDailyModel];
+            }
+            
+        }else if (manridyModel.receiveDataType == ReturnModelTypeGPSCurrentModel){
             [self.motionFmTool insertGPSModel:manridyModel.gpsDailyModel];
         }
     }

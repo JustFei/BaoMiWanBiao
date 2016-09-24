@@ -58,24 +58,20 @@
         self.clockTableView.backgroundColor = [UIColor whiteColor];
         
         _clockDataSource = [NSMutableArray arrayWithArray:[self.fmTool queryData]];
-        if (_clockDataSource.count >=3) {
-            if (self.closeAddBlock) {
-                self.closeAddBlock();
-            }
-        }
+        
         
         self.mybleTool = [BLETool shareInstance];
         self.mybleTool.receiveDelegate = self;
         
-        //如果当前有连接的设备，就寻找特征
-        if (self.mybleTool.currentDev.peripheral) {
-            //写入获取运动的信息
-            [self.mybleTool writeClockToPeripheral:ClockDataGetClock withModel:nil];
-            
-            _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
-            _hud.mode = MBProgressHUDModeIndeterminate;
-            _hud.label.text = @"正在更新数据";
-        }
+//        //如果当前有连接的设备，就寻找特征
+//        if (self.mybleTool.currentDev.peripheral) {
+//            //写入获取运动的信息
+//            [self.mybleTool writeClockToPeripheral:ClockDataGetClock withModel:nil];
+//            
+//            _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+//            _hud.mode = MBProgressHUDModeIndeterminate;
+//            _hud.label.text = @"正在更新数据";
+//        }
     }
     return self;
 }
@@ -105,6 +101,12 @@
     
     self.editTimePickView.frame = CGRectMake(0, self.frame.size.height , self.frame.size.width, 235);
     self.editTimePicker.frame = CGRectMake(0, 30, self.frame.size.width, self.editTimePickView.frame.size.height - 30);
+    
+    if (_clockDataSource.count >=3) {
+        if (self.closeAddBlock) {
+            self.closeAddBlock();
+        }
+    }
     
     DeBugLog(@"%@",NSStringFromCGRect(self.clockTableView.frame));
     //{{0, 294}, {320, 338}}
@@ -144,7 +146,7 @@
             [self.mybleTool writeClockToPeripheral:ClockDataSetClock withModel:manridymodel];
             
             _hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
-            //        _hud.mode = MBProgressHUDModeIndeterminate;
+            _hud.mode = MBProgressHUDModeIndeterminate;
             _hud.label.text = @"正在同步到腕表";
         }
         

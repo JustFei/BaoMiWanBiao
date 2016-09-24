@@ -106,13 +106,13 @@
     [self getDataFromDB];
     
     //如果当前有连接的设备，就寻找特征
-    if (self.mybleTool.currentDev.peripheral) {
-        //写入获取运动的信息
-        [self.mybleTool writeMotionRequestToPeripheral];
-        
-        //写入开启心率的方法
-        [self.mybleTool writeHeartRateRequestToPeripheral:HeartRateDataHistoryData];
-    }
+//    if (self.mybleTool.currentDev.peripheral) {
+//        //写入获取运动的信息
+//        [self.mybleTool writeMotionRequestToPeripheral];
+//        
+//        //写入开启心率的方法
+//        [self.mybleTool writeHeartRateRequestToPeripheral:HeartRateDataHistoryData];
+//    }
     
     NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
     [dateformatter setDateFormat:@"YYYY-MM-dd"];
